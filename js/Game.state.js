@@ -19,6 +19,7 @@ SpaceGame.Main.prototype = {
     game.load.audio('scifi3', ['assets/audio/scifi3.wav']);
     game.load.audio('scifi4', ['assets/audio/scifi4.wav']);
     game.load.audio('scifi5', ['assets/audio/scifi5.wav']);
+    game.load.audio('completed', ['assets/audio/level-completed.mp3']);
 
     game.load.tilemap('desert', 'assets/maps/tower-defense-clean.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('tiles', 'assets/maps/tmw_desert_spacing.png');
@@ -29,7 +30,7 @@ SpaceGame.Main.prototype = {
     game.load.image('missle', 'assets/sprites/missile.png');
 
     //game.load.image("background", "assets/sprites/background.jpg");
-  game.load.image('background', 'assets/sprites/background2.png');
+    game.load.image('background', 'assets/sprites/background2.png');
 
     /*
      * Enemys
@@ -77,7 +78,7 @@ SpaceGame.Main.prototype = {
       game.add.audio('scifi4', 0.3),
       game.add.audio('scifi5', 0.3)
     ];
-
+    game.audio.completedSnd = game.add.audio('completed', 1);
 
     background = game.add.tileSprite(0, 0, 1000, 600, 'background');
     background.alpha=0;
@@ -197,12 +198,6 @@ SpaceGame.Main.prototype = {
     generateMissle();
 
     score -= 10;
-    if(level > 1) {
-      // Init score
-      score_text = undefined;
-      lifeGraph = undefined;
-      fireGraph = undefined;
-    }
     updateScore();
     cursors = game.input.keyboard.createCursorKeys();
 
@@ -293,8 +288,8 @@ SpaceGame.Main.prototype = {
             towers.children[0].fireTime += enemy.health;
           }
           enemy.destroy();
-          if (enemys.countLiving() == 0) {
-            game.state.start('Main');
+          if (enemys.countLiving() == 0 && allEnemysAdded) {
+            levelCompleted();
           }
           updateScoreText();
         }

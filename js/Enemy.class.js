@@ -104,8 +104,8 @@ Enemy.prototype = {
   explode: function (enemy) {
     if (enemy.alive) {
       enemy.destroy();
-      if (enemys.countLiving() == 0) {
-        game.state.start('Main');
+      if (enemys.countLiving() == 0 && allEnemysAdded) {
+        levelCompleted();
       }
       game.audio.explosionSnd.play();
 

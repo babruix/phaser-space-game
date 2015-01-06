@@ -19,7 +19,7 @@ var score = 0;
 var debug = window.location.hash == "#deb";
 var towers, background, cursors, fireButton, brickButton, missleButton,
   hearts, shields, protectRect, score_text, lifeGraph, fireGraph, walls,
-  bullets, enemy_bullets, missles, ufos, shipTrail;
+  bullets, enemy_bullets, missles, ufos, shipTrail, allEnemysAdded;
 
 game.state.add('Main',SpaceGame.Main);
 game.state.add('Menu',SpaceGame.Menu);
@@ -63,6 +63,36 @@ function showLevelTitle() {
   }, this);
 }
 
+function levelCompleted() {
+  game.audio.completedSnd.play();
+
+  var style = {
+    font: "60px Tahoma",
+    fill: "#FFFFFF",
+    align: "center"
+  };
+  var levelText = game.add.text(game.width / 2, game.height / 2, 'Level Completed!', style);
+  levelText.x = game.width / 2 - levelText.width / 2;
+  levelText.y = game.height / 2 - levelText.height / 2;
+  var level_tween = game.add.tween(levelText)
+    .to({alpha: 0
+    }, 1000 /*duration of the tween (in ms)*/,
+    Phaser.Easing.Circular.In /*easing type*/,
+    true /*autostart?*/,
+    1000 /*delay*/);
+
+  level_tween.onComplete.add(function () {
+    levelText.destroy();
+    levelText = null;
+    level_tween = null;
+    game.state.start('Main');
+    // Init score
+    score_text = undefined;
+    lifeGraph = undefined;
+    fireGraph = undefined;
+  }, this);
+}
+
 function addWalls() {
   for (i = 1; i < game.width; i = i + 50) {
     new Wall(i, parseInt(game.height / 2 + 250));
@@ -71,6 +101,7 @@ function addWalls() {
 
 function addEnemys() {
   var i = 0;
+  allEnemysAdded = false;
   var enemysBcl = game.time.events.loop(level * Phaser.Timer.SECOND, function () {
     // Generate i=level number of enemys
     //&& enemys.countLiving() < 4
@@ -85,6 +116,7 @@ function addEnemys() {
       Tower.prototype.addWall(param);
     } else {
       enemysBcl = null;
+      allEnemysAdded = true;
     }
     i++;
   });

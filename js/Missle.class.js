@@ -16,19 +16,16 @@ var Missle = function(worldX, worldY) {
       if (body1.sprite.key != 'tower') {
         for (var i = 0, x = enemysSprites.length; i < x; i++) {
           if (enemysSprites[i].name == body1.sprite.key) {
-            body1.sprite.destroy();
+            Enemy.prototype.explode(body1.sprite);
             this.explode(this.missle);
-            if (enemys.countLiving() == 0) {
-              game.state.start('Main');
-            }
             break;
           }
         }
       }
       else {
         game.audio.laughSnd.play();
-        updateScoreText();
         body1.sprite.missles++;
+        updateScoreText();
         this.missle.destroy();
         game.time.events.add(Phaser.Timer.SECOND * 30 * Math.random(), generateMissle, this);
       }
