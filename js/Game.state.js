@@ -287,10 +287,7 @@ SpaceGame.Main.prototype = {
           if (towers && towers.children[0]) {
             towers.children[0].fireTime += enemy.health;
           }
-          enemy.destroy();
-          if (enemys.countLiving() == 0 && allEnemysAdded) {
-            levelCompleted();
-          }
+          enemy.kill();
           updateScoreText();
         }
       }

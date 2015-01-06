@@ -88,6 +88,11 @@ Enemy.prototype = {
         }
       }
     }, this);
+    enemy.events.onKilled.add(function () {
+      if (enemys.countLiving() == 0 && allEnemysAdded) {
+        levelCompleted();
+      }
+    });
     enemys.add(enemy);
   },
   fire: function (enemy) {
@@ -103,10 +108,7 @@ Enemy.prototype = {
   },
   explode: function (enemy) {
     if (enemy.alive) {
-      enemy.destroy();
-      if (enemys.countLiving() == 0 && allEnemysAdded) {
-        levelCompleted();
-      }
+      enemy.kill();
       game.audio.explosionSnd.play();
 
       var explode = game.add.sprite(enemy.x - 100, enemy.y - 150, 'explode', 19);
