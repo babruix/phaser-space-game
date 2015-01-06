@@ -1,6 +1,6 @@
-var Missle = function(worldX, worldY) {
-  var x2 = worldX ? worldX : parseInt(Math.random() * game.width);
-  var y2 = worldY ? worldY : parseInt(Math.random() * game.height);
+var Missle = function(x, y) {
+  var x2 = x ? x : game.rnd.integerInRange(0, game.width);
+  var y2 = y ? y : game.rnd.integerInRange(0, game.height);
   missles.createMultiple(1, 'missle', 0, false);
   this.missle = missles.getFirstExists(false);
   this.missle.body.setCircle(15);
@@ -27,7 +27,7 @@ var Missle = function(worldX, worldY) {
         body1.sprite.missles++;
         updateScoreText();
         this.missle.destroy();
-        game.time.events.add(Phaser.Timer.SECOND * 30 * Math.random(), generateMissle, this);
+        game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30), generateMissle, this);
       }
     }
 

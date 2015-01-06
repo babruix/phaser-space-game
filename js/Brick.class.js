@@ -1,6 +1,6 @@
-var Brick = function(x, y) {
-  var x2 = x ? x : parseInt(Math.random() * game.width);
-  var y2 = y ? y : parseInt(Math.random() * game.height);
+var Brick = function() {
+  var x2 = game.rnd.integerInRange(0, game.width);
+  var y2 = game.rnd.integerInRange(0, game.height);
   this.brick = game.add.sprite(x2, y2, 'brick');
   this.brick.anchor.setTo(0.5, 0.5);
 

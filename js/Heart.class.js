@@ -1,6 +1,6 @@
 var Heart = function() {
-  var x2 = parseInt(Math.random() * game.width);
-  var y2 = parseInt(Math.random() * game.height);
+  var x2 = game.rnd.integerInRange(0, game.width);
+  var y2 = game.rnd.integerInRange(0, game.height);
   this.heart = game.add.sprite(x2, y2, 'heart');
   this.heart.anchor.setTo(0.5, 0.5);
 
@@ -18,6 +18,6 @@ var Heart = function() {
       body1.sprite.damage(-1);
       updateScoreText();
     }
-    game.time.events.add(Phaser.Timer.SECOND * 30 * Math.random(), generateHeart, this);
+    game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30), generateHeart, this);
   }, this);
 }

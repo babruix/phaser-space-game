@@ -8,7 +8,8 @@ SpaceGame.GameOver.prototype = {
   create : function(){
     // place the assets and elements in their initial positions, create the state
     this._fontStyle = { font: "40px Arial", fill: "#FFCC00", stroke: "#333", strokeThickness: 5, align: "center" };
-    SpaceGame._restartText = this.add.text(game.width/2-250, game.height/2-50, "Game Over! Click to restart", this._fontStyle);
+    SpaceGame._restartText = this.add.text(game.width/2, game.height/2, "GAME OVER!\nclick anywhere to restart", this._fontStyle);
+    SpaceGame._restartText.anchor.setTo(0.5,0.5);
     game.audio.gameOverSnd = game.add.audio('gameOver', 1);
     // Init score
     score_text = undefined;

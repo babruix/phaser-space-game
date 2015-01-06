@@ -106,11 +106,11 @@ function addEnemys() {
     // Generate i=level number of enemys
     //&& enemys.countLiving() < 4
     if (i < level ) {
-      var animEnemy = enemysSprites[parseInt(Math.random() * enemysSprites.length)];
+      var animEnemy = enemysSprites[game.rnd.integerInRange(0, enemysSprites.length-1)];
       var enemy = new Enemy(0, 0, animEnemy.name, animEnemy.length);
       var param = {
-        x: parseInt(Math.random() * game.height),
-        y: parseInt(Math.random() * game.width)
+        x: parseInt(game.rnd.integerInRange(0, game.width)),
+        y: parseInt(game.rnd.integerInRange(0, game.height))
       };
       param.countBricks = 1;
       Tower.prototype.addWall(param);

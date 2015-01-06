@@ -1,6 +1,6 @@
 var Enemy = function (x, y, anim, animLength) {
-  var x2 = parseInt(Math.random() * game.width-200) + 100;
-  var rndInt = parseInt(Math.random() * game.audio.ufoSnd.length+1) - 1;
+  var x2 = game.rnd.integerInRange(100, game.width-200);
+  var rndInt = game.rnd.integerInRange(0, game.audio.ufoSnd.length-1);
   game.audio.ufoSnd[rndInt].play();
   var ufo = game.add.sprite(0, 0, 'ufo');
   ufo.animations.add('walk');

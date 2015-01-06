@@ -6,8 +6,8 @@ SpaceGame.Menu.prototype = {
   create : function(){
     // place the assets and elements in their initial positions, create the state
     this._fontStyle = { font: "40px Arial", fill: "#FFCC00", stroke: "#333", strokeThickness: 5, align: "center" };
-    SpaceGame._startText = this.add.text(game.width/2-120, game.height/2-50, "Click to start", this._fontStyle);
-
+    this._startText = this.add.text(game.width/2, game.height/2, "-[ SPACE ANIMALS ]-\nclick anywhere to start", this._fontStyle);
+    this._startText.anchor.setTo(0.5,0.5);
   },
   update : function(){
     // game loop goes here
