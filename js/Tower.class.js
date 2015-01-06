@@ -46,7 +46,12 @@ var Tower = function (worldX, worldY, tile) {
 
     }
   }, this);
-}
+  this.tower.events.onKilled.add(function() {
+    if(shipTrail != undefined) {
+      shipTrail.destroy();
+    }
+  });
+};
 
 Tower.prototype = {
   addToPoint: function (worldX, worldY) {
@@ -58,12 +63,9 @@ Tower.prototype = {
       1000, //delay,
       true, //yoyo?
       false
-      );
-    //
-    //  Add an emitter for the ship's trail
-    if(shipTrail != undefined) {
-      shipTrail.destroy();
-    }
+    );
+
+    // Add an emitter for the ship's trail
     shipTrail = game.add.emitter(game, towers.children[0].x, towers.children[0].y + 10, 400);
     shipTrail.width = 10;
     shipTrail.makeParticles('emit');
@@ -121,4 +123,4 @@ Tower.prototype = {
       protectRect.drawCircle(towers.children[0].x, towers.children[0].y, 30 + towers.children[0].shieldPower / 10);
     }
   }
-}
+};
