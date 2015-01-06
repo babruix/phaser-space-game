@@ -46,11 +46,36 @@ var Tower = function (worldX, worldY, tile) {
 
     }
   }, this);
+
   this.tower.events.onKilled.add(function() {
     if(shipTrail != undefined) {
       shipTrail.destroy();
     }
   });
+
+  var _this = this;
+  this.tower.update = function () {
+    // Fire
+    fireButton.onDown.add(function () {
+      Tower.prototype.fire(_this.tower);
+    }, _this);
+    if (fireButton.isDown) {
+      Tower.prototype.fire(_this.tower);
+    }
+
+    // Wall
+    brickButton.onDown.add(function () {
+      Tower.prototype.addWall(_this.tower);
+    }, _this);
+
+    // Missle
+    missleButton.onDown.add(function () {
+      Tower.prototype.fireMissle(_this.tower);
+    }, _this);
+
+    //Shield
+    Tower.prototype.redrawProtectRect(_this.tower);
+  }
 };
 
 Tower.prototype = {

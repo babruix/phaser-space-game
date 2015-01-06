@@ -210,43 +210,6 @@ SpaceGame.Main.prototype = {
      */
     enemys.forEach(function (enemy) {
 
-      if (typeof(enemy) == "undefined") {
-        return;
-      }
-      else {
-        Enemy.prototype.fire(enemy);
-      }
-
-      if (enemy.ufo_exists) {
-        var ufoScale = parseInt(enemy.ufo.x / 5) / 100;
-        ufoScale = ufoScale > 1 ? 1 : ufoScale;
-        ufoScale = ufoScale < 0.1 ? 0.1 : ufoScale;
-        enemy.ufo.scale.x = ufoScale;
-        enemy.ufo.scale.y = ufoScale;
-        if (enemy.ufo.x > enemy.to_x) {
-          enemy.ufo.body.velocity.x = 0;
-          enemy.body.velocity.x = 0;
-          enemy.body.velocity.y = 20;
-          var ufo_tween = game.add.tween(enemy.ufo);
-          ufo_tween.to({
-              width: 0,
-              height: 0
-            }, 3000 /*duration of the tween (in ms)*/,
-            Phaser.Easing.Bounce.Out /*easing type*/,
-            true /*autostart?*/,
-            1000 /*delay*/,
-            false /*yoyo?*/, false);
-
-          ufo_tween.onLoop.add(function () {
-            if (enemy.ufo.alive) {
-              Enemy.prototype.initEnemy(enemy);
-            }
-            enemy.ufo.destroy();
-          }, this);
-
-        }
-      }
-
       if (enemy && enemy.alive) {
         if (enemy.y < 680) {
           // Scale
@@ -297,29 +260,9 @@ SpaceGame.Main.prototype = {
      * Tower fire
      */
     towers.forEachAlive(function (tower) {
-      if (tower.alpha < 0.7) {
+      if (tower.alpha < 1) {
         return;
       }
-      // Fire
-      fireButton.onDown.add(function () {
-        Tower.prototype.fire(tower);
-      }, this);
-      if (fireButton.isDown) {
-        Tower.prototype.fire(tower);
-      }
-
-      // Wall
-      brickButton.onDown.add(function () {
-        Tower.prototype.addWall(tower);
-      }, this);
-
-      // Missle
-      missleButton.onDown.add(function () {
-        Tower.prototype.fireMissle(tower);
-      }, this);
-
-      //Shield
-      Tower.prototype.redrawProtectRect(tower);
 
       // Move tower
       tower.body.setZeroVelocity();
@@ -377,15 +320,15 @@ SpaceGame.Main.prototype = {
           if (game.input.y > tower.y) {
             tower.body.velocity.y = speed;
           }
-          if (game.input.y > 600) {
+/*          if (game.input.y > 600) {
             Tower.prototype.fire(tower);
-          }
+          }*/
+
           // Multiple touches/pointers
           /*if (this.game.input.pointer1.isDown && this.game.input.pointer2.isDown)
            alert(this.game.input.pointer2.isDown);*/
         }
       }
     });
-
   }
 };

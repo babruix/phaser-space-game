@@ -23,6 +23,39 @@ var Enemy = function (x, y, anim, animLength) {
   ufo.body.velocity.x = 100;
   this.enemy.to_x = x2;
 
+  var _this = this;
+  this.enemy.update = function () {
+    if (_this.enemy.ufo_exists) {
+      var ufoScale = parseInt(_this.enemy.ufo.x / 5) / 100;
+      ufoScale = ufoScale > 1 ? 1 : ufoScale;
+      ufoScale = ufoScale < 0.1 ? 0.1 : ufoScale;
+      _this.enemy.ufo.scale.x = ufoScale;
+      _this.enemy.ufo.scale.y = ufoScale;
+      if (_this.enemy.ufo.x > _this.enemy.to_x) {
+        _this.enemy.ufo.body.velocity.x = 0;
+        _this.enemy.body.velocity.x = 0;
+        _this.enemy.body.velocity.y = 20;
+        var ufo_tween = game.add.tween(_this.enemy.ufo);
+        ufo_tween.to({
+            width: 0,
+            height: 0
+          }, 3000 /*duration of the tween (in ms)*/,
+          Phaser.Easing.Bounce.Out /*easing type*/,
+          true /*autostart?*/,
+          1000 /*delay*/,
+          false /*yoyo?*/, false);
+
+        ufo_tween.onLoop.add(function () {
+          if (_this.enemy.ufo.alive) {
+            Enemy.prototype.initEnemy(_this.enemy);
+          }
+          _this.enemy.ufo.destroy();
+        });
+
+      }
+    }
+  };
+
   enemys.add(this.enemy);
 };
 
@@ -84,15 +117,24 @@ Enemy.prototype = {
 
         if (enemy.health == 1) {
           this.explode(enemy);
-          updateScore();
         }
       }
     }, this);
+
+    enemy.update = function () {
+      if (typeof(enemy) != "undefined") {
+        Enemy.prototype.fire(enemy);
+      }
+    }
+
     enemy.events.onKilled.add(function () {
       if (enemys.countLiving() == 0 && allEnemysAdded) {
+        this.explode(enemy);
+        updateScore();
         levelCompleted();
       }
-    });
+    }, this);
+
     enemys.add(enemy);
   },
   fire: function (enemy) {

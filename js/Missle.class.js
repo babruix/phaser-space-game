@@ -16,7 +16,7 @@ var Missle = function(x, y) {
       if (body1.sprite.key != 'tower') {
         for (var i = 0, x = enemysSprites.length; i < x; i++) {
           if (enemysSprites[i].name == body1.sprite.key) {
-            Enemy.prototype.explode(body1.sprite);
+            body1.sprite.kill();
             this.explode(this.missle);
             break;
           }
