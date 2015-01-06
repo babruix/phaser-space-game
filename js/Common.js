@@ -19,7 +19,7 @@ var score = 0;
 var debug = window.location.hash == "#deb";
 var towers, background, cursors, fireButton, brickButton, missleButton,
   hearts, shields, protectRect, score_text, lifeGraph, fireGraph, walls,
-  bullets, enemy_bullets, missles, ufos;
+  bullets, enemy_bullets, missles, ufos, shipTrail;
 
 game.state.add('Main',SpaceGame.Main);
 game.state.add('Menu',SpaceGame.Menu);

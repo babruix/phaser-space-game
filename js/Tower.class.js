@@ -60,6 +60,20 @@ Tower.prototype = {
       false
       );
     //
+    //  Add an emitter for the ship's trail
+    if(shipTrail != undefined) {
+      shipTrail.destroy();
+    }
+    shipTrail = game.add.emitter(game, towers.children[0].x, towers.children[0].y + 10, 400);
+    shipTrail.width = 10;
+    shipTrail.makeParticles('emit');
+    shipTrail.setXSpeed(30, -30);
+    shipTrail.setYSpeed(200, 180);
+    shipTrail.setRotation(50, -50);
+    shipTrail.setAlpha(1, 0.01, 800);
+    shipTrail.setScale(0.05, 0.4, 0.05, 0.4, 2000, Phaser.Easing.Quintic.Out);
+    shipTrail.start(false, 5000, 10);
+    //shipTrail.alpha = 0;
   },
   fire: function (tower) {
     if (tower.alive && game.time.now > tower.fireLastTime) {

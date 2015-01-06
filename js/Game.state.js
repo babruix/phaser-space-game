@@ -47,7 +47,7 @@ SpaceGame.Main.prototype = {
      * Effects
      */
     game.load.spritesheet('explode', 'assets/sprites/explosion.png', 157, 229, 19);
-
+    game.load.image('emit', 'assets/sprites/emit.png');
     game.load.image('heart', 'assets/sprites/heart.png');
     game.load.image('brick', 'assets/sprites/brick.png');
     game.load.image('wall', 'assets/sprites/wall.png');
@@ -81,7 +81,7 @@ SpaceGame.Main.prototype = {
 
     background = game.add.tileSprite(0, 0, 1000, 600, 'background');
     background.alpha=0;
-    game.add.tween(background).to({alpha: 1}, 15000,
+    game.add.tween(background).to({alpha: 1}, 20000,
       Phaser.Easing.Linear.In,
       true, //autostart?,
       0, //delay,
@@ -332,6 +332,9 @@ SpaceGame.Main.prototype = {
       // Move tower
       tower.body.setZeroVelocity();
       var speed = 100 + game.height - tower.body.y / 1.9;
+      //  Keep the shipTrail lined up with the ship
+      shipTrail.x = tower.x;
+      shipTrail.y = tower.y+10;
       if (cursors.left.isDown) {
         tower.angle = -30;
         if (cursors.up.isDown) {
