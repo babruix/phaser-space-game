@@ -15,8 +15,10 @@ var Shield = function() {
   shields.add(this.shield);
 
   this.shield.body.onBeginContact.add(function (body1, shapeA, shapeB) {
-    this.shield.destroy();
     if (body1 && body1.sprite && body1.sprite.key=='tower') {
+      // do not kill pickable items, only tower can pickup.
+      // @todo: enemy can pickup?
+      this.shield.destroy();
       body1.sprite.shieldPower+=10;
       updateScoreText();
     }

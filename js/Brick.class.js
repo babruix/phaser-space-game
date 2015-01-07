@@ -12,8 +12,10 @@ var Brick = function() {
   shields.add(this.brick);
 
   this.brick.body.onBeginContact.add(function (body1, shapeA, shapeB) {
-    this.brick.destroy();
     if (body1 && body1.sprite != null && body1.sprite.key=='tower') {
+      // do not kill pickable items, only tower can pickup.
+      // @todo: enemy can pickup?
+      this.brick.destroy();
       body1.sprite.countBricks++;
       updateScoreText();
     }

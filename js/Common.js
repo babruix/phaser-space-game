@@ -1,7 +1,9 @@
 /**
+ * Defining global variables
+ * @todo: get rid of globals, incapsulate into state objects
  * @author Alexey Romanov https://github.com/babruix
- * @type {Phaser.Game}
  */
+
 var game = new Phaser.Game(800, 700, Phaser.CANVAS, 'gameContainer');
 var enemysSprites = [
   {'name': 'duck', 'length': 8},
@@ -35,7 +37,8 @@ function nextLevel() {
   Tower.prototype.addToPoint(400, 400);
   showLevelTitle.call(this);
   updateScoreText();
-  addWalls();
+  //addWalls();
+  addRndBricks();
   addEnemys();
 }
 
@@ -94,8 +97,14 @@ function levelCompleted() {
 }
 
 function addWalls() {
-  for (i = 1; i < game.width; i = i + 50) {
+  for (var i = 1; i < game.width; i = i + 50) {
     new Wall(i, parseInt(game.height / 2 + 250));
+  }
+}
+
+function addRndBricks() {
+  for (var i = 1; i < level*10; i++) {
+    new Wall(game.rnd.integerInRange(0,game.width), game.rnd.integerInRange(0,game.height));
   }
 }
 

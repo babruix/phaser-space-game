@@ -12,8 +12,10 @@ var Heart = function() {
   hearts.add(this.heart);
 
   this.heart.body.onBeginContact.add(function (body1, shapeA, shapeB) {
-    this.heart.destroy();
     if (body1 && body1.sprite != null && body1.sprite.key=='tower') {
+      // do not kill pickable items, only tower can pickup.
+      // @todo: enemy can pickup?
+      this.heart.destroy();
       game.audio.kissSnd.play();
       body1.sprite.damage(-1);
       updateScoreText();

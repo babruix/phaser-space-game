@@ -1,6 +1,7 @@
 var SpaceGame = {};
 SpaceGame.Main = function(game){};
 SpaceGame.Main.prototype = {
+
   preload: function(){
     /*
      * Sounds
@@ -54,6 +55,7 @@ SpaceGame.Main.prototype = {
     game.load.image('wall', 'assets/sprites/wall.png');
     game.load.spritesheet('shield', 'assets/sprites/shield.png', 55, 64, 2);
   },
+
   create: function(){
     // set scale options
     /* this.input.maxPointers = 1;
@@ -200,10 +202,8 @@ SpaceGame.Main.prototype = {
     score -= 10;
     updateScore();
     cursors = game.input.keyboard.createCursorKeys();
-
-    // start the Preloader state
-    //this.state.start('Preloader');
   },
+
   update: function() {
     /*
      *  Enemy
@@ -211,24 +211,16 @@ SpaceGame.Main.prototype = {
     enemys.forEach(function (enemy) {
 
       if (enemy && enemy.alive) {
-        if (enemy.y < 680) {
-          // Scale
-          var xScale = parseInt(enemy.y / 2) / 100;
-          xScale = xScale > 2 ? 2 : xScale;
-          xScale = xScale < 0.3 ? 0.3 : xScale;
-          var yScale = xScale;
-          enemy.scale.x = xScale;
-          enemy.scale.y = yScale;
-        }
-        else if (enemy.y > 680 && enemy.health > 1) {
+         if (enemy.y > 660) {
           // bottom fall
           var style = {font: "20px Tahoma", fill: "#000000", align: "center"};
-          var shift = enemy.health > 9 ? 16 : 13;
-          var cRect = game.add.graphics(0, 0).beginFill(0xff5a00).drawCircle(enemy.x + shift, enemy.y + 13, 20);
-          var health = game.add.text(enemy.x, enemy.y, '-' + enemy.health, style);
+          var cRect = game.add.graphics(0, 0)
+            .beginFill(0xff5a00)
+            .drawCircle(towers.children[0].x, towers.children[0].y, 40);
+          var health = game.add.text(towers.children[0].x-10, towers.children[0].y-15, '-' + enemy.health, style);
           var health_tween = game.add.tween(health);
           health_tween.to({opacity: 0.3}, 1000,
-            Phaser.Easing.Linear.None,
+            Phaser.Easing.Cubic.NONE,
             true /*autostart?*/,
             100 /*delay*/,
             false /*yoyo?*/);
@@ -256,9 +248,6 @@ SpaceGame.Main.prototype = {
       }
     });
 
-    /*
-     * Tower fire
-     */
     towers.forEachAlive(function (tower) {
       if (tower.alpha < 1) {
         return;

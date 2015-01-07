@@ -25,6 +25,7 @@ var Enemy = function (x, y, anim, animLength) {
 
   var _this = this;
   this.enemy.update = function () {
+    Enemy.prototype.scale(_this.enemy);
     if (_this.enemy.ufo_exists) {
       var ufoScale = parseInt(_this.enemy.ufo.x / 5) / 100;
       ufoScale = ufoScale > 1 ? 1 : ufoScale;
@@ -122,8 +123,9 @@ Enemy.prototype = {
     }, this);
 
     enemy.update = function () {
-      if (typeof(enemy) != "undefined") {
+      if (typeof enemy != "undefined") {
         Enemy.prototype.fire(enemy);
+        Enemy.prototype.scale(enemy);
       }
     }
 
@@ -162,5 +164,13 @@ Enemy.prototype = {
       explode.animations.play('explode', 19, false, true);
 
     }
+  },
+  scale: function(enemy) {
+    // Scale depending on enemy.y
+    var scale = parseInt(enemy.y / 2.5) / 100;
+    scale = scale > 1.5 ? 1.5 : scale;
+    scale = scale < 0.2 ? 0.2 : scale;
+    enemy.scale.x = scale;
+    enemy.scale.y = scale;
   }
 };
