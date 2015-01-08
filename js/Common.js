@@ -176,7 +176,7 @@ function updateScoreText() {
     lifeGraph.beginFill(0x03660D);
   }
   lifeGraph.clear();
-  lifeGraph.drawRect(10, game.height - 60, health * 15, 10);
+  lifeGraph.drawRect(10, game.height - 40, health * 15, 10);
   lifeGraph.update();
 
   // Draw a fireTime rectangle
@@ -186,7 +186,7 @@ function updateScoreText() {
   }
   if (towers && towers.children && towers.children[0] != undefined && towers.children[0].fireTime > 0) {
     fireGraph.clear();
-    fireGraph.drawRect(10, game.height - 90, 300 - towers.children[0].fireTime, 10);
+    fireGraph.drawRect(10, game.height - 60, 300 - towers.children[0].fireTime, 10);
     fireGraph.update();
   }
 

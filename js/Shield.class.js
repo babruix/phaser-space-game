@@ -7,7 +7,7 @@ var Shield = function() {
   this.shield.anchor.setTo(0.5, 0.5);
 
   game.physics.p2.enable(this.shield, debug);
-  this.shield.body.data.gravityScale = 0.05;
+  //this.shield.body.data.gravityScale = 0.05;
   //this.shield.body.static = true;
   this.shield.scale.setTo(.5,.5);
 
@@ -21,7 +21,7 @@ var Shield = function() {
       this.shield.destroy();
       body1.sprite.shieldPower+=10;
       updateScoreText();
+      game.time.events.add(Phaser.Timer.SECOND * 3.85, generateShield, this);
     }
-    game.time.events.add(Phaser.Timer.SECOND * 3.85, generateShield, this);
   }, this);
 }

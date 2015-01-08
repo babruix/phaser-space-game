@@ -5,7 +5,7 @@ var Heart = function() {
   this.heart.anchor.setTo(0.5, 0.5);
 
   game.physics.p2.enable(this.heart, debug);
-  this.heart.body.data.gravityScale = 0.05;
+  //this.heart.body.data.gravityScale = 0.05;
   //this.heart.body.static = true;
   this.heart.scale.setTo(.3,.3);
 
@@ -19,7 +19,7 @@ var Heart = function() {
       game.audio.kissSnd.play();
       body1.sprite.damage(-1);
       updateScoreText();
+      game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30), generateHeart, this);
     }
-    game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30), generateHeart, this);
   }, this);
 }

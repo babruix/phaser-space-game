@@ -5,7 +5,7 @@ var Brick = function() {
   this.brick.anchor.setTo(0.5, 0.5);
 
   game.physics.p2.enable(this.brick, debug);
-  this.brick.body.data.gravityScale = 0.05;
+  //this.brick.body.data.gravityScale = 0.05;
   //this.brick.body.static = true;
   this.brick.scale.setTo(.5,.5);
 
@@ -18,7 +18,7 @@ var Brick = function() {
       this.brick.destroy();
       body1.sprite.countBricks++;
       updateScoreText();
+      game.time.events.add(Phaser.Timer.SECOND, generateBrick, this);
     }
-    game.time.events.add(Phaser.Timer.SECOND, generateBrick, this);
   }, this);
 }
