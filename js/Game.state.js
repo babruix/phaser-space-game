@@ -84,12 +84,6 @@ SpaceGame.Main.prototype = {
   },
 
   create: function() {
-    // set scale options
-    /* this.input.maxPointers = 1;
-     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-     this.scale.pageAlignHorizontally = true;
-     this.scale.pageAlignVertically = true;
-     this.scale.setScreenSize(true);*/
 
     game.audio.enemySndFire = game.add.audio('gulp', 2);
     game.audio.playerSndFire = game.add.audio('gunshot', 0.03);
