@@ -12,9 +12,9 @@ SpaceGame.GameOver.prototype = {
     SpaceGame._restartText.anchor.setTo(0.5,0.5);
     game.audio.gameOverSnd = game.add.audio('gameOver', 1);
     // Init score
-    score_text = undefined;
-    lifeGraph = undefined;
-    fireGraph = undefined;
+    SpaceGame._scoreText = undefined;
+    SpaceGame._lifeGraph = undefined;
+    SpaceGame._fireGraph = undefined;
   },
   update : function(){
     if (!SpaceGame.GameOver.played) {

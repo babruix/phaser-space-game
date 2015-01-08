@@ -9,7 +9,7 @@ var Heart = function() {
   //this.heart.body.static = true;
   this.heart.scale.setTo(.3,.3);
 
-  hearts.add(this.heart);
+  SpaceGame._hearts.add(this.heart);
 
   this.heart.body.onBeginContact.add(function (body1, shapeA, shapeB) {
     if (body1 && body1.sprite != null && body1.sprite.key=='tower') {
@@ -22,4 +22,4 @@ var Heart = function() {
       game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30), generateHeart, this);
     }
   }, this);
-}
+};

@@ -1,8 +1,8 @@
 var Missle = function(x, y) {
   var x2 = x ? x : game.rnd.integerInRange(0, game.width);
   var y2 = y ? y : game.rnd.integerInRange(0, game.height);
-  missles.createMultiple(1, 'missle', 0, false);
-  this.missle = missles.getFirstExists(false);
+  SpaceGame._missles.createMultiple(1, 'missle', 0, false);
+  this.missle = SpaceGame._missles.getFirstExists(false);
   this.missle.body.setCircle(15);
   this.missle.body.mass = 10;
   this.missle.body.damping = 0.01;

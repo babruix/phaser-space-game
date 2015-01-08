@@ -48,33 +48,37 @@ var Tower = function (worldX, worldY, tile) {
   }, this);
 
   this.tower.events.onKilled.add(function() {
-    if(shipTrail != undefined) {
-      shipTrail.destroy();
+    if (SpaceGame._shipTrail != null) {
+      SpaceGame._shipTrail.destroy();
     }
   });
 
   var _this = this;
   this.tower.update = function () {
     // Fire
-    fireButton.onDown.add(function () {
+    SpaceGame._fireButton.onDown.add(function () {
       Tower.prototype.fire(_this.tower);
     }, _this);
-    if (fireButton.isDown) {
+    if (SpaceGame._fireButton.isDown) {
       Tower.prototype.fire(_this.tower);
     }
 
     // Wall
-    brickButton.onDown.add(function () {
+    SpaceGame._brickButton.onDown.add(function () {
       Tower.prototype.addWall(_this.tower);
     }, _this);
 
     // Missle
-    missleButton.onDown.add(function () {
+    SpaceGame._missleButton.onDown.add(function () {
       Tower.prototype.fireMissle(_this.tower);
     }, _this);
 
-    //Shield
+    // Shield
     Tower.prototype.redrawProtectRect(_this.tower);
+
+    // Keep the SpaceGame._shipTrail lined up with the ship
+    SpaceGame._shipTrail.x = _this.tower.x;
+    SpaceGame._shipTrail.y = _this.tower.y+10;
   }
 };
 
@@ -82,28 +86,27 @@ Tower.prototype = {
   addToPoint: function (worldX, worldY) {
     new Tower(worldX, worldY, 'tower');
     towers.children[0].alpha = 0;
-    game.add.tween(towers.children[0]).to({alpha: 1}, 500,
-      Phaser.Easing.Linear.In,
-      true, //autostart?,
-      1000, //delay,
-      true, //yoyo?
-      false
-    );
+    game.add.tween(towers.children[0])
+      .to({alpha: 1}, 500, Phaser.Easing.Linear.In,
+      true, 1000, true, false)
+      .onComplete.add(function() {
+        SpaceGame._shipTrail.alpha = 1;
+      });
 
     // Add an emitter for the ship's trail
-    shipTrail = game.add.emitter(game, towers.children[0].x, towers.children[0].y + 10, 400);
-    shipTrail.width = 10;
-    shipTrail.makeParticles('emit');
-    shipTrail.setXSpeed(30, -30);
-    shipTrail.setYSpeed(200, 180);
-    shipTrail.setRotation(50, -50);
-    shipTrail.setAlpha(1, 0.01, 800);
-    shipTrail.setScale(0.05, 0.4, 0.05, 0.4, 2000, Phaser.Easing.Quintic.Out);
-    shipTrail.start(false, 5000, 10);
-    //shipTrail.alpha = 0;
+    SpaceGame._shipTrail = game.add.emitter(game, towers.children[0].x, towers.children[0].y + 10, 400);
+    SpaceGame._shipTrail.width = 10;
+    SpaceGame._shipTrail.makeParticles('emit');
+    SpaceGame._shipTrail.setXSpeed(30, -30);
+    SpaceGame._shipTrail.setYSpeed(200, 180);
+    SpaceGame._shipTrail.setRotation(50, -50);
+    SpaceGame._shipTrail.setAlpha(1, 0.01, 800);
+    SpaceGame._shipTrail.setScale(0.05, 0.4, 0.05, 0.4, 2000, Phaser.Easing.Quintic.Out);
+    SpaceGame._shipTrail.start(false, 5000, 10);
+    SpaceGame._shipTrail.alpha = 0;
   },
   fire: function (tower) {
-    if (tower.alive && game.time.now > tower.fireLastTime) {
+    if (tower.alive && game.time.now > tower.fireLastTime && tower.alpha > 0.9) {
       game.audio.playerSndFire.play();
       var bullet = new Bullet(tower.x, tower.y - 1, false);
       if (bullet != undefined && bullet.body != undefined) {
@@ -138,14 +141,14 @@ Tower.prototype = {
   },
   redrawProtectRect: function (tower) {
     if (tower.shieldPower > 0) {
-      if (protectRect != undefined) {
-        protectRect.destroy();
+      if (tower._protectRect != undefined) {
+        tower._protectRect.destroy();
       }
-      protectRect = game.add.graphics(0, 0);
-      protectRect.lineWidth = towers.children[0].shieldPower / 10;
-      protectRect.lineColor = 0xFFFFFF;
-      protectRect.alpha = 0.7;
-      protectRect.drawCircle(towers.children[0].x, towers.children[0].y, 30 + towers.children[0].shieldPower / 10);
+      tower._protectRect = game.add.graphics(0, 0);
+      tower._protectRect.lineWidth = towers.children[0].shieldPower / 10;
+      tower._protectRect.lineColor = 0xFFFFFF;
+      tower._protectRect.alpha = 0.7;
+      tower._protectRect.drawCircle(towers.children[0].x, towers.children[0].y, 30 + towers.children[0].shieldPower / 10);
     }
   }
 };

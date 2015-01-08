@@ -9,7 +9,7 @@ var Brick = function() {
   //this.brick.body.static = true;
   this.brick.scale.setTo(.5,.5);
 
-  shields.add(this.brick);
+  SpaceGame._bricks.add(this.brick);
 
   this.brick.body.onBeginContact.add(function (body1, shapeA, shapeB) {
     if (body1 && body1.sprite != null && body1.sprite.key=='tower') {
@@ -21,4 +21,4 @@ var Brick = function() {
       game.time.events.add(Phaser.Timer.SECOND, generateBrick, this);
     }
   }, this);
-}
+};

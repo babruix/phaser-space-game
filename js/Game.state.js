@@ -1,8 +1,35 @@
+var lives = 3;
+var level = 0;
+var score = 0;
+var towers;
+
 var SpaceGame = {};
-SpaceGame.Main = function(game){};
+SpaceGame.Main = function(game){
+  this._background = null;
+
+  SpaceGame._fireButton = null;
+  SpaceGame._brickButton = null;
+  SpaceGame._missleButton = null;
+  SpaceGame._cursors = null;
+
+  SpaceGame._scoreText = null;
+  SpaceGame._lifeGraph = null;
+  SpaceGame._fireGraph = null;
+
+  SpaceGame._shipTrail = null;
+  SpaceGame._hearts = null;
+  SpaceGame._shields = null;
+  SpaceGame._bricks = null;
+  SpaceGame._walls = null;
+  SpaceGame._missles = null;
+  SpaceGame._bullets = null;
+
+  SpaceGame._enemy_bullets = null;
+  SpaceGame._ufos = null;
+};
 SpaceGame.Main.prototype = {
 
-  preload: function(){
+  preload: function() {
     /*
      * Sounds
      */
@@ -56,7 +83,7 @@ SpaceGame.Main.prototype = {
     game.load.spritesheet('shield', 'assets/sprites/shield.png', 55, 64, 2);
   },
 
-  create: function(){
+  create: function() {
     // set scale options
     /* this.input.maxPointers = 1;
      this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -82,9 +109,9 @@ SpaceGame.Main.prototype = {
     ];
     game.audio.completedSnd = game.add.audio('completed', 1);
 
-    background = game.add.tileSprite(0, 0, 1000, 600, 'background');
-    background.alpha=0;
-    game.add.tween(background).to({alpha: 1}, 20000,
+    this._background = game.add.tileSprite(0, 0, 1000, 600, 'background');
+    this._background.alpha=0;
+    game.add.tween(this._background).to({alpha: 1}, 20000,
       Phaser.Easing.Linear.In,
       true, //autostart?,
       0, //delay,
@@ -93,9 +120,9 @@ SpaceGame.Main.prototype = {
     );
     //
 
-    fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-    brickButton = game.input.keyboard.addKey(Phaser.Keyboard.B);
-    missleButton = game.input.keyboard.addKey(Phaser.Keyboard.M);
+    SpaceGame._fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    SpaceGame._brickButton = game.input.keyboard.addKey(Phaser.Keyboard.B);
+    SpaceGame._missleButton = game.input.keyboard.addKey(Phaser.Keyboard.M);
 
     /**
      * Init map
@@ -116,73 +143,73 @@ SpaceGame.Main.prototype = {
     /*
      * Heart
      */
-    hearts = game.add.group();
-    hearts.createMultiple(1, 'heart');
+    SpaceGame._hearts = game.add.group();
+    SpaceGame._hearts.createMultiple(1, 'heart');
 
     /*
      * Shield
      */
-    shields = game.add.group();
-    shields.createMultiple(1, 'shield');
+    SpaceGame._shields = game.add.group();
+    SpaceGame._shields.createMultiple(1, 'shield');
 
     /*
      * Brick
      */
-    shields = game.add.group();
-    shields.createMultiple(1, 'brick');
+    SpaceGame._bricks = game.add.group();
+    SpaceGame._bricks.createMultiple(1, 'brick');
 
     /*
      * Wall
      */
-    walls = game.add.group();
-    walls.createMultiple(1, 'wall');
+    SpaceGame._walls = game.add.group();
+    SpaceGame._walls.createMultiple(1, 'wall');
 
     /*
      * Ufo
      */
-    ufos = game.add.group();
-    ufos.createMultiple(4, 'ufo');
+    SpaceGame._ufos = game.add.group();
+    SpaceGame._ufos.createMultiple(4, 'ufo');
 
     /*
      * Towers Bullets
      */
-    bullets = game.add.group();
-    bullets.enableBody = true;
-    bullets.physicsBodyType = Phaser.Physics.P2JS;
-    bullets.createMultiple(20, 'bullet');
-    bullets.setAll('checkWorldBounds', true);
-    bullets.setAll('outOfBoundsKill', true);
-    bullets.setAll('collideWorldBounds', false);
-    bullets.setAll('anchor.x', 0.5);
-    bullets.setAll('anchor.y', 1);
+    SpaceGame._bullets = game.add.group();
+    SpaceGame._bullets.enableBody = true;
+    SpaceGame._bullets.physicsBodyType = Phaser.Physics.P2JS;
+    SpaceGame._bullets.createMultiple(20, 'bullet');
+    SpaceGame._bullets.setAll('checkWorldBounds', true);
+    SpaceGame._bullets.setAll('outOfBoundsKill', true);
+    SpaceGame._bullets.setAll('collideWorldBounds', false);
+    SpaceGame._bullets.setAll('anchor.x', 0.5);
+    SpaceGame._bullets.setAll('anchor.y', 1);
 
     /*
      * Enemy Bullets
      */
-    enemy_bullets = game.add.group();
-    enemy_bullets.enableBody = true;
-    enemy_bullets.physicsBodyType = Phaser.Physics.P2JS;
+    SpaceGame._enemy_bullets = game.add.group();
+    SpaceGame._enemy_bullets.enableBody = true;
+    SpaceGame._enemy_bullets.physicsBodyType = Phaser.Physics.P2JS;
 
-    enemy_bullets.createMultiple(40, 'bullet');
-    enemy_bullets.setAll('checkWorldBounds', true);
-    enemy_bullets.setAll('outOfBoundsKill', true);
-    enemy_bullets.setAll('collideWorldBounds', false);
-    enemy_bullets.setAll('anchor.x', 0.5);
-    enemy_bullets.setAll('anchor.y', 1);
+    SpaceGame._enemy_bullets.createMultiple(40, 'bullet');
+    SpaceGame._enemy_bullets.setAll('checkWorldBounds', true);
+    SpaceGame._enemy_bullets.setAll('outOfBoundsKill', true);
+    SpaceGame._enemy_bullets.setAll('collideWorldBounds', false);
+    SpaceGame._enemy_bullets.setAll('anchor.x', 0.5);
+    SpaceGame._enemy_bullets.setAll('anchor.y', 1);
 
     /*
      * Missles
      */
-    missles = game.add.group();
-    missles.enableBody = true;
-    missles.physicsBodyType = Phaser.Physics.P2JS;
+    SpaceGame._missles = game.add.group();
+    SpaceGame._missles.enableBody = true;
+    SpaceGame._missles.physicsBodyType = Phaser.Physics.P2JS;
 
-    missles.createMultiple(10, 'missle');
-    missles.setAll('checkWorldBounds', true);
-    missles.setAll('outOfBoundsKill', true);
-    missles.setAll('collideWorldBounds', false);
-    missles.setAll('anchor.x', 0.5);
-    missles.setAll('anchor.y', 1);
+    SpaceGame._missles.createMultiple(10, 'missle');
+    SpaceGame._missles.setAll('checkWorldBounds', true);
+    SpaceGame._missles.setAll('outOfBoundsKill', true);
+    SpaceGame._missles.setAll('collideWorldBounds', false);
+    SpaceGame._missles.setAll('anchor.x', 0.5);
+    SpaceGame._missles.setAll('anchor.y', 1);
 
     /*
      * Enemy
@@ -201,7 +228,7 @@ SpaceGame.Main.prototype = {
 
     score -= 10;
     updateScore();
-    cursors = game.input.keyboard.createCursorKeys();
+    SpaceGame._cursors = game.input.keyboard.createCursorKeys();
   },
 
   update: function() {
@@ -256,19 +283,17 @@ SpaceGame.Main.prototype = {
       // Move tower
       tower.body.setZeroVelocity();
       var speed = 100 + game.height - tower.body.y / 1.9;
-      //  Keep the shipTrail lined up with the ship
-      shipTrail.x = tower.x;
-      shipTrail.y = tower.y+10;
-      if (cursors.left.isDown) {
+
+      if (SpaceGame._cursors.left.isDown) {
         tower.angle = -30;
-        if (cursors.up.isDown) {
+        if (SpaceGame._cursors.up.isDown) {
           tower.angle = -60;
         }
         tower.body.velocity.x = -speed;
       }
-      else if (cursors.right.isDown) {
+      else if (SpaceGame._cursors.right.isDown) {
         tower.angle = 30;
-        if (cursors.up.isDown) {
+        if (SpaceGame._cursors.up.isDown) {
           tower.angle = 60;
         }
         tower.body.velocity.x = speed;
@@ -277,10 +302,10 @@ SpaceGame.Main.prototype = {
         tower.rotation = 0;
       }
       speed *= 2;
-      if (cursors.up.isDown) {
+      if (SpaceGame._cursors.up.isDown) {
         tower.body.velocity.y = -speed;
       }
-      else if (cursors.down.isDown) {
+      else if (SpaceGame._cursors.down.isDown) {
         tower.body.velocity.y = speed;
       }
       if (this.game.input.activePointer.isDown) {

@@ -9,7 +9,7 @@ var Enemy = function (x, y, anim, animLength) {
   game.physics.enable(ufo, Phaser.arcade);
   ufo.body.velocity.x = 100;
   ufo.body.mass = 10;
-  ufos.add(ufo);
+  SpaceGame._ufos.add(ufo);
 
   this.enemy = game.add.sprite(x, 0, anim);
   this.enemy.animations.add('walk');
@@ -130,7 +130,7 @@ Enemy.prototype = {
     }
 
     enemy.events.onKilled.add(function () {
-      if (enemys.countLiving() == 0 && allEnemysAdded) {
+      if (enemys.countLiving() == 0 && SpaceGame._allEnemysAdded) {
         this.explode(enemy);
         updateScore();
         levelCompleted();
@@ -140,7 +140,7 @@ Enemy.prototype = {
     enemys.add(enemy);
   },
   fire: function (enemy) {
-    if (enemy.alive && game.time.now > enemy.fireLastTime && bullets.countLiving() < 5) {
+    if (enemy.alive && game.time.now > enemy.fireLastTime) {
       game.audio.enemySndFire.play();
       towers.children[0].fireTime += 0.5;
       var bullet = new Bullet(enemy.x, enemy.y, true);

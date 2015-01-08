@@ -1,15 +1,15 @@
 var Bullet = function(worldX, worldY, enemyBullet) {
   if (enemyBullet) {
-    enemy_bullets.createMultiple(1, 'bullet', 0, false);
-    this.bullet = enemy_bullets.getFirstExists(false);
+    SpaceGame._enemy_bullets.createMultiple(1, 'bullet', 0, false);
+    this.bullet = SpaceGame._enemy_bullets.getFirstExists(false);
     this.bullet.blendMode=6;
     this.bullet.enemyBullet = true;
     this.bullet.towerBullet = false;
     worldY +=10;
   }
   else {
-    bullets.createMultiple(1, 'bullet', 0, false);
-    this.bullet = bullets.getFirstExists(false);
+    SpaceGame._bullets.createMultiple(1, 'bullet', 0, false);
+    this.bullet = SpaceGame._bullets.getFirstExists(false);
     this.bullet.enemyBullet = false;
     this.bullet.towerBullet = true;
     this.bullet.blendMode = 0;

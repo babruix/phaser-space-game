@@ -1,10 +1,10 @@
 /**
- * Defining global variables
- * @todo: get rid of globals, incapsulate into state objects
- * @author Alexey Romanov https://github.com/babruix
+ * @author Alexey Romanov
+ * https://github.com/babruix
  */
 
 var game = new Phaser.Game(800, 700, Phaser.CANVAS, 'gameContainer');
+var debug = window.location.hash == "#deb";
 var enemysSprites = [
   {'name': 'duck', 'length': 8},
   {'name': 'panda', 'length': 3},
@@ -15,14 +15,6 @@ var enemysSprites = [
   {'name': 'cat', 'length': 1}
 ];
 game.audio = {};
-var lives = 3;
-var level = 0;
-var score = 0;
-var debug = window.location.hash == "#deb";
-var towers, background, cursors, fireButton, brickButton, missleButton,
-  hearts, shields, protectRect, score_text, lifeGraph, fireGraph, walls,
-  bullets, enemy_bullets, missles, ufos, shipTrail, allEnemysAdded;
-
 game.state.add('Main',SpaceGame.Main);
 game.state.add('Menu',SpaceGame.Menu);
 game.state.add('GameOver',SpaceGame.GameOver);
@@ -90,9 +82,9 @@ function levelCompleted() {
     level_tween = null;
     game.state.start('Main');
     // Init score
-    score_text = undefined;
-    lifeGraph = undefined;
-    fireGraph = undefined;
+    SpaceGame._scoreText = undefined;
+    SpaceGame._lifeGraph = undefined;
+    SpaceGame._fireGraph = undefined;
   }, this);
 }
 
@@ -103,14 +95,14 @@ function addWalls() {
 }
 
 function addRndBricks() {
-  for (var i = 1; i < level*10; i++) {
+  for (var i = 1; i < level*5; i++) {
     new Wall(game.rnd.integerInRange(0,game.width), game.rnd.integerInRange(0,game.height));
   }
 }
 
 function addEnemys() {
   var i = 0;
-  allEnemysAdded = false;
+  SpaceGame._allEnemysAdded = false;
   var enemysBcl = game.time.events.loop(level * Phaser.Timer.SECOND, function () {
     // Generate i=level number of enemys
     //&& enemys.countLiving() < 4
@@ -125,7 +117,7 @@ function addEnemys() {
       Tower.prototype.addWall(param);
     } else {
       enemysBcl = null;
-      allEnemysAdded = true;
+      SpaceGame._allEnemysAdded = true;
     }
     i++;
   });
@@ -154,11 +146,11 @@ function updateScoreText() {
     str+= "  Missles: " + towers.children[0].missles + "";
     health = towers.children[0].health;
   }
-  if (score_text == undefined) {
-    score_text = game.add.text(10, game.height - 30, str, style);
+  if (SpaceGame._scoreText == undefined) {
+    SpaceGame._scoreText = game.add.text(10, game.height - 30, str, style);
   }
   else {
-    score_text.setText(str);
+    SpaceGame._scoreText.setText(str);
   }
 
 
@@ -170,24 +162,24 @@ function updateScoreText() {
   }
 
   // Draw a life rectangle
-  if (lifeGraph == undefined) {
-    //lifeGraph.destroy();
-    lifeGraph = game.add.graphics(0, 0);
-    lifeGraph.beginFill(0x03660D);
+  if (SpaceGame._lifeGraph == undefined) {
+    //SpaceGame._lifeGraph.destroy();
+    SpaceGame._lifeGraph = game.add.graphics(0, 0);
+    SpaceGame._lifeGraph.beginFill(0x03660D);
   }
-  lifeGraph.clear();
-  lifeGraph.drawRect(10, game.height - 40, health * 15, 10);
-  lifeGraph.update();
+  SpaceGame._lifeGraph.clear();
+  SpaceGame._lifeGraph.drawRect(10, game.height - 40, health * 15, 10);
+  SpaceGame._lifeGraph.update();
 
   // Draw a fireTime rectangle
-  if (fireGraph == undefined) {
-    fireGraph = game.add.graphics(0, 0);
-    fireGraph.beginFill(0xFFFFFF);
+  if (SpaceGame._fireGraph == undefined) {
+    SpaceGame._fireGraph = game.add.graphics(0, 0);
+    SpaceGame._fireGraph.beginFill(0xFFFFFF);
   }
   if (towers && towers.children && towers.children[0] != undefined && towers.children[0].fireTime > 0) {
-    fireGraph.clear();
-    fireGraph.drawRect(10, game.height - 60, 300 - towers.children[0].fireTime, 10);
-    fireGraph.update();
+    SpaceGame._fireGraph.clear();
+    SpaceGame._fireGraph.drawRect(10, game.height - 60, 300 - towers.children[0].fireTime, 10);
+    SpaceGame._fireGraph.update();
   }
 
   // Respawn dead player

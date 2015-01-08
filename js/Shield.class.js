@@ -12,7 +12,7 @@ var Shield = function() {
   this.shield.scale.setTo(.5,.5);
 
 
-  shields.add(this.shield);
+  SpaceGame._shields.add(this.shield);
 
   this.shield.body.onBeginContact.add(function (body1, shapeA, shapeB) {
     if (body1 && body1.sprite && body1.sprite.key=='tower') {
@@ -24,4 +24,4 @@ var Shield = function() {
       game.time.events.add(Phaser.Timer.SECOND * 3.85, generateShield, this);
     }
   }, this);
-}
+};
