@@ -1,10 +1,6 @@
 SpaceGame.GameOver = function(game){ };
 SpaceGame.GameOver.played = false;
 SpaceGame.GameOver.prototype = {
-  preload : function(){
-    // load basic assets for this state
-    game.load.audio('gameOver', ['assets/audio/game-over.wav']);
-  },
   create : function(){
     // place the assets and elements in their initial positions, create the state
     this._fontStyle = { font: "40px Arial", fill: "#FFCC00", stroke: "#333", strokeThickness: 5, align: "center" };
@@ -29,4 +25,4 @@ SpaceGame.GameOver.prototype = {
       game.state.start('Main');
     }
   }
-}
+};

@@ -14,8 +14,8 @@ var Missle = function(x, y) {
   this.missle.body.onBeginContact.add(function (body1, shapeA, shapeB) {
     if (body1 != null && body1.sprite != null) {
       if (body1.sprite.key != 'tower') {
-        for (var i = 0, x = enemysSprites.length; i < x; i++) {
-          if (enemysSprites[i].name == body1.sprite.key) {
+        for (var i = 0, x = enemySprites.length; i < x; i++) {
+          if (enemySprites[i].name == body1.sprite.key) {
             body1.sprite.kill();
             this.explode(this.missle);
             break;

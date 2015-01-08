@@ -3,9 +3,9 @@
  * https://github.com/babruix
  */
 
-var game = new Phaser.Game(800, 700, Phaser.CANVAS, 'gameContainer');
+var game = new Phaser.Game(800, 700, Phaser.CANVAS);
 var debug = window.location.hash == "#deb";
-var enemysSprites = [
+var enemySprites = [
   {'name': 'duck', 'length': 8},
   {'name': 'panda', 'length': 3},
   {'name': 'dog', 'length': 6},
@@ -15,10 +15,12 @@ var enemysSprites = [
   {'name': 'cat', 'length': 1}
 ];
 game.audio = {};
-game.state.add('Main',SpaceGame.Main);
-game.state.add('Menu',SpaceGame.Menu);
-game.state.add('GameOver',SpaceGame.GameOver);
-game.state.start('Menu');
+game.state.add('Boot', SpaceGame.Boot);
+game.state.add('Preloader', SpaceGame.Preloader);
+game.state.add('Menu', SpaceGame.Menu);
+game.state.add('Main', SpaceGame.Main);
+game.state.add('GameOver', SpaceGame.GameOver);
+game.state.start('Boot');
 
 /**
  * Common functions
@@ -107,7 +109,7 @@ function addEnemys() {
     // Generate i=level number of enemys
     //&& enemys.countLiving() < 4
     if (i < level ) {
-      var animEnemy = enemysSprites[game.rnd.integerInRange(0, enemysSprites.length-1)];
+      var animEnemy = enemySprites[game.rnd.integerInRange(0, enemySprites.length-1)];
       var enemy = new Enemy(0, 0, animEnemy.name, animEnemy.length);
       var param = {
         x: parseInt(game.rnd.integerInRange(0, game.width)),
