@@ -1,4 +1,8 @@
 var SpaceGame = {};
+var lives = 3;
+var level = 0;
+var score = 0;
+var towers;
 SpaceGame.Boot = function(game){ };
 SpaceGame.Boot.prototype = {
   preload : function(){

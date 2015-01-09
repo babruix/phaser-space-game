@@ -127,15 +127,7 @@ Enemy.prototype = {
         Enemy.prototype.fire(enemy);
         Enemy.prototype.scale(enemy);
       }
-    }
-
-    enemy.events.onKilled.add(function () {
-      if (enemys.countLiving() == 0 && SpaceGame._allEnemysAdded) {
-        this.explode(enemy);
-        updateScore();
-        levelCompleted();
-      }
-    }, this);
+    };
 
     enemys.add(enemy);
   },

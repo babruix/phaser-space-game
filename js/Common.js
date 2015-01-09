@@ -31,9 +31,57 @@ function nextLevel() {
   Tower.prototype.addToPoint(400, 400);
   showLevelTitle.call(this);
   updateScoreText();
-  //addWalls();
   addRndBricks();
+  //addWalls();
+  animateScore();
   addEnemys();
+}
+
+
+function animateScore(moveOut) {
+  moveOut = moveOut || false;
+
+  // Animate walls
+  SpaceGame._walls.forEachAlive(function (brick){
+    game.add.tween(brick)
+      .to({alpha: moveOut ? 0 : 1},
+      1000 /*duration of the tween (in ms)*/,
+      Phaser.Easing.Linear.None /*easing type*/,
+      true /*autostart?*/,
+      0 /*delay*/);
+  });
+
+
+try {
+  // Animate score
+  SpaceGame._fireGraph.x = moveOut ? 10 : -SpaceGame._fireGraph.width;
+  SpaceGame._fireGraph.alpha = moveOut ? 1 : 0;
+  game.add.tween(SpaceGame._fireGraph)
+    .to({alpha: moveOut ? 0 : 1, x: moveOut ? -SpaceGame._fireGraph.width : 10},
+    500 /*duration of the tween (in ms)*/,
+    Phaser.Easing.Linear.None /*easing type*/,
+    true /*autostart?*/,
+    moveOut ? 500 : 300 /*delay*/);
+  SpaceGame._lifeGraph.x = moveOut ? 10 : -SpaceGame._lifeGraph.width;
+  SpaceGame._lifeGraph.alpha = moveOut ? 1 : 0;
+  game.add.tween(SpaceGame._lifeGraph)
+    .to({alpha: moveOut ? 0 : 1, x: moveOut ? -SpaceGame._lifeGraph.width : 10},
+    500 /*duration of the tween (in ms)*/,
+    Phaser.Easing.Linear.None /*easing type*/,
+    true /*autostart?*/,
+    moveOut ? 600 : 400 /*delay*/);
+  SpaceGame._scoreText.x = moveOut ? 10 : -SpaceGame._scoreText.width;
+  SpaceGame._scoreText.alpha = moveOut ? 1 : 0;
+  game.add.tween(SpaceGame._scoreText)
+    .to({alpha: moveOut ? 0 : 1, x: moveOut ?  -SpaceGame._scoreText.width : 10},
+    500 /*duration of the tween (in ms)*/,
+    Phaser.Easing.Linear.None /*easing type*/,
+    true /*autostart?*/,
+    moveOut ? 700 : 500 /*delay*/);
+}
+  catch (e) {
+    debugger;
+  }
 }
 
 function showLevelTitle() {
@@ -42,22 +90,27 @@ function showLevelTitle() {
     fill: "#FFFFFF",
     align: "center"
   };
-  var levelText = game.add.text(game.width / 2, game.height / 2, 'Level ' + level, style);
+  var levelText = game.add.text(0, 0, 'Level ' + level, style);
   levelText.x = game.width / 2 - levelText.width / 2;
-  levelText.y = game.height / 2 - levelText.height / 2;
-  var level_tween = game.add.tween(levelText)
-    .to({
-      y: 0, alpha: 0
-    }, 1000 /*duration of the tween (in ms)*/,
-    Phaser.Easing.Circular.In /*easing type*/,
-    true /*autostart?*/,
-    1000 /*delay*/);
+  levelText.y =  -levelText.height;
+  levelText.alpha = 0;
 
-  level_tween.onComplete.add(function () {
-    levelText.destroy();
-    levelText = null;
-    level_tween = null;
-  }, this);
+  // Animate
+  game.add.tween(levelText)
+    .to({alpha:1, y: game.height / 2 - levelText.height / 2}, 1000 /*duration of the tween (in ms)*/,
+    Phaser.Easing.Bounce.Out /*easing type*/,
+    true /*autostart?*/,
+    0 /*delay*/)
+    .onComplete.add(function () {
+      game.add.tween(levelText)
+        .to({y: -levelText.height, alpha:0 }, 1000 /*duration of the tween (in ms)*/,
+        Phaser.Easing.Bounce.In /*easing type*/,
+        true /*autostart?*/,
+        2000 /*delay*/)
+        .onComplete.add(function () {
+          levelText.destroy();
+        })
+    }, this);
 }
 
 function levelCompleted() {
@@ -66,28 +119,37 @@ function levelCompleted() {
   var style = {
     font: "60px Tahoma",
     fill: "#FFFFFF",
-    align: "center"
+    stroke: "#CCCCCC",
+    align: "center",
+    strokeThickness: 1
   };
-  var levelText = game.add.text(game.width / 2, game.height / 2, 'Level Completed!', style);
+  var levelText = game.add.text(0, 0, 'Level Completed!', style);
   levelText.x = game.width / 2 - levelText.width / 2;
-  levelText.y = game.height / 2 - levelText.height / 2;
-  var level_tween = game.add.tween(levelText)
-    .to({alpha: 0
-    }, 1000 /*duration of the tween (in ms)*/,
-    Phaser.Easing.Circular.In /*easing type*/,
-    true /*autostart?*/,
-    1000 /*delay*/);
+  levelText.y =  -levelText.height / 2;
+  levelText.alpha = 0;
 
-  level_tween.onComplete.add(function () {
-    levelText.destroy();
-    levelText = null;
-    level_tween = null;
-    game.state.start('Main');
-    // Init score
-    SpaceGame._scoreText = undefined;
-    SpaceGame._lifeGraph = undefined;
-    SpaceGame._fireGraph = undefined;
-  }, this);
+  // Animate
+  game.add.tween(levelText)
+    .to({alpha:1, y: game.height / 2 - levelText.height / 2}, 1000 /*duration of the tween (in ms)*/,
+    Phaser.Easing.Bounce.Out /*easing type*/,
+    true /*autostart?*/,
+    0 /*delay*/)
+    .onComplete.add(function () {
+      animateScore(true);
+      game.add.tween(levelText)
+        .to({y: -levelText.height / 2, alpha:0}, 1000 /*duration of the tween (in ms)*/,
+        Phaser.Easing.Bounce.In /*easing type*/,
+        true /*autostart?*/,
+        1000 /*delay*/)
+        .onComplete.add(function () {
+          levelText.destroy();
+          game.state.start('Main');
+          // Init score
+          SpaceGame._scoreText = undefined;
+          SpaceGame._lifeGraph = undefined;
+          SpaceGame._fireGraph = undefined;
+        }, this);
+    }, this);
 }
 
 function addWalls() {
@@ -100,6 +162,7 @@ function addRndBricks() {
   for (var i = 1; i < level*5; i++) {
     new Wall(game.rnd.integerInRange(0,game.width), game.rnd.integerInRange(0,game.height));
   }
+  SpaceGame._walls.setAll('alpha', 0);
 }
 
 function addEnemys() {
@@ -107,7 +170,6 @@ function addEnemys() {
   SpaceGame._allEnemysAdded = false;
   var enemysBcl = game.time.events.loop(level * Phaser.Timer.SECOND, function () {
     // Generate i=level number of enemys
-    //&& enemys.countLiving() < 4
     if (i < level ) {
       var animEnemy = enemySprites[game.rnd.integerInRange(0, enemySprites.length-1)];
       var enemy = new Enemy(0, 0, animEnemy.name, animEnemy.length);
@@ -120,6 +182,7 @@ function addEnemys() {
     } else {
       enemysBcl = null;
       SpaceGame._allEnemysAdded = true;
+      SpaceGame._newLevelStarted = false;
     }
     i++;
   });
@@ -198,9 +261,6 @@ function updateScore($lifeLost) {
   }
   else {
     score += 10;
-    if (towers && towers.children[0] && towers.children[0].fireTime > 100) {
-      towers.children[0].fireTime -= 20;
-    }
   }
   updateScoreText();
   if (lives < 0) {

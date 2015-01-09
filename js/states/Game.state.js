@@ -1,8 +1,3 @@
-var lives = 3;
-var level = 0;
-var score = 0;
-var towers;
-
 SpaceGame.Main = function(game){
   this._background = null;
 
@@ -25,6 +20,7 @@ SpaceGame.Main = function(game){
 
   SpaceGame._enemy_bullets = null;
   SpaceGame._ufos = null;
+  SpaceGame._newLevelStarted = false;
 };
 SpaceGame.Main.prototype = {
   create: function() {
@@ -169,6 +165,13 @@ SpaceGame.Main.prototype = {
   },
 
   update: function() {
+    if (enemys.countLiving() == 0
+      && SpaceGame._allEnemysAdded
+      && !SpaceGame._newLevelStarted) {
+      SpaceGame._newLevelStarted = true;
+      updateScore();
+      levelCompleted();
+    }
     /*
      *  Enemy
      */
