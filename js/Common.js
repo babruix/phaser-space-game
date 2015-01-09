@@ -29,12 +29,17 @@ game.state.start('Boot');
 function nextLevel() {
   level++;
   Tower.prototype.addToPoint(400, 400);
-  showLevelTitle.call(this);
+  showLevelTitle();
   updateScoreText();
   addRndBricks();
   //addWalls();
   animateScore();
   addEnemys();
+
+  generateHeart();
+  generateBrick();
+  generateShield();
+  generateMissle();
 }
 
 
@@ -168,7 +173,7 @@ function addRndBricks() {
 function addEnemys() {
   var i = 0;
   SpaceGame._allEnemysAdded = false;
-  var enemysBcl = game.time.events.loop(level * Phaser.Timer.SECOND, function () {
+  var enemysBcl = game.time.events.loop(level/2 * Phaser.Timer.SECOND, function () {
     // Generate i=level number of enemys
     if (i < level ) {
       var animEnemy = enemySprites[game.rnd.integerInRange(0, enemySprites.length-1)];
@@ -182,7 +187,6 @@ function addEnemys() {
     } else {
       enemysBcl = null;
       SpaceGame._allEnemysAdded = true;
-      SpaceGame._newLevelStarted = false;
     }
     i++;
   });

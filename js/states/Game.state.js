@@ -20,10 +20,11 @@ SpaceGame.Main = function(game){
 
   SpaceGame._enemy_bullets = null;
   SpaceGame._ufos = null;
-  SpaceGame._newLevelStarted = false;
 };
 SpaceGame.Main.prototype = {
   create: function() {
+    SpaceGame._newLevelStarted = false;
+
     game.audio.enemySndFire = game.add.audio('gulp', 2);
     game.audio.playerSndFire = game.add.audio('gunshot', 0.03);
     game.audio.toilSnd = game.add.audio('toil', 0.3);
@@ -154,10 +155,6 @@ SpaceGame.Main.prototype = {
     game.physics.p2.setBoundsToWorld(true, true, true, true, false);
 
     nextLevel();
-    generateHeart();
-    generateBrick();
-    generateShield();
-    generateMissle();
 
     score -= 10;
     updateScore();
