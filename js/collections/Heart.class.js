@@ -19,7 +19,13 @@ var Heart = function() {
       game.audio.kissSnd.play();
       body1.sprite.damage(-1);
       updateScoreText();
-      game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30), generateHeart, this);
+      game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30), Heart.prototype.generateHeart, this);
     }
   }, this);
+};
+
+Heart.prototype = {
+  generateHeart: function () {
+    new Heart();
+  }
 };

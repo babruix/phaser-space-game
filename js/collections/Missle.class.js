@@ -27,7 +27,7 @@ var Missle = function(x, y) {
         body1.sprite.missles++;
         updateScoreText();
         this.missle.destroy();
-        game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30), generateMissle, this);
+        game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30), Missle.prototype.generateMissle, this);
       }
     }
 
@@ -35,12 +35,17 @@ var Missle = function(x, y) {
   return this.missle;
 };
 
-Missle.prototype.explode = function(missle) {
-  if (missle.alive) {
-    missle.destroy();
-    game.audio.explosionSnd.play();
-    var explode = game.add.sprite(missle.x-100, missle.y-150, 'explode', 19);
-    explode.animations.add('explode');
-    explode.animations.play('explode', 19, false, true);
+Missle.prototype = {
+  generateMissle: function (){
+    new Missle();
+  },
+  explode: function(missle) {
+    if (missle.alive) {
+      missle.destroy();
+      game.audio.explosionSnd.play();
+      var explode = game.add.sprite(missle.x - 100, missle.y - 150, 'explode', 19);
+      explode.animations.add('explode');
+      explode.animations.play('explode', 19, false, true);
+    }
   }
 };

@@ -21,7 +21,13 @@ var Shield = function() {
       this.shield.destroy();
       body1.sprite.shieldPower+=10;
       updateScoreText();
-      game.time.events.add(Phaser.Timer.SECOND * 3.85, generateShield, this);
+      game.time.events.add(Phaser.Timer.SECOND * 3.85, Shield.prototype.generateShield, this);
     }
   }, this);
+};
+
+Shield.prototype = {
+  generateShield: function () {
+    new Shield();
+  }
 };

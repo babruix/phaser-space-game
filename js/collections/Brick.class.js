@@ -18,7 +18,13 @@ var Brick = function() {
       this.brick.destroy();
       body1.sprite.countBricks++;
       updateScoreText();
-      game.time.events.add(Phaser.Timer.SECOND, generateBrick, this);
+      game.time.events.add(Phaser.Timer.SECOND, Brick.prototype.generateBrick, this);
     }
   }, this);
+};
+
+Brick.prototype = {
+  generateBrick: function () {
+    new Brick();
+  }
 };

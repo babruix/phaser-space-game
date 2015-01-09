@@ -36,10 +36,10 @@ function nextLevel() {
   animateScore();
   addEnemys();
 
-  generateHeart();
-  generateBrick();
-  generateShield();
-  generateMissle();
+  Heart.prototype.generateHeart();
+  Brick.prototype.generateBrick();
+  Shield.prototype.generateShield();
+  Missle.prototype.generateMissle();
 }
 
 
@@ -50,7 +50,7 @@ function animateScore(moveOut) {
   SpaceGame._walls.forEachAlive(function (brick){
     game.add.tween(brick)
       .to({alpha: moveOut ? 0 : 1},
-      1000 /*duration of the tween (in ms)*/,
+      1000 /*duration (in ms)*/,
       Phaser.Easing.Linear.None /*easing type*/,
       true /*autostart?*/,
       0 /*delay*/);
@@ -63,7 +63,7 @@ try {
   SpaceGame._fireGraph.alpha = moveOut ? 1 : 0;
   game.add.tween(SpaceGame._fireGraph)
     .to({alpha: moveOut ? 0 : 1, x: moveOut ? -SpaceGame._fireGraph.width : 10},
-    500 /*duration of the tween (in ms)*/,
+    500 /*duration (in ms)*/,
     Phaser.Easing.Linear.None /*easing type*/,
     true /*autostart?*/,
     moveOut ? 500 : 300 /*delay*/);
@@ -71,7 +71,7 @@ try {
   SpaceGame._lifeGraph.alpha = moveOut ? 1 : 0;
   game.add.tween(SpaceGame._lifeGraph)
     .to({alpha: moveOut ? 0 : 1, x: moveOut ? -SpaceGame._lifeGraph.width : 10},
-    500 /*duration of the tween (in ms)*/,
+    500 /*duration (in ms)*/,
     Phaser.Easing.Linear.None /*easing type*/,
     true /*autostart?*/,
     moveOut ? 600 : 400 /*delay*/);
@@ -79,7 +79,7 @@ try {
   SpaceGame._scoreText.alpha = moveOut ? 1 : 0;
   game.add.tween(SpaceGame._scoreText)
     .to({alpha: moveOut ? 0 : 1, x: moveOut ?  -SpaceGame._scoreText.width : 10},
-    500 /*duration of the tween (in ms)*/,
+    500 /*duration (in ms)*/,
     Phaser.Easing.Linear.None /*easing type*/,
     true /*autostart?*/,
     moveOut ? 700 : 500 /*delay*/);
@@ -102,13 +102,15 @@ function showLevelTitle() {
 
   // Animate
   game.add.tween(levelText)
-    .to({alpha:1, y: game.height / 2 - levelText.height / 2}, 1000 /*duration of the tween (in ms)*/,
+    .to({alpha:1, y: game.height / 2 - levelText.height / 2},
+    1000 /*duration (in ms)*/,
     Phaser.Easing.Bounce.Out /*easing type*/,
     true /*autostart?*/,
     0 /*delay*/)
     .onComplete.add(function () {
       game.add.tween(levelText)
-        .to({y: -levelText.height, alpha:0 }, 1000 /*duration of the tween (in ms)*/,
+        .to({y: -levelText.height, alpha:0 },
+        1000 /*duration (in ms)*/,
         Phaser.Easing.Bounce.In /*easing type*/,
         true /*autostart?*/,
         2000 /*delay*/)
@@ -135,14 +137,16 @@ function levelCompleted() {
 
   // Animate
   game.add.tween(levelText)
-    .to({alpha:1, y: game.height / 2 - levelText.height / 2}, 1000 /*duration of the tween (in ms)*/,
+    .to({alpha:1, y: game.height / 2 - levelText.height / 2},
+    1000 /*duration (in ms)*/,
     Phaser.Easing.Bounce.Out /*easing type*/,
     true /*autostart?*/,
     0 /*delay*/)
     .onComplete.add(function () {
       animateScore(true);
       game.add.tween(levelText)
-        .to({y: -levelText.height / 2, alpha:0}, 1000 /*duration of the tween (in ms)*/,
+        .to({y: -levelText.height / 2, alpha:0},
+        1000 /*duration (in ms)*/,
         Phaser.Easing.Bounce.In /*easing type*/,
         true /*autostart?*/,
         1000 /*delay*/)
@@ -190,19 +194,6 @@ function addEnemys() {
     }
     i++;
   });
-}
-
-function generateHeart() {
-  new Heart();
-}
-function generateShield() {
-  new Shield();
-}
-function generateBrick() {
-  new Brick();
-}
-function generateMissle() {
-  new Missle();
 }
 
 function updateScoreText() {
