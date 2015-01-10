@@ -183,6 +183,12 @@ SpaceGame.Main.prototype = {
     enemys.forEach(function (enemy) {
 
       if (enemy && enemy.alive) {
+        if (enemy.y > 500 && towers.children[0].countBricks > 0) {
+          // protect with wall
+          towers.children[0].countBricks--;
+          new Wall(enemy.x, enemy.y+enemy.height);
+          updateScoreText();
+        }
          if (enemy.y > 660) {
           // bottom fall
           var style = {font: "20px Tahoma", fill: "#000000", align: "center"};
