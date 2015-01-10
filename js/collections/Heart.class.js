@@ -17,12 +17,12 @@ var Heart = function() {
       // @todo: enemy can pickup?
       this.heart.kill();
       game.audio.kissSnd.play();
-      body1.sprite.damage(-1);
+      lives++;
       updateScoreText();
     }
   }, this);
   this.heart.events.onKilled.add(function (heart) {
-    game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30), Heart.prototype.generateHeart, this);
+    game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 100), Heart.prototype.generateHeart, this);
   });
 };
 

@@ -12,12 +12,11 @@ var Missle = function(x, y) {
   this.missle.reset(x2, y2);
 
   this.missle.body.onBeginContact.add(function (body1, shapeA, shapeB) {
-    if (body1 != null && body1.sprite != null) {
+    if (this.missle.alive && body1 != null && body1.sprite != null) {
+      this.explode(this.missle);
       if (body1.sprite.key != 'tower') {
         for (var i = 0, x = enemySprites.length; i < x; i++) {
           if (enemySprites[i].name == body1.sprite.key) {
-            body1.sprite.kill();
-            this.explode(this.missle);
             break;
           }
         }
@@ -26,14 +25,10 @@ var Missle = function(x, y) {
         game.audio.laughSnd.play();
         body1.sprite.missles++;
         updateScoreText();
-        this.missle.kill();
       }
     }
 
   }, this);
-  this.missle.events.onKilled.add(function (missle) {
-    game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30), Missle.prototype.generateMissle);
-  });
   return this.missle;
 };
 
@@ -46,8 +41,11 @@ Missle.prototype = {
       missle.destroy();
       game.audio.explosionSnd.play();
       var explode = game.add.sprite(missle.x - 100, missle.y - 150, 'explode', 19);
-      explode.animations.add('explode');
+      var anim = explode.animations.add('explode');
       explode.animations.play('explode', 19, false, true);
+      anim.onComplete.add(function(){
+        game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 60), Missle.prototype.generateMissle);
+      });
     }
   }
 };

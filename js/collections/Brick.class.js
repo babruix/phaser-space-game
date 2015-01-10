@@ -16,7 +16,7 @@ var Brick = function() {
       // do not kill pickable items, only tower can pickup.
       // @todo: enemy can pickup?
       this.brick.kill();
-      body1.sprite.countBricks++;
+      body1.sprite.countBricks+=10;
       updateScoreText();
     }
   }, this);
