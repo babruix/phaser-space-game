@@ -17,6 +17,7 @@ SpaceGame.Main = function(game){
   SpaceGame._walls = null;
   SpaceGame._missles = null;
   SpaceGame._bullets = null;
+  SpaceGame._bombs = null;
 
   SpaceGame._enemy_bullets = null;
   SpaceGame._ufos = null;
@@ -103,6 +104,13 @@ SpaceGame.Main.prototype = {
      */
     SpaceGame._ufos = game.add.group();
     SpaceGame._ufos.createMultiple(4, 'ufo');
+
+    /*
+     * Bombs
+     */
+    SpaceGame._bombs = game.add.group();
+    SpaceGame._bombs.createMultiple(1, 'bomb');
+
 
     /*
      * Towers Bullets

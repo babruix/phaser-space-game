@@ -26,12 +26,14 @@ var Missle = function(x, y) {
         game.audio.laughSnd.play();
         body1.sprite.missles++;
         updateScoreText();
-        this.missle.destroy();
-        game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30), Missle.prototype.generateMissle, this);
+        this.missle.kill();
       }
     }
 
   }, this);
+  this.missle.events.onKilled.add(function (missle) {
+    game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30), Missle.prototype.generateMissle);
+  });
   return this.missle;
 };
 

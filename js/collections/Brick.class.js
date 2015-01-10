@@ -15,12 +15,14 @@ var Brick = function() {
     if (body1 && body1.sprite != null && body1.sprite.key=='tower') {
       // do not kill pickable items, only tower can pickup.
       // @todo: enemy can pickup?
-      this.brick.destroy();
+      this.brick.kill();
       body1.sprite.countBricks++;
       updateScoreText();
-      game.time.events.add(Phaser.Timer.SECOND, Brick.prototype.generateBrick, this);
     }
   }, this);
+  this.brick.events.onKilled.add(function (brick) {
+    game.time.events.add(Phaser.Timer.SECOND, Brick.prototype.generateBrick, this);
+  });
 };
 
 Brick.prototype = {

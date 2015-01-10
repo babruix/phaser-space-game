@@ -15,13 +15,15 @@ var Heart = function() {
     if (body1 && body1.sprite != null && body1.sprite.key=='tower') {
       // do not kill pickable items, only tower can pickup.
       // @todo: enemy can pickup?
-      this.heart.destroy();
+      this.heart.kill();
       game.audio.kissSnd.play();
       body1.sprite.damage(-1);
       updateScoreText();
-      game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30), Heart.prototype.generateHeart, this);
     }
   }, this);
+  this.heart.events.onKilled.add(function (heart) {
+    game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30), Heart.prototype.generateHeart, this);
+  });
 };
 
 Heart.prototype = {

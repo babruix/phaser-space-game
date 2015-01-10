@@ -40,6 +40,7 @@ function nextLevel() {
   Brick.prototype.generateBrick();
   Shield.prototype.generateShield();
   Missle.prototype.generateMissle();
+  Bomb.prototype.generateBomb();
 }
 
 

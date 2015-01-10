@@ -18,12 +18,14 @@ var Shield = function() {
     if (body1 && body1.sprite && body1.sprite.key=='tower') {
       // do not kill pickable items, only tower can pickup.
       // @todo: enemy can pickup?
-      this.shield.destroy();
+      this.shield.kill();
       body1.sprite.shieldPower+=10;
       updateScoreText();
-      game.time.events.add(Phaser.Timer.SECOND * 3.85, Shield.prototype.generateShield, this);
     }
   }, this);
+  this.shield.events.onKilled.add(function (shield) {
+    game.time.events.add(Phaser.Timer.SECOND * 3.85, Shield.prototype.generateShield, this);
+  });
 };
 
 Shield.prototype = {
