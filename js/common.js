@@ -57,8 +57,6 @@ function animateScore(moveOut) {
       0 /*delay*/);
   });
 
-
-try {
   // Animate score
   SpaceGame._fireGraph.x = moveOut ? 10 : -SpaceGame._fireGraph.width;
   SpaceGame._fireGraph.alpha = moveOut ? 1 : 0;
@@ -76,14 +74,18 @@ try {
     Phaser.Easing.Linear.None /*easing type*/,
     true /*autostart?*/,
     moveOut ? 600 : 400 /*delay*/);
-  SpaceGame._scoreText.x = moveOut ? 10 : -SpaceGame._scoreText.width;
-  SpaceGame._scoreText.alpha = moveOut ? 1 : 0;
-  game.add.tween(SpaceGame._scoreText)
-    .to({alpha: moveOut ? 0 : 1, x: moveOut ?  -SpaceGame._scoreText.width : 10},
-    500 /*duration (in ms)*/,
-    Phaser.Easing.Linear.None /*easing type*/,
-    true /*autostart?*/,
-    moveOut ? 700 : 500 /*delay*/);
+
+  try {
+    if (SpaceGame._scoreText != null && SpaceGame._scoreText._font != "") {
+      SpaceGame._scoreText.x = moveOut ? 10 : -SpaceGame._scoreText.width;
+      SpaceGame._scoreText.alpha = moveOut ? 1 : 0;
+      game.add.tween(SpaceGame._scoreText)
+        .to({alpha: moveOut ? 0 : 1, x: moveOut ?  -SpaceGame._scoreText.width : 10},
+        500 /*duration (in ms)*/,
+        Phaser.Easing.Linear.None /*easing type*/,
+        true /*autostart?*/,
+        moveOut ? 700 : 500 /*delay*/);
+    }
 }
   catch (e) {
     debugger;
