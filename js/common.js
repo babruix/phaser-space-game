@@ -40,7 +40,9 @@ function nextLevel() {
   Brick.prototype.generateBrick();
   Shield.prototype.generateShield();
   Missle.prototype.generateMissle();
-  Bomb.prototype.generateBomb();
+  for (var i = 0; i < level; i++) {
+    Bomb.prototype.generateBomb();
+  }
 }
 
 

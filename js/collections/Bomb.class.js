@@ -21,7 +21,7 @@ var Bomb = function() {
           if (enemySprites[i].name == body1.sprite.key) {
             this.bomb.kill();
             game.audio.explosionSnd.play();
-            body1.sprite.kill();
+            body1.sprite.damage(10);
             updateScoreText();
             break;
           }
@@ -30,7 +30,7 @@ var Bomb = function() {
       else {
         this.bomb.kill();
         game.audio.explosionSnd.play();
-        body1.sprite.kill();
+        body1.sprite.damage(10);
         updateScoreText();
       }
     }
