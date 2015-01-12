@@ -27,18 +27,18 @@ SpaceGame.Main.prototype = {
     SpaceGame._newLevelStarted = false;
 
     game.audio.enemySndFire = game.add.audio('gulp', 2);
-    game.audio.playerSndFire = game.add.audio('gunshot', 0.03);
-    game.audio.toilSnd = game.add.audio('toil', 0.3);
-    game.audio.smackSnd = game.add.audio('smack', 0.3);
-    game.audio.laughSnd = game.add.audio('laugh', 0.8);
-    game.audio.springSnd = game.add.audio('spring', 0.3);
-    game.audio.kissSnd = game.add.audio('kiss', 0.3);
-    game.audio.explosionSnd = game.add.audio('explosion', 0.2);
+    game.audio.playerSndFire = game.add.audio('gunshot', 0.01);
+    game.audio.toilSnd = game.add.audio('toil', 0.1);
+    game.audio.smackSnd = game.add.audio('smack', 0.2);
+    game.audio.laughSnd = game.add.audio('laugh', 0.5);
+    game.audio.springSnd = game.add.audio('spring', 0.2);
+    game.audio.kissSnd = game.add.audio('kiss', 0.2);
+    game.audio.explosionSnd = game.add.audio('explosion', 0.05);
     game.audio.missleSnd = game.add.audio('missle', 0.1);
     game.audio.ufoSnd = [
-      game.add.audio('scifi1', 0.6),
-      game.add.audio('scifi2', 0.6),
-      game.add.audio('scifi3', 0.6),
+      game.add.audio('scifi1', 0.5),
+      game.add.audio('scifi2', 0.5),
+      game.add.audio('scifi3', 0.5),
       game.add.audio('scifi4', 0.3),
       game.add.audio('scifi5', 0.3)
     ];

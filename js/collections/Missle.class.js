@@ -12,11 +12,11 @@ var Missle = function(x, y) {
   this.missle.reset(x2, y2);
 
   this.missle.body.onBeginContact.add(function (body1, shapeA, shapeB) {
-    if (this.missle.alive && body1 != null && body1.sprite != null) {
-      this.explode(this.missle);
+    if (body1 != null && body1.sprite != null) {
       if (body1.sprite.key != 'tower') {
         for (var i = 0, x = enemySprites.length; i < x; i++) {
           if (enemySprites[i].name == body1.sprite.key) {
+            this.explode(this.missle);
             break;
           }
         }
@@ -25,6 +25,8 @@ var Missle = function(x, y) {
         game.audio.laughSnd.play();
         body1.sprite.missles++;
         updateScoreText();
+        this.missle.destroy();
+        game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 60), Missle.prototype.generateMissle);
       }
     }
 

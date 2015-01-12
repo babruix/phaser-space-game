@@ -36,10 +36,10 @@ function nextLevel() {
   animateScore();
   addEnemys();
 
-  Heart.prototype.generateHeart();
   Brick.prototype.generateBrick();
-  Shield.prototype.generateShield();
-  Missle.prototype.generateMissle();
+  game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 100), Heart.prototype.generateHeart, this);
+  game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30), Shield.prototype.generateShield, this);
+  game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30), Missle.prototype.generateMissle, this);
   for (var i = 0; i < level; i++) {
     Bomb.prototype.generateBomb();
   }
