@@ -173,7 +173,7 @@ function addWalls() {
 }
 
 function addRndBricks() {
-  for (var i = 1; i < level*5; i++) {
+  for (var i = 1; i < level*10; i++) {
     new Wall(game.rnd.integerInRange(0,game.width), game.rnd.integerInRange(0,game.height));
   }
   SpaceGame._walls.setAll('alpha', 0);
