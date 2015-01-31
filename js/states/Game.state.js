@@ -44,8 +44,9 @@ SpaceGame.Main.prototype = {
     ];
     game.audio.completedSnd = game.add.audio('completed', 1);
 
-    this._background = game.add.tileSprite(0, 0, 1000, 600, 'background');
-    this._background.alpha=0;
+
+    this._background = game.add.tileSprite(0, 0, 800, 1000, 'background');
+    this._background.alpha = 0;
     game.add.tween(this._background).to({alpha: 1}, 20000,
       Phaser.Easing.Linear.In,
       true, //autostart?,
@@ -55,6 +56,7 @@ SpaceGame.Main.prototype = {
     );
     //
 
+    SpaceGame.Main.prototype.generateClouds.call(this);
     SpaceGame._fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     SpaceGame._brickButton = game.input.keyboard.addKey(Phaser.Keyboard.B);
     SpaceGame._missleButton = game.input.keyboard.addKey(Phaser.Keyboard.M);
@@ -168,7 +170,33 @@ SpaceGame.Main.prototype = {
     updateScore();
     SpaceGame._cursors = game.input.keyboard.createCursorKeys();
   },
-
+  generateClouds: function () {
+  var cloudSises = {
+    '0': {x: 124, y: 54},
+    '1': {x: 132, y: 82},
+    '2': {x: 324, y: 68},
+    '3': {x: 272, y: 55},
+    '4': {x: 505, y: 130},
+    '5': {x: 450, y: 158},
+    '6': {x: 352, y: 102}
+  };
+  this._tweenClouds = [];
+  for (var i = 0; i <= 6; i++) {
+    var toX = game.rnd.integerInRange(-50, 150);
+    var toY = game.rnd.integerInRange(0, i*40);
+    this._cloud = game.add.tileSprite(toX, toY, cloudSises[i].x, cloudSises[i].y, 'cloud' + i);
+    this._cloud.alpha = 1 / ((i+1) * 4);
+    this._cloud.x = this._cloud.x - this._cloud.width / 2;
+    var speed = game.rnd.integerInRange(this._cloud.width*50, this._cloud.width * 500);
+    this._tweenClouds[i] = game.add.tween(this._cloud).to({x: game.width}, speed,
+      Phaser.Easing.Sinusoidal.InOut,
+      true, //autostart?,
+      0, //delay,
+      false, //repeat?
+      true //yoyo?
+    );
+  }
+},
   update: function() {
     if (enemys.countLiving() == 0
       && SpaceGame._allEnemysAdded

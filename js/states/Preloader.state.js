@@ -33,8 +33,11 @@ SpaceGame.Preloader.prototype = {
     game.load.image('bullet', 'assets/sprites/bullet.png');
     game.load.image('missle', 'assets/sprites/missile.png');
 
-    game.load.image("background", "assets/sprites/background.jpg");
-    //game.load.image('background', 'assets/sprites/background2.png');
+    game.load.image("background", "assets/sprites/bg0.png");
+
+    for (var i = 0; i < 7; i++) {
+      game.load.image("cloud" + i, "assets/sprites/cloud_"+i+".png");
+    }
 
     /*
      * Enemys

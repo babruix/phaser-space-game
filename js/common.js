@@ -3,7 +3,7 @@
  * https://github.com/babruix
  */
 
-var game = new Phaser.Game(800, 700, Phaser.CANVAS);
+var game = new Phaser.Game(800, 1000, Phaser.CANVAS);
 var debug = window.location.hash == "#deb";
 var enemySprites = [
   {'name': 'duck', 'length': 8},
