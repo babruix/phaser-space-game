@@ -57,12 +57,8 @@ SpaceGame.Main.prototype = {
     //
 
     SpaceGame.Main.prototype.generateClouds.call(this);
-    SpaceGame.sprite_flow = game.add.sprite(76,174,'flow');
-    SpaceGame.sprite_flow.x = game.width / 2;
-    SpaceGame.sprite_flow.y = game.height - 174;
-    SpaceGame.sprite_flow.anchor.setTo(0.5,1);
-    SpaceGame.sprite_flow.angle = -10;
-    SpaceGame.Main.prototype.shakeFlower();
+    SpaceGame.Main.prototype.andAndshakeFlowers();
+
     SpaceGame._fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     SpaceGame._brickButton = game.input.keyboard.addKey(Phaser.Keyboard.B);
     SpaceGame._missleButton = game.input.keyboard.addKey(Phaser.Keyboard.M);
@@ -203,15 +199,25 @@ SpaceGame.Main.prototype = {
     );
   }
 },
-  shakeFlower: function () {
-    var tween = game.add.tween(SpaceGame.sprite_flow);
-    tween.to({
-        angle: 10
-    }, 1000,
-      Phaser.Easing.Linear.NONE,
-      true /*autostart?*/,
-      0 /*delay*/,
-      false /*yoyo?*/, true);
+  andAndshakeFlowers: function () {
+    SpaceGame.sprite_flow = [];
+    for (var i = 0; i < level+1; i++) {
+      console.log(i)
+      SpaceGame.sprite_flow[i] = game.add.sprite(76, 174, 'flow');
+      SpaceGame.sprite_flow[i].x = game.rnd.integerInRange(0, game.width);
+      SpaceGame.sprite_flow[i].y = game.rnd.integerInRange(game.height - 130 * 2, game.height - 70);
+      SpaceGame.sprite_flow[i].anchor.setTo(0.5, 1);
+      SpaceGame.sprite_flow[i].angle = -10*i;
+      var tween = game.add.tween(SpaceGame.sprite_flow[i]);
+      tween.to({
+          angle: 10
+        }, 3000,
+        Phaser.Easing.Linear.NONE,
+        true /*autostart?*/,
+        0 /*delay*/,
+        false /*yoyo?*/, true);
+    }
+
   },
   update: function() {
     if (enemys.countLiving() == 0
