@@ -57,6 +57,12 @@ SpaceGame.Main.prototype = {
     //
 
     SpaceGame.Main.prototype.generateClouds.call(this);
+    SpaceGame.sprite_flow = game.add.sprite(76,174,'flow');
+    SpaceGame.sprite_flow.x = game.width / 2;
+    SpaceGame.sprite_flow.y = game.height - 174;
+    SpaceGame.sprite_flow.anchor.setTo(0.5,1);
+    SpaceGame.sprite_flow.angle = -10;
+    SpaceGame.Main.prototype.shakeFlower();
     SpaceGame._fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     SpaceGame._brickButton = game.input.keyboard.addKey(Phaser.Keyboard.B);
     SpaceGame._missleButton = game.input.keyboard.addKey(Phaser.Keyboard.M);
@@ -185,7 +191,7 @@ SpaceGame.Main.prototype = {
     var toX = game.rnd.integerInRange(-50, 150);
     var toY = game.rnd.integerInRange(0, i*40);
     this._cloud = game.add.tileSprite(toX, toY, cloudSises[i].x, cloudSises[i].y, 'cloud' + i);
-    this._cloud.alpha = 1 / ((i+1) * 4);
+    this._cloud.alpha = 1 / ((i+1) * 3);
     this._cloud.x = this._cloud.x - this._cloud.width / 2;
     var speed = game.rnd.integerInRange(this._cloud.width*50, this._cloud.width * 500);
     this._tweenClouds[i] = game.add.tween(this._cloud).to({x: game.width}, speed,
@@ -197,6 +203,16 @@ SpaceGame.Main.prototype = {
     );
   }
 },
+  shakeFlower: function () {
+    var tween = game.add.tween(SpaceGame.sprite_flow);
+    tween.to({
+        angle: 10
+    }, 1000,
+      Phaser.Easing.Linear.NONE,
+      true /*autostart?*/,
+      0 /*delay*/,
+      false /*yoyo?*/, true);
+  },
   update: function() {
     if (enemys.countLiving() == 0
       && SpaceGame._allEnemysAdded

@@ -38,7 +38,7 @@ SpaceGame.Preloader.prototype = {
     for (var i = 0; i < 7; i++) {
       game.load.image("cloud" + i, "assets/sprites/cloud_"+i+".png");
     }
-
+    game.load.image("flow", "assets/sprites/flow.png");
     /*
      * Enemys
      */
