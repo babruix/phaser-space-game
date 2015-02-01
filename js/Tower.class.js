@@ -3,11 +3,11 @@ var Tower = function (worldX, worldY, tile) {
   this.tower.worldX = worldX;
   this.tower.worldY = worldY;
   this.tower.health = 10;
-  this.tower.fireTime = 200;
   this.tower.wallTime = 100;
-  this.tower.missles = 0;
-  this.tower.countBricks = 0;
-  this.tower.shieldPower = 0;
+  this.tower.fireTime = SpaceGame._playerFireSpeed || 200;
+  this.tower.missles = SpaceGame._playerMissles  || 0;
+  this.tower.countBricks = SpaceGame._playerBricks || 0;
+  this.tower.shieldPower = SpaceGame._playerShield || 0;
   this.tower.fireLastTime = game.time.now + this.tower.fireTime;
   this.tower.wallLastTime = game.time.now + this.tower.wallTime;
   game.physics.p2.enable(this.tower, debug);
@@ -47,10 +47,15 @@ var Tower = function (worldX, worldY, tile) {
     }
   }, this);
 
+  var that = this;
   this.tower.events.onKilled.add(function() {
     if (SpaceGame._shipTrail != null) {
       SpaceGame._shipTrail.destroy();
     }
+    SpaceGame._playerShield = that.tower.shieldPower;
+    SpaceGame._playerBricks = that.tower.countBricks;
+    SpaceGame._playerMissles = that.tower.missles;
+    SpaceGame._playerFireSpeed = that.tower.fireTime;
   });
 
   var _this = this;

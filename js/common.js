@@ -3,7 +3,7 @@
  * https://github.com/babruix
  */
 
-var game = new Phaser.Game(800, 1000, Phaser.CANVAS);
+var game = new Phaser.Game(800, 900, Phaser.CANVAS);
 var debug = window.location.hash == "#deb";
 var enemySprites = [
   {'name': 'duck', 'length': 8},
@@ -157,6 +157,12 @@ function levelCompleted() {
         1000 /*delay*/)
         .onComplete.add(function () {
           levelText.destroy();
+          if (towers && towers.children && typeof towers.children[0] != "undefined") {
+            SpaceGame._playerShield = towers.children[0].shieldPower;
+            SpaceGame._playerBricks = towers.children[0].countBricks;
+            SpaceGame._playerMissles = towers.children[0].missles;
+            SpaceGame._playerFireSpeed = towers.children[0].fireTime;
+          }
           game.state.start('Main');
           // Init score
           SpaceGame._scoreText = undefined;

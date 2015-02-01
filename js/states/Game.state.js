@@ -19,6 +19,11 @@ SpaceGame.Main = function(game){
   SpaceGame._bullets = null;
   SpaceGame._bombs = null;
 
+  SpaceGame._playerShield = null;
+  SpaceGame._playerBricks = null;
+  SpaceGame._playerMissles = null;
+  SpaceGame._playerFireSpeed = null;
+
   SpaceGame._enemy_bullets = null;
   SpaceGame._ufos = null;
 };
