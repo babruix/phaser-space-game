@@ -55,6 +55,7 @@ SpaceGame.Preloader.prototype = {
     /**
      * Effects
      */
+    game.load.image('sun', 'assets/sprites/sun.png');
     game.load.spritesheet('explode', 'assets/sprites/explosion.png', 157, 229, 19);
     game.load.image('emit', 'assets/sprites/emit.png');
     game.load.image('heart', 'assets/sprites/heart.png');
