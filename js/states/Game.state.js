@@ -49,20 +49,18 @@ SpaceGame.Main.prototype = {
     ];
     game.audio.completedSnd = game.add.audio('completed', 1);
 
-
     this._background = game.add.tileSprite(0, 0, 800, 1000, 'background');
     this._background.alpha = 0;
-    game.add.tween(this._background).to({alpha: 1}, 20000,
+    game.add.tween(this._background).to({alpha: 1}, 2000,
       Phaser.Easing.Linear.In,
       true, //autostart?,
       0, //delay,
-      false, //repeat?
-      true //yoyo?
+      0, //repeat?
+      false //yoyo?
     );
-    //
 
     SpaceGame.Main.prototype.generateClouds.call(this);
-    SpaceGame.Main.prototype.andAndshakeFlowers();
+    SpaceGame.Main.prototype.shakeFlowers();
 
     SpaceGame._fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     SpaceGame._brickButton = game.input.keyboard.addKey(Phaser.Keyboard.B);
@@ -179,32 +177,40 @@ SpaceGame.Main.prototype = {
   },
   generateClouds: function () {
   var cloudSises = {
-    '0': {x: 124, y: 54},
-    '1': {x: 132, y: 82},
-    '2': {x: 324, y: 68},
-    '3': {x: 272, y: 55},
-    '4': {x: 505, y: 130},
-    '5': {x: 450, y: 158},
-    '6': {x: 352, y: 102}
+    '0': {x: 124, y: 54, toX:485,toY:13},
+    '1': {x: 132, y: 82, toX:120,toY:93},
+    '2': {x: 324, y: 68, toX:443,toY:58},
+    '3': {x: 272, y: 55, toX:160,toY:164},
+    '4': {x: 505, y: 130, toX:465,toY:107},
+    '5': {x: 450, y: 158, toX:150,toY:258},
+    '6': {x: 352, y: 102, toX:120,toY:100}
   };
   this._tweenClouds = [];
   for (var i = 0; i <= 6; i++) {
-    var toX = game.rnd.integerInRange(-50, 150);
-    var toY = game.rnd.integerInRange(0, i*40);
-    this._cloud = game.add.tileSprite(toX, toY, cloudSises[i].x, cloudSises[i].y, 'cloud' + i);
-    this._cloud.alpha = 1 / ((i+1) * 3);
-    this._cloud.x = this._cloud.x - this._cloud.width / 2;
-    var speed = game.rnd.integerInRange(this._cloud.width*50, this._cloud.width * 500);
-    this._tweenClouds[i] = game.add.tween(this._cloud).to({x: game.width}, speed,
+    this._cloud = game.add.tileSprite(cloudSises[i].toX, cloudSises[i].toY, cloudSises[i].x, cloudSises[i].y, 'cloud' + i);
+    // Also enable sprite for drag
+    this._cloud.inputEnabled = true;
+    this._cloud.input.enableDrag();
+
+    this._cloud.events.onDragStart.add(function(){
+      console.log('key='+this._cloud.key);
+      console.log({x:this._cloud.x,y:this._cloud.y});
+    }, this);
+    this._cloud.events.onDragStop.add(function(){
+      console.log({'x':this._cloud.x,'y':this._cloud.y});
+    }, this);
+
+    /*var speed = game.rnd.integerInRange(this._cloud.x+this._cloud.width*50, this._cloud.width * 500);
+    this._tweenClouds[i] = game.add.tween(this._cloud).to({x: game.rnd.integerInRange(this._cloud.x, this._cloud.x+this._cloud.width)}, speed,
       Phaser.Easing.Sinusoidal.InOut,
       true, //autostart?,
       0, //delay,
       false, //repeat?
       true //yoyo?
-    );
+    );*/
   }
 },
-  andAndshakeFlowers: function () {
+  shakeFlowers: function () {
     SpaceGame.sprite_flow = [];
     for (var i = 0; i < level+1; i++) {
       console.log(i)
