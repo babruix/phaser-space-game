@@ -15,7 +15,7 @@ var Shield = function() {
   SpaceGame._shields.add(this.shield);
 
   this.shield.body.onBeginContact.add(function (body1, shapeA, shapeB) {
-    if (body1 && body1.sprite && body1.sprite.key=='tower') {
+    if (body1 && body1.sprite && body1.sprite.key=='spaceship') {
       // do not kill pickable items, only tower can pickup.
       // @todo: enemy can pickup?
       this.shield.kill();

@@ -28,7 +28,7 @@ SpaceGame.Preloader.prototype = {
     game.load.tilemap('desert', 'assets/maps/tower-defense-clean.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('tiles', 'assets/maps/tmw_desert_spacing.png');
 
-    game.load.image('tower', 'assets/sprites/tower.png');
+    game.load.image('spaceship', 'assets/sprites/spaceship.png');
 
     game.load.image('bullet', 'assets/sprites/bullet.png');
     game.load.image('missle', 'assets/sprites/missile.png');

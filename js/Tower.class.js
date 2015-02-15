@@ -12,6 +12,10 @@ var Tower = function (worldX, worldY, tile) {
   this.tower.wallLastTime = game.time.now + this.tower.wallTime;
   game.physics.p2.enable(this.tower, debug);
 
+  this.tower.width = 50;
+  this.tower.height = 25;
+  this.tower.body.setRectangle(50,25);
+
   this.tower.body.data.gravityScale = 5;
   this.tower.body.mass = 10;
   this.tower.body.damping = 0.1;
@@ -89,8 +93,9 @@ var Tower = function (worldX, worldY, tile) {
 
 Tower.prototype = {
   addToPoint: function (worldX, worldY) {
-    new Tower(worldX, worldY, 'tower');
+    new Tower(worldX, worldY, 'spaceship');
     towers.children[0].alpha = 0;
+    towers.children[0].anchor.setTo(0.5,0.5);
     game.add.tween(towers.children[0])
       .to({alpha: 1}, 500, Phaser.Easing.Linear.In,
       true, 1000, true, false)

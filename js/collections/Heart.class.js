@@ -12,7 +12,7 @@ var Heart = function() {
   SpaceGame._hearts.add(this.heart);
 
   this.heart.body.onBeginContact.add(function (body1, shapeA, shapeB) {
-    if (body1 && body1.sprite != null && body1.sprite.key=='tower') {
+    if (body1 && body1.sprite != null && body1.sprite.key=='spaceship') {
       // do not kill pickable items, only tower can pickup.
       // @todo: enemy can pickup?
       this.heart.kill();

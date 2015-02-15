@@ -12,7 +12,7 @@ var Brick = function() {
   SpaceGame._bricks.add(this.brick);
 
   this.brick.body.onBeginContact.add(function (body1, shapeA, shapeB) {
-    if (body1 && body1.sprite != null && body1.sprite.key=='tower') {
+    if (body1 && body1.sprite != null && body1.sprite.key=='spaceship') {
       // do not kill pickable items, only tower can pickup.
       // @todo: enemy can pickup?
       this.brick.kill();
