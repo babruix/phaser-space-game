@@ -15,6 +15,9 @@ SpaceGame.Menu.prototype = {
     this.add.tween(this._startText).to({
       y: (game.height-250)/2
     }, 1000, Phaser.Easing.Circular.Out, true, 50, 0);
+
+    // start immediately...
+    game.state.start('Main');
   },
   startGame: function() {
     game.state.start('Main');
