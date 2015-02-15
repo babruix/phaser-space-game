@@ -50,6 +50,7 @@ SpaceGame.Preloader.prototype = {
     game.load.spritesheet('bazyaka', 'assets/sprites/bazyaka.png', 70, 64, 80);
     game.load.spritesheet('ufo', 'assets/sprites/tarelka.png', 108, 64, 10);
     game.load.spritesheet('cat', 'assets/sprites/cat.png', 64, 104, 1);
+    game.load.spritesheet('nog', 'assets/sprites/nog50.png', 89, 119, 50);
 
     /**
      * Effects
