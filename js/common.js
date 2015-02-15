@@ -29,7 +29,7 @@ game.state.start('Boot');
 
 function nextLevel() {
   level++;
-  Tower.prototype.addToPoint(400, 400);
+  Tower.prototype.addToPoint(game.width/2, game.height-50);
   showLevelTitle();
   updateScoreText();
   addRndBricks();
