@@ -3,16 +3,17 @@
  * https://github.com/babruix
  */
 
-var game = new Phaser.Game(800, 900, Phaser.CANVAS);
+var game = new Phaser.Game(800, 880, Phaser.CANVAS);
 var debug = window.location.hash == "#deb";
 var enemySprites = [
-  {'name': 'duck', 'length': 8},
+  /*{'name': 'duck', 'length': 8},
   {'name': 'panda', 'length': 3},
   {'name': 'dog', 'length': 6},
-  {'name': 'penguin', 'length': 4},
+  {'name': 'penguin', 'length': 4},*/
   {'name': 'alian', 'length': 9},
   {'name': 'bazyaka', 'length': 80},
-  {'name': 'cat', 'length': 1}
+  {'name': 'cat', 'length': 1},
+  {'name': 'nog', 'length': 50}
 ];
 game.audio = {};
 game.state.add('Boot', SpaceGame.Boot);
