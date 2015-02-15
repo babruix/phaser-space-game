@@ -49,18 +49,14 @@ SpaceGame.Main.prototype = {
     ];
     game.audio.completedSnd = game.add.audio('completed', 1);
 
-    this._background = game.add.tileSprite(0, 0, 800, 1000, 'background');
-    this._background.alpha = 0;
-    game.add.tween(this._background).to({alpha: 1}, 2000,
-      Phaser.Easing.Linear.In,
-      true, //autostart?,
-      0, //delay,
-      0, //repeat?
-      false //yoyo?
-    );
-
-    SpaceGame.Main.prototype.generateClouds.call(this);
-    SpaceGame.Main.prototype.shakeFlowers();
+    SpaceGame.events = {};
+    SpaceGame.events.onNightOver = new Phaser.Signal();
+    this.createBackground();
+    this.createSun();
+    this.createDayTime();
+    SpaceGame.events.onNightOver.add(this.createDayTime, this);
+    this.generateClouds.call(this);
+    this.shakeFlowers();
 
     SpaceGame._fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     SpaceGame._brickButton = game.input.keyboard.addKey(Phaser.Keyboard.B);
@@ -174,6 +170,41 @@ SpaceGame.Main.prototype = {
     score -= 10;
     updateScore();
     SpaceGame._cursors = game.input.keyboard.createCursorKeys();
+  },
+  createDayTime: function () {
+    SpaceGame.dayLength = 20000;
+    this.createSunTween();
+    this.createBgTween();
+  },
+  createBgTween: function () {
+    SpaceGame._backgroundTw = game.add.tween(SpaceGame._background).to({alpha: 1}, SpaceGame.dayLength,
+      Phaser.Easing.Quintic.InOut,
+      true, //autostart?,
+      0, //delay,
+      0, //repeat?
+      true //yoyo?
+    );
+  },
+  createBackground: function () {
+    SpaceGame._background = game.add.tileSprite(0, 0, 800, 1000, 'background');
+    SpaceGame._background.alpha = 0;
+  },
+  createSun: function () {
+    SpaceGame._sun = game.add.sprite(60, 60, 'sun');
+  },
+  createSunTween: function () {
+    SpaceGame._sun.x = 10;
+    SpaceGame._sun.y = 10;
+    SpaceGame._sun.width = 10;
+    SpaceGame._sun.height = 10;
+    SpaceGame._sunTw = game.add.tween(SpaceGame._sun).to({
+      x: game.width-70,
+      width: 60,
+      height: 60
+    }, SpaceGame.dayLength, Phaser.Easing.Quintic.InOut, true,0,0,true);
+    SpaceGame._sunTw.onComplete.add(function () {
+      SpaceGame.events.onNightOver.dispatch(this);
+    });
   },
   generateClouds: function () {
   var cloudSises = {
