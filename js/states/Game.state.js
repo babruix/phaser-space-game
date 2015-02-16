@@ -49,10 +49,7 @@ SpaceGame.Main.prototype = {
     ];
     game.audio.completedSnd = game.add.audio('completed', 1);
 
-    SpaceGame.events = {};
-    SpaceGame.events.onNightOver = new Phaser.Signal();
     this.createDayTime();
-    SpaceGame.events.onNightOver.add(this.createDayTime, this);
 
     this.generateClouds.call(this);
 
@@ -172,9 +169,17 @@ SpaceGame.Main.prototype = {
     SpaceGame._cursors = game.input.keyboard.createCursorKeys();
   },
   createDayTime: function () {
+    SpaceGame.events = {};
+    SpaceGame.events.onNightOver = new Phaser.Signal();
+
     this.createBackground();
     this.createSun();
+
     SpaceGame.dayLength = 20000;
+    this.createSunAndBgTweens();
+    SpaceGame.events.onNightOver.add(this.createSunAndBgTweens, this);
+  },
+  createSunAndBgTweens: function () {
     this.createSunTween();
     this.createBgTween();
   },
@@ -183,7 +188,7 @@ SpaceGame.Main.prototype = {
       Phaser.Easing.Quintic.InOut,
       true, //autostart?,
       0, //delay,
-      0, //repeat?
+      1, //repeat?
       true //yoyo?
     );
   },
@@ -203,7 +208,7 @@ SpaceGame.Main.prototype = {
       x: game.width-70,
       width: 60,
       height: 60
-    }, SpaceGame.dayLength, Phaser.Easing.Quintic.InOut, true,0,0,true);
+    }, SpaceGame.dayLength, Phaser.Easing.Quintic.InOut, true,0,true,true);
     SpaceGame._sunTw.onComplete.add(function () {
       SpaceGame.events.onNightOver.dispatch(this);
     });
@@ -277,21 +282,24 @@ SpaceGame.Main.prototype = {
     enemys.forEach(function (enemy) {
 
       if (enemy && enemy.alive) {
-        if (enemy.y > 500 && towers.children[0].countBricks > 0) {
-          // protect with wall
-          towers.children[0].countBricks--;
-          new Wall(enemy.x, enemy.y+enemy.height);
-          updateScoreText();
-        }
 
         // steal a plant
-        if (enemy.closestPlant) {
+        if (enemy.closestPlant && enemy.closestPlant.alive) {
           enemys.stealing = true;
-          enemy.body.velocity.y=-100;
-          enemy.closestPlant.x=enemy.x;
-          enemy.closestPlant.y=enemy.y;
+          enemy.body.velocity.y = -100;
+          enemy.closestPlant.x = enemy.x;
+          enemy.closestPlant.y = enemy.y;
 
-          // "top plant kill"
+          // protect with wall
+          if (enemy.y < 200 && towers.children[0].countBricks > 0 && game.time.now > enemy.blockedLastTime) {
+            towers.children[0].countBricks--;
+
+            new Wall(enemy.x, enemy.y-enemy.height);
+            enemy.blockedLastTime = game.time.now + 300;
+            updateScoreText();
+          }
+
+          // use plant
           if (enemy.closestPlant.y < 100 && enemy.closestPlant) {
             game.audio.springSnd.play();
             enemy.kill();
@@ -340,11 +348,11 @@ SpaceGame.Main.prototype = {
                }
              }
            }
-            // steal a plant
+            // plant stealing in progress...
            if (enemy.closestPlant && enemy.closestPlant.alive) {
              enemy.closestPlant.scale.x=(0.5);
              enemy.closestPlant.scale.y=(0.5);
-             enemy.body.velocity.y=-1000;
+             enemy.body.velocity.y=-7000;
              enemy.closestPlant.x=enemy.x;
              enemy.closestPlant.y=enemy.y;
            }
@@ -359,7 +367,7 @@ SpaceGame.Main.prototype = {
 
       // Move tower
       tower.body.setZeroVelocity();
-      var speed = 100 + game.height - tower.body.y / 1.9;
+      var speed = 50 + game.height - tower.body.y / 1.3;
 
       if (SpaceGame._cursors.left.isDown) {
         tower.angle = -30;
