@@ -51,11 +51,11 @@ SpaceGame.Main.prototype = {
 
     SpaceGame.events = {};
     SpaceGame.events.onNightOver = new Phaser.Signal();
-    this.createBackground();
-    this.createSun();
     this.createDayTime();
     SpaceGame.events.onNightOver.add(this.createDayTime, this);
+
     this.generateClouds.call(this);
+
     this.shakeFlowers();
 
     SpaceGame._fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
@@ -172,6 +172,8 @@ SpaceGame.Main.prototype = {
     SpaceGame._cursors = game.input.keyboard.createCursorKeys();
   },
   createDayTime: function () {
+    this.createBackground();
+    this.createSun();
     SpaceGame.dayLength = 20000;
     this.createSunTween();
     this.createBgTween();
@@ -242,15 +244,14 @@ SpaceGame.Main.prototype = {
   }
 },
   shakeFlowers: function () {
-    SpaceGame.sprite_flow = [];
+    SpaceGame.flowerPlants = [];
     for (var i = 0; i < level+1; i++) {
-      console.log(i)
-      SpaceGame.sprite_flow[i] = game.add.sprite(76, 174, 'flow');
-      SpaceGame.sprite_flow[i].x = game.rnd.integerInRange(0, game.width);
-      SpaceGame.sprite_flow[i].y = game.rnd.integerInRange(game.height - 130 * 2, game.height - 70);
-      SpaceGame.sprite_flow[i].anchor.setTo(0.5, 1);
-      SpaceGame.sprite_flow[i].angle = -10*i;
-      var tween = game.add.tween(SpaceGame.sprite_flow[i]);
+      SpaceGame.flowerPlants[i] = game.add.sprite(76, 174, 'flow');
+      SpaceGame.flowerPlants[i].x = game.rnd.integerInRange(0, game.width);
+      SpaceGame.flowerPlants[i].y = game.rnd.integerInRange(game.height - 130 * 2, game.height - 70);
+      SpaceGame.flowerPlants[i].anchor.setTo(0.5, 1);
+      SpaceGame.flowerPlants[i].angle = -10*i;
+      var tween = game.add.tween(SpaceGame.flowerPlants[i]);
       tween.to({
           angle: 10
         }, 3000,
@@ -272,6 +273,7 @@ SpaceGame.Main.prototype = {
     /*
      *  Enemy
      */
+    enemys.stealing = false;
     enemys.forEach(function (enemy) {
 
       if (enemy && enemy.alive) {
@@ -281,39 +283,71 @@ SpaceGame.Main.prototype = {
           new Wall(enemy.x, enemy.y+enemy.height);
           updateScoreText();
         }
-         if (enemy.y > 660) {
-          // bottom fall
-          var style = {font: "20px Tahoma", fill: "#000000", align: "center"};
-          var cRect = game.add.graphics(0, 0)
-            .beginFill(0xff5a00)
-            .drawCircle(towers.children[0].x, towers.children[0].y, 40);
-          var health = game.add.text(towers.children[0].x-10, towers.children[0].y-15, '-' + enemy.health, style);
-          var health_tween = game.add.tween(health);
-          health_tween.to({opacity: 0.3}, 1000,
-            Phaser.Easing.Cubic.NONE,
-            true /*autostart?*/,
-            100 /*delay*/,
-            false /*yoyo?*/);
-          //
-          health_tween.onLoop.add(function () {
-            health.destroy();
-            cRect.destroy();
-          }, this);
+
+        // steal a plant
+        if (enemy.closestPlant) {
+          enemys.stealing = true;
+          enemy.body.velocity.y=-100;
+          enemy.closestPlant.x=enemy.x;
+          enemy.closestPlant.y=enemy.y;
+
+          // "top plant kill"
+          if (enemy.closestPlant.y < 100 && enemy.closestPlant) {
+            game.audio.springSnd.play();
+            enemy.kill();
+            enemy.closestPlant.destroy();
+            var cRect = game.add.graphics(0, 0)
+              .beginFill(0xff5a00)
+              .drawCircle(towers.children[0].x, towers.children[0].y, 40);
+            var health = game.add.text(towers.children[0].x-10, towers.children[0].y-15, '-' + enemy.health, {font: "20px Tahoma", fill: "#000000", align: "center"});
+            var health_tween = game.add.tween(health);
+            health_tween.to({opacity: 0.3}, 1000,
+              Phaser.Easing.Cubic.NONE,
+              true /*autostart?*/,
+              100 /*delay*/,
+              false /*yoyo?*/);
+            //
+            health_tween.onLoop.add(function () {
+              health.destroy();
+              cRect.destroy();
+            }, this);
+
+            if (towers.children[0].health > enemy.health) {
+              towers.children[0].damage(enemy.health);
+            }
+            else {
+              towers.children[0].damage(enemy.health - 1);
+            }
+            if (towers && towers.children[0]) {
+              towers.children[0].fireTime += enemy.health;
+            }
+            //
+           // enemy.kill();
+            updateScoreText();
+          }
+        }
 
 
-          game.audio.springSnd.play();
-          if (towers.children[0].health > enemy.health) {
-            towers.children[0].damage(enemy.health);
-          }
-          else {
-            towers.children[0].damage(enemy.health - 1);
-          }
-
-          if (towers && towers.children[0]) {
-            towers.children[0].fireTime += enemy.health;
-          }
-          enemy.kill();
-          updateScoreText();
+         if (enemy.y > 460) {
+           // find closest  plant
+           enemy.closestPlant = SpaceGame.flowerPlants[0];
+           if (enemy.closestPlant)  {
+             for (var i = 0; i < level + 1; i++) {
+               if (SpaceGame.flowerPlants[i]
+                 && enemy.closestPlant.x - enemy.x < SpaceGame.flowerPlants[i].x - enemy.x) {
+                 enemy.closestPlant = SpaceGame.flowerPlants[i];
+                 SpaceGame.flowerPlants[i]=null;
+               }
+             }
+           }
+            // steal a plant
+           if (enemy.closestPlant && enemy.closestPlant.alive) {
+             enemy.closestPlant.scale.x=(0.5);
+             enemy.closestPlant.scale.y=(0.5);
+             enemy.body.velocity.y=-1000;
+             enemy.closestPlant.x=enemy.x;
+             enemy.closestPlant.y=enemy.y;
+           }
         }
       }
     });
