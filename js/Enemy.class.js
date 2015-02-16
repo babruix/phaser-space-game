@@ -81,6 +81,7 @@ Enemy.prototype = {
     enemy.boundsPadding = 20;
     enemy.fireTime = 1000;
     enemy.fireLastTime = game.time.now + enemy.fireTime;
+    enemy.blockedLastTime = game.time.now + 300;
 
     enemy.animations.add('walk');
     enemy.animations.play('walk', animLength, true);
@@ -120,10 +121,10 @@ Enemy.prototype = {
         }
 
         // put plant back
-        if (enemy.closestPlant) {
-          enemy.closestPlant.y=720;
-          enemy.closestPlant.scale.x=(1);
-          enemy.closestPlant.scale.y=(1);
+        if (enemy.closestPlant && enemy.closestPlant.alive) {
+          enemy.closestPlant.y = 720;
+          enemy.closestPlant.scale.x = (1);
+          enemy.closestPlant.scale.y = (1);
           enemy.closestPlant = null;
         }
       }
@@ -131,7 +132,7 @@ Enemy.prototype = {
 
     enemy.update = function () {
       if (enemy) {
-        if (enemy.closestPlant) {
+        if ((enemy.closestPlant && enemy.closestPlant.alive) || enemys.stealing) {
           Enemy.prototype.fire(enemy);
         }
         Enemy.prototype.scale(enemy);
