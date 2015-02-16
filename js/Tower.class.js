@@ -12,9 +12,9 @@ var Tower = function (worldX, worldY, tile) {
   this.tower.wallLastTime = game.time.now + this.tower.wallTime;
   game.physics.p2.enable(this.tower, debug);
 
-  this.tower.width = 50;
-  this.tower.height = 25;
-  this.tower.body.setRectangle(50,25);
+  this.tower.width = 100;
+  this.tower.height = 50;
+  this.tower.body.setRectangle(100,50);
 
   this.tower.body.data.gravityScale = 5;
   this.tower.body.mass = 10;
@@ -116,7 +116,7 @@ Tower.prototype = {
     SpaceGame._shipTrail.alpha = 0;
   },
   fire: function (tower) {
-    if (tower.alive && game.time.now > tower.fireLastTime && tower.alpha > 0.9) {
+    if (enemys.stealing && tower.alive && game.time.now > tower.fireLastTime && tower.alpha > 0.9) {
       game.audio.playerSndFire.play();
       var bullet = new Bullet(tower.x, tower.y - 1, false);
       if (bullet != undefined && bullet.body != undefined) {
