@@ -118,12 +118,22 @@ Enemy.prototype = {
         if (enemy.health == 1) {
           this.explode(enemy);
         }
+
+        // put plant back
+        if (enemy.closestPlant) {
+          enemy.closestPlant.y=720;
+          enemy.closestPlant.scale.x=(1);
+          enemy.closestPlant.scale.y=(1);
+          enemy.closestPlant = null;
+        }
       }
     }, this);
 
     enemy.update = function () {
-      if (typeof enemy != "undefined") {
-        Enemy.prototype.fire(enemy);
+      if (enemy) {
+        if (enemy.closestPlant) {
+          Enemy.prototype.fire(enemy);
+        }
         Enemy.prototype.scale(enemy);
       }
     };
