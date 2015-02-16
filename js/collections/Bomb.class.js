@@ -4,15 +4,9 @@ var Bomb = function() {
   this.bomb.anchor.setTo(0.5, 0.5);
 
   game.physics.p2.enable(this.bomb, debug);
-  //this.bomb.body.data.gravityScale = 0.01;
-  //this.bomb.body.data.mass = 0.1;
-  //this.bomb.body.static = true;
+  this.bomb.body.data.mass = 5;
   this.bomb.scale.setTo(.5,.5);
-  this.bomb.body.damping = 0.9;
-
-  //this.bomb.body.checkWorldBounds = true;
-  //this.bomb.body.collideWorldBounds = false;
-
+  this.bomb.body.damping = 1;
 
   this.bomb.body.onBeginContact.add(function (body1, shapeA, shapeB) {
     if (body1 && body1.sprite != null) {
