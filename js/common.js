@@ -41,7 +41,7 @@ function nextLevel() {
   game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 100), Heart.prototype.generateHeart, this);
   game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30), Shield.prototype.generateShield, this);
   game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30), Missle.prototype.generateMissle, this);
-  for (var i = 0; i < level; i++) {
+  for (var i = 0; i < parseInt(level/2); i++) {
     Bomb.prototype.generateBomb();
   }
 }
@@ -180,7 +180,7 @@ function addWalls() {
 }
 
 function addRndBricks() {
-  for (var i = 1; i < level*10; i++) {
+  for (var i = 1; i < parseInt(level/2)*3; i++) {
     new Wall(game.rnd.integerInRange(0,game.width), game.rnd.integerInRange(0,game.height));
   }
   SpaceGame._walls.setAll('alpha', 0);
