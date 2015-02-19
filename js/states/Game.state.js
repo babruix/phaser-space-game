@@ -1,4 +1,11 @@
-SpaceGame.Main = function(game){
+SpaceGame.Main = function (game) {
+  SpaceGame.enemySprites = [
+    {'name': 'alian', 'length': 9},
+    {'name': 'bazyaka', 'length': 80},
+    {'name': 'cat', 'length': 1},
+    {'name': 'nog', 'length': 50}
+  ];
+
   this._background = null;
 
   SpaceGame._fireButton = null;
@@ -28,7 +35,7 @@ SpaceGame.Main = function(game){
   SpaceGame._ufos = null;
 };
 SpaceGame.Main.prototype = {
-  create: function() {
+  create: function () {
     SpaceGame._newLevelStarted = false;
 
     game.audio.enemySndFire = game.add.audio('gulp', 2);
@@ -205,57 +212,57 @@ SpaceGame.Main.prototype = {
     SpaceGame._sun.width = 10;
     SpaceGame._sun.height = 10;
     SpaceGame._sunTw = game.add.tween(SpaceGame._sun).to({
-      x: game.width-70,
+      x: game.width - 70,
       width: 60,
       height: 60
-    }, SpaceGame.dayLength, Phaser.Easing.Quintic.InOut, true,0,true,true);
+    }, SpaceGame.dayLength, Phaser.Easing.Quintic.InOut, true, 0, true, true);
     SpaceGame._sunTw.onComplete.add(function () {
       SpaceGame.events.onNightOver.dispatch(this);
     });
   },
   generateClouds: function () {
-  var cloudSises = {
-    '0': {x: 124, y: 54, toX:485,toY:13},
-    '1': {x: 132, y: 82, toX:120,toY:93},
-    '2': {x: 324, y: 68, toX:443,toY:58},
-    '3': {x: 272, y: 55, toX:160,toY:164},
-    '4': {x: 505, y: 130, toX:465,toY:107},
-    '5': {x: 450, y: 158, toX:150,toY:258},
-    '6': {x: 352, y: 102, toX:120,toY:100}
-  };
-  this._tweenClouds = [];
-  for (var i = 0; i <= 6; i++) {
-    this._cloud = game.add.tileSprite(cloudSises[i].toX, cloudSises[i].toY, cloudSises[i].x, cloudSises[i].y, 'cloud' + i);
-    // Also enable sprite for drag
-    this._cloud.inputEnabled = true;
-    this._cloud.input.enableDrag();
+    var cloudSises = {
+      '0': {x: 124, y: 54, toX: 485, toY: 13},
+      '1': {x: 132, y: 82, toX: 120, toY: 93},
+      '2': {x: 324, y: 68, toX: 443, toY: 58},
+      '3': {x: 272, y: 55, toX: 160, toY: 164},
+      '4': {x: 505, y: 130, toX: 465, toY: 107},
+      '5': {x: 450, y: 158, toX: 150, toY: 258},
+      '6': {x: 352, y: 102, toX: 120, toY: 100}
+    };
+    this._tweenClouds = [];
+    for (var i = 0; i <= 6; i++) {
+      this._cloud = game.add.tileSprite(cloudSises[i].toX, cloudSises[i].toY, cloudSises[i].x, cloudSises[i].y, 'cloud' + i);
+      // Also enable sprite for drag
+      this._cloud.inputEnabled = true;
+      this._cloud.input.enableDrag();
 
-    this._cloud.events.onDragStart.add(function(){
-      console.log('key='+this._cloud.key);
-      console.log({x:this._cloud.x,y:this._cloud.y});
-    }, this);
-    this._cloud.events.onDragStop.add(function(){
-      console.log({'x':this._cloud.x,'y':this._cloud.y});
-    }, this);
+      this._cloud.events.onDragStart.add(function () {
+        console.log('key=' + this._cloud.key);
+        console.log({x: this._cloud.x, y: this._cloud.y});
+      }, this);
+      this._cloud.events.onDragStop.add(function () {
+        console.log({'x': this._cloud.x, 'y': this._cloud.y});
+      }, this);
 
-    /*var speed = game.rnd.integerInRange(this._cloud.x+this._cloud.width*50, this._cloud.width * 500);
-    this._tweenClouds[i] = game.add.tween(this._cloud).to({x: game.rnd.integerInRange(this._cloud.x, this._cloud.x+this._cloud.width)}, speed,
-      Phaser.Easing.Sinusoidal.InOut,
-      true, //autostart?,
-      0, //delay,
-      false, //repeat?
-      true //yoyo?
-    );*/
-  }
-},
+      /*var speed = game.rnd.integerInRange(this._cloud.x+this._cloud.width*50, this._cloud.width * 500);
+       this._tweenClouds[i] = game.add.tween(this._cloud).to({x: game.rnd.integerInRange(this._cloud.x, this._cloud.x+this._cloud.width)}, speed,
+       Phaser.Easing.Sinusoidal.InOut,
+       true, //autostart?,
+       0, //delay,
+       false, //repeat?
+       true //yoyo?
+       );*/
+    }
+  },
   shakeFlowers: function () {
     SpaceGame.flowerPlants = [];
-    for (var i = 0; i < level+1; i++) {
+    for (var i = 0; i < level + 1; i++) {
       SpaceGame.flowerPlants[i] = game.add.sprite(76, 174, 'flow');
       SpaceGame.flowerPlants[i].x = game.rnd.integerInRange(0, game.width);
       SpaceGame.flowerPlants[i].y = game.rnd.integerInRange(game.height - 130 * 2, game.height - 70);
       SpaceGame.flowerPlants[i].anchor.setTo(0.5, 1);
-      SpaceGame.flowerPlants[i].angle = -10*i;
+      SpaceGame.flowerPlants[i].angle = -10 * i;
       var tween = game.add.tween(SpaceGame.flowerPlants[i]);
       tween.to({
           angle: 10
@@ -267,7 +274,7 @@ SpaceGame.Main.prototype = {
     }
 
   },
-  update: function() {
+  update: function () {
     if (enemys.countLiving() == 0
       && SpaceGame._allEnemysAdded
       && !SpaceGame._newLevelStarted) {
@@ -294,7 +301,7 @@ SpaceGame.Main.prototype = {
           if (enemy.y < 200 && towers.children[0].countBricks > 0 && game.time.now > enemy.blockedLastTime) {
             towers.children[0].countBricks--;
 
-            new Wall(enemy.x, enemy.y-enemy.height);
+            new Wall(enemy.x, enemy.y - enemy.height);
             enemy.blockedLastTime = game.time.now + 300;
             updateScoreText();
           }
@@ -307,7 +314,11 @@ SpaceGame.Main.prototype = {
             var cRect = game.add.graphics(0, 0)
               .beginFill(0xff5a00)
               .drawCircle(towers.children[0].x, towers.children[0].y, 40);
-            var health = game.add.text(towers.children[0].x-10, towers.children[0].y-15, '-' + enemy.health, {font: "20px Tahoma", fill: "#000000", align: "center"});
+            var health = game.add.text(towers.children[0].x - 10, towers.children[0].y - 15, '-' + enemy.health, {
+              font: "20px Tahoma",
+              fill: "#000000",
+              align: "center"
+            });
             var health_tween = game.add.tween(health);
             health_tween.to({opacity: 0.3}, 1000,
               Phaser.Easing.Cubic.NONE,
@@ -330,32 +341,32 @@ SpaceGame.Main.prototype = {
               towers.children[0].fireTime += enemy.health;
             }
             //
-           // enemy.kill();
+            // enemy.kill();
             updateScoreText();
           }
         }
 
 
-         if (enemy.y > 460) {
-           // find closest  plant
-           enemy.closestPlant = SpaceGame.flowerPlants[0];
-           if (enemy.closestPlant)  {
-             for (var i = 0; i < level + 1; i++) {
-               if (SpaceGame.flowerPlants[i]
-                 && enemy.closestPlant.x - enemy.x < SpaceGame.flowerPlants[i].x - enemy.x) {
-                 enemy.closestPlant = SpaceGame.flowerPlants[i];
-                 SpaceGame.flowerPlants[i]=null;
-               }
-             }
-           }
-            // plant stealing in progress...
-           if (enemy.closestPlant && enemy.closestPlant.alive) {
-             enemy.closestPlant.scale.x=(0.5);
-             enemy.closestPlant.scale.y=(0.5);
-             enemy.body.velocity.y=-7000;
-             enemy.closestPlant.x=enemy.x;
-             enemy.closestPlant.y=enemy.y;
-           }
+        if (enemy.y > 460) {
+          // find closest  plant
+          enemy.closestPlant = SpaceGame.flowerPlants[0];
+          if (enemy.closestPlant) {
+            for (var i = 0; i < level + 1; i++) {
+              if (SpaceGame.flowerPlants[i]
+                && enemy.closestPlant.x - enemy.x < SpaceGame.flowerPlants[i].x - enemy.x) {
+                enemy.closestPlant = SpaceGame.flowerPlants[i];
+                SpaceGame.flowerPlants[i] = null;
+              }
+            }
+          }
+          // plant stealing in progress...
+          if (enemy.closestPlant && enemy.closestPlant.alive) {
+            enemy.closestPlant.scale.x = (0.5);
+            enemy.closestPlant.scale.y = (0.5);
+            enemy.body.velocity.y = -7000;
+            enemy.closestPlant.x = enemy.x;
+            enemy.closestPlant.y = enemy.y;
+          }
         }
       }
     });
@@ -419,9 +430,9 @@ SpaceGame.Main.prototype = {
           if (game.input.y > tower.y) {
             tower.body.velocity.y = speed;
           }
-/*          if (game.input.y > 600) {
-            Tower.prototype.fire(tower);
-          }*/
+          /*          if (game.input.y > 600) {
+           Tower.prototype.fire(tower);
+           }*/
 
           // Multiple touches/pointers
           /*if (this.game.input.pointer1.isDown && this.game.input.pointer2.isDown)

@@ -5,16 +5,7 @@
 
 var game = new Phaser.Game(800, 880, Phaser.CANVAS);
 var debug = window.location.hash == "#deb";
-var enemySprites = [
-  /*{'name': 'duck', 'length': 8},
-  {'name': 'panda', 'length': 3},
-  {'name': 'dog', 'length': 6},
-  {'name': 'penguin', 'length': 4},*/
-  {'name': 'alian', 'length': 9},
-  {'name': 'bazyaka', 'length': 80},
-  {'name': 'cat', 'length': 1},
-  {'name': 'nog', 'length': 50}
-];
+
 game.audio = {};
 game.state.add('Boot', SpaceGame.Boot);
 game.state.add('Preloader', SpaceGame.Preloader);
@@ -192,7 +183,7 @@ function addEnemys() {
   var enemysBcl = game.time.events.loop(level/2 * Phaser.Timer.SECOND, function () {
     // Generate i=level number of enemys
     if (i < level ) {
-      var animEnemy = enemySprites[game.rnd.integerInRange(0, enemySprites.length-1)];
+      var animEnemy = SpaceGame.enemySprites[game.rnd.integerInRange(0, SpaceGame.enemySprites.length-1)];
       var enemy = new Enemy(0, 0, animEnemy.name, animEnemy.length);
       var param = {
         x: parseInt(game.rnd.integerInRange(0, game.width)),

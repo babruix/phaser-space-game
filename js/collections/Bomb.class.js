@@ -11,8 +11,8 @@ var Bomb = function() {
   this.bomb.body.onBeginContact.add(function (body1, shapeA, shapeB) {
     if (body1 && body1.sprite != null) {
       if (body1.sprite.key != 'spaceship') {
-        for (var i = 0, x = enemySprites.length; i < x; i++) {
-          if (enemySprites[i].name == body1.sprite.key) {
+        for (var i = 0, x = SpaceGame.enemySprites.length; i < x; i++) {
+          if (SpaceGame.enemySprites[i].name == body1.sprite.key) {
             this.bomb.kill();
             game.audio.explosionSnd.play();
             body1.sprite.damage(10);

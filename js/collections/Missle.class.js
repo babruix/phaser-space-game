@@ -14,8 +14,8 @@ var Missle = function(x, y) {
   this.missle.body.onBeginContact.add(function (body1, shapeA, shapeB) {
     if (body1 != null && body1.sprite != null) {
       if (body1.sprite.key != 'spaceship') {
-        for (var i = 0, x = enemySprites.length; i < x; i++) {
-          if (enemySprites[i].name == body1.sprite.key) {
+        for (var i = 0, x = SpaceGame.enemySprites.length; i < x; i++) {
+          if (SpaceGame.enemySprites[i].name == body1.sprite.key) {
             this.explode(this.missle);
             break;
           }
