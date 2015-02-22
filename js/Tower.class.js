@@ -16,9 +16,9 @@ var Tower = function (worldX, worldY, tile) {
   this.tower.height = 50;
   this.tower.body.setRectangle(100,50);
 
-  this.tower.body.data.gravityScale = 5;
-  this.tower.body.mass = 10;
-  this.tower.body.damping = 0.1;
+  this.tower.body.data.gravityScale = 70;
+  this.tower.body.mass = 50;
+  this.tower.body.damping = 0.9;
   this.tower.body.fixedRotation = true;
   this.tower.body.collideWorldBounds = true;
   towers.add(this.tower);
