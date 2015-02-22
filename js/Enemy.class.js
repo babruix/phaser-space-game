@@ -144,10 +144,9 @@ Enemy.prototype = {
   fire: function (enemy) {
     if (enemy.alive && game.time.now > enemy.fireLastTime) {
       game.audio.enemySndFire.play();
-      towers.children[0].fireTime += 0.5;
       var bullet = new Bullet(enemy.x, enemy.y, true);
       bullet.rotation = parseFloat(game.physics.arcade.angleToXY(bullet, towers.children[0].x, towers.children[0].y)) * 180 / Math.PI;
-      game.physics.arcade.moveToObject(bullet, towers.children[0], level*200);
+      game.physics.arcade.moveToObject(bullet, towers.children[0], level*100);
       bullet = null;
       enemy.fireLastTime = game.time.now + enemy.fireTime;
     }
