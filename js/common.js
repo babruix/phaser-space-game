@@ -3,7 +3,7 @@
  * https://github.com/babruix
  */
 
-var game = new Phaser.Game(800, 880, Phaser.CANVAS);
+var game = new Phaser.Game(getWidth(), 800, Phaser.CANVAS);
 var debug = window.location.hash == "#deb";
 
 game.audio = {};
@@ -263,5 +263,33 @@ function updateScore($lifeLost) {
   updateScoreText();
   if (lives < 0) {
     game.state.start('GameOver');
+  }
+}
+
+function getWidth() {
+  if (self.innerHeight) {
+    return self.innerWidth;
+  }
+
+  if (document.documentElement && document.documentElement.clientHeight) {
+    return document.documentElement.clientWidth;
+  }
+
+  if (document.body) {
+    return document.body.clientWidth;
+  }
+}
+
+function getHeight() {
+  if (self.innerHeight) {
+    return self.innerHeight;
+  }
+
+  if (document.documentElement && document.documentElement.clientHeight) {
+    return document.documentElement.clientHeight;
+  }
+
+  if (document.body) {
+    return document.body.clientHeight;
   }
 }
