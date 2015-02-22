@@ -81,7 +81,7 @@ SpaceGame.Main.prototype = {
     game.physics.enable(towers, Phaser.Physics.P2JS, debug);
     game.physics.p2.setImpactEvents(true);
     game.camera.follow(towers);
-
+    game.world.setBounds(0, 0, 1600, 800);
     /*
      * Heart
      */
@@ -191,7 +191,7 @@ SpaceGame.Main.prototype = {
     this.createBgTween();
   },
   createBgTween: function () {
-    SpaceGame._backgroundTw = game.add.tween(SpaceGame._background).to({alpha: 1}, SpaceGame.dayLength,
+    SpaceGame._backgroundTw = game.add.tween(SpaceGame._background).to({alpha: 0}, SpaceGame.dayLength,
       Phaser.Easing.Quintic.InOut,
       true, //autostart?,
       0, //delay,
@@ -200,8 +200,8 @@ SpaceGame.Main.prototype = {
     );
   },
   createBackground: function () {
-    SpaceGame._background = game.add.tileSprite(0, 0, 800, 1000, 'background');
-    SpaceGame._background.alpha = 0;
+    SpaceGame._background = game.add.tileSprite(0, 0, 1700, 800, 'background');
+    SpaceGame._background.alpha = 1;
   },
   createSun: function () {
     SpaceGame._sun = game.add.sprite(60, 60, 'sun');
@@ -245,14 +245,14 @@ SpaceGame.Main.prototype = {
         console.log({'x': this._cloud.x, 'y': this._cloud.y});
       }, this);
 
-      /*var speed = game.rnd.integerInRange(this._cloud.x+this._cloud.width*50, this._cloud.width * 500);
+      var speed = game.rnd.integerInRange(this._cloud.x+this._cloud.width*50, this._cloud.width * 500);
        this._tweenClouds[i] = game.add.tween(this._cloud).to({x: game.rnd.integerInRange(this._cloud.x, this._cloud.x+this._cloud.width)}, speed,
        Phaser.Easing.Sinusoidal.InOut,
        true, //autostart?,
        0, //delay,
        false, //repeat?
        true //yoyo?
-       );*/
+       );
     }
   },
   shakeFlowers: function () {
@@ -275,6 +275,7 @@ SpaceGame.Main.prototype = {
 
   },
   update: function () {
+    SpaceGame._background.tilePosition.set(game.camera.x * -0.5, game.camera.y * -0.5);
     if (enemys.countLiving() == 0
       && SpaceGame._allEnemysAdded
       && !SpaceGame._newLevelStarted) {
