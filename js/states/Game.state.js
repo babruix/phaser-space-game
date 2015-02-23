@@ -256,14 +256,16 @@ SpaceGame.Main.prototype = {
     }
   },
   shakeFlowers: function () {
-    SpaceGame.flowerPlants = [];
+    SpaceGame._flowerPlants = game.add.group();
+    var plant = null;
     for (var i = 0; i < level + 1; i++) {
-      SpaceGame.flowerPlants[i] = game.add.sprite(76, 174, 'flow');
-      SpaceGame.flowerPlants[i].x = game.rnd.integerInRange(0, game.width);
-      SpaceGame.flowerPlants[i].y = game.rnd.integerInRange(game.height - 130 * 2, game.height - 70);
-      SpaceGame.flowerPlants[i].anchor.setTo(0.5, 1);
-      SpaceGame.flowerPlants[i].angle = -10 * i;
-      var tween = game.add.tween(SpaceGame.flowerPlants[i]);
+      plant = game.add.sprite(76, 174, 'flow');
+      plant.x = game.rnd.integerInRange(0, game.width);
+      plant.y = game.rnd.integerInRange(game.height - 130 * 2, game.height - 70);
+      plant.anchor.setTo(0.5, 1);
+      plant.angle = -10 * i;
+      SpaceGame._flowerPlants.add(plant);
+      var tween = game.add.tween(plant);
       tween.to({
           angle: 10
         }, 3000,
@@ -271,6 +273,7 @@ SpaceGame.Main.prototype = {
         true /*autostart?*/,
         0 /*delay*/,
         false /*yoyo?*/, true);
+      plant = null;
     }
 
   },
@@ -310,7 +313,7 @@ SpaceGame.Main.prototype = {
           // use plant
           if (enemy.closestPlant.y < 100 && enemy.closestPlant) {
             game.audio.springSnd.play();
-            enemy.kill();
+            //enemy.kill();
             enemy.closestPlant.destroy();
             var cRect = game.add.graphics(0, 0)
               .beginFill(0xff5a00)
@@ -350,18 +353,16 @@ SpaceGame.Main.prototype = {
 
         if (enemy.y > 460) {
           // find closest  plant
-          enemy.closestPlant = SpaceGame.flowerPlants[0];
-          if (enemy.closestPlant) {
-            for (var i = 0; i < level + 1; i++) {
-              if (SpaceGame.flowerPlants[i]
-                && enemy.closestPlant.x - enemy.x < SpaceGame.flowerPlants[i].x - enemy.x) {
-                enemy.closestPlant = SpaceGame.flowerPlants[i];
-                SpaceGame.flowerPlants[i] = null;
-              }
+          enemy.closestPlant = SpaceGame._flowerPlants.getFirstAlive();
+          SpaceGame._flowerPlants.forEachAlive(function (plant) {
+            if (!plant.stealing && enemy.closestPlant.x - enemy.x < plant.x - enemy.x) {
+              enemy.closestPlant = plant;
             }
-          }
+          });
+
           // plant stealing in progress...
           if (enemy.closestPlant && enemy.closestPlant.alive) {
+            enemy.closestPlant.stealing = true;
             enemy.closestPlant.scale.x = (0.5);
             enemy.closestPlant.scale.y = (0.5);
             enemy.body.velocity.y = -7000;
@@ -371,6 +372,10 @@ SpaceGame.Main.prototype = {
         }
       }
     });
+
+    if (!SpaceGame._flowerPlants.countLiving()) {
+      game.state.start('GameOver');
+    }
 
     towers.forEachAlive(function (tower) {
       if (tower.alpha < 1) {
