@@ -12,7 +12,7 @@ SpaceGame.Boot.prototype = {
   create : function(){
     // Set scale options
     game.input.maxPointers = 1; // No multi-touch
-    game.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
+    game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     game.scale.pageAlignHorizontally = true;
     game.scale.pageAlignVertically = true;
     game.scale.setScreenSize(true);
