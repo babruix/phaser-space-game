@@ -446,5 +446,9 @@ SpaceGame.Main.prototype = {
         }
       }
     });
+
+    SpaceGame._fireGraph.x = game.camera.x;
+    SpaceGame._lifeGraph.x = game.camera.x;
+    SpaceGame._scoreText.x = game.camera.x;
   }
 };
