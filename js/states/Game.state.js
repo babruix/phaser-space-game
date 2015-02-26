@@ -296,10 +296,12 @@ SpaceGame.Main.prototype = {
 
         // steal a plant
         if (enemy.closestPlant && enemy.closestPlant.alive) {
-          enemys.stealing = true;
-          enemy.body.velocity.y = -100;
-          enemy.closestPlant.x = enemy.x;
-          enemy.closestPlant.y = enemy.y;
+          if (enemy.closestPlant.stealing) {
+            enemys.stealing = true;
+            enemy.body.velocity.y = -100;
+            enemy.closestPlant.x = enemy.x;
+            enemy.closestPlant.y = enemy.y;
+          }
 
           // protect with wall
           if (enemy.y < 200 && towers.children[0].countBricks > 0 && game.time.now > enemy.blockedLastTime) {
@@ -350,6 +352,11 @@ SpaceGame.Main.prototype = {
           }
         }
 
+        // plant is too far, forget
+        if (enemy.y < 300 && enemy.closestPlant && !enemys.stealing) {
+          enemy.closestPlant.stealing = false;
+          enemy.closestPlant = false;
+        }
 
         if (enemy.y > 460) {
           // find closest  plant
@@ -360,14 +367,25 @@ SpaceGame.Main.prototype = {
             }
           });
 
-          // plant stealing in progress...
           if (enemy.closestPlant && enemy.closestPlant.alive) {
-            enemy.closestPlant.stealing = true;
-            enemy.closestPlant.scale.x = (0.5);
-            enemy.closestPlant.scale.y = (0.5);
-            enemy.body.velocity.y = -7000;
-            enemy.closestPlant.x = enemy.x;
-            enemy.closestPlant.y = enemy.y;
+
+            if (Math.abs(enemy.x - enemy.closestPlant.x) > 100) {
+              // come close
+              enemy.body.velocity.x = 700;
+              if (enemy.x > enemy.closestPlant.x) {
+                enemy.body.velocity.x *= -1;
+              }
+            }
+            else {
+              // plant stealing in progress...
+              enemys.stealing = true;
+              enemy.closestPlant.stealing = true;
+              enemy.closestPlant.scale.x = (0.5);
+              enemy.closestPlant.scale.y = (0.5);
+              enemy.body.velocity.y = -100;
+              enemy.closestPlant.x = enemy.x;
+              enemy.closestPlant.y = enemy.y;
+            }
           }
         }
       }
