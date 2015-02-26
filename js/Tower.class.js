@@ -116,7 +116,7 @@ Tower.prototype = {
     SpaceGame._shipTrail.alpha = 0;
   },
   fire: function (tower) {
-    if (enemys.stealing && tower.alive && game.time.now > tower.fireLastTime && tower.alpha > 0.9) {
+    if (enemys.stealing && tower.alive && game.time.now > tower.fireLastTime) {
       game.audio.playerSndFire.play();
       var bullet = new Bullet(tower.x, tower.y - 1, false);
       if (bullet != undefined && bullet.body != undefined) {
