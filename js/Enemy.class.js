@@ -1,5 +1,5 @@
 var Enemy = function (x, y, anim, animLength) {
-  var x2 = game.rnd.integerInRange(100, game.width-200);
+  var xDestination = game.rnd.integerInRange(100, game.world.width-200);
   var rndInt = game.rnd.integerInRange(0, game.audio.ufoSnd.length-1);
   game.audio.ufoSnd[rndInt].play();
   var ufo = game.add.sprite(0, 0, 'ufo');
@@ -21,7 +21,7 @@ var Enemy = function (x, y, anim, animLength) {
   this.enemy.ufo = ufo;
   this.enemy.ufo_sound = game.audio.ufoSnd[rndInt];
   ufo.body.velocity.x = 100;
-  this.enemy.to_x = x2;
+  this.enemy.to_x = xDestination;
 
   var _this = this;
   this.enemy.update = function () {
@@ -133,7 +133,7 @@ Enemy.prototype = {
 
     enemy.update = function () {
       if (enemy) {
-        if ((enemy.closestPlant && enemy.closestPlant.alive) || enemys.stealing) {
+        if ((enemy.closestPlant && enemy.closestPlant.alive && enemy.closestPlant.stealing) || enemys.stealing) {
           Enemy.prototype.fire(enemy);
         }
         Enemy.prototype.scale(enemy);
