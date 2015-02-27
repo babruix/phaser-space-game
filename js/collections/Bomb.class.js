@@ -4,8 +4,8 @@ var Bomb = function() {
   this.bomb.anchor.setTo(0.5, 0.5);
 
   game.physics.p2.enable(this.bomb, debug);
-  this.bomb.body.data.mass = 5;
-  this.bomb.scale.setTo(.5,.5);
+  this.bomb.body.data.mass = 7;
+  this.bomb.scale.setTo(.8,.8);
   this.bomb.body.damping = 1;
 
   this.bomb.body.onBeginContact.add(function (body1, shapeA, shapeB) {
