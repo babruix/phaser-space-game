@@ -158,7 +158,7 @@ Tower.prototype = {
       tower._protectRect.lineWidth = towers.children[0].shieldPower / 10;
       tower._protectRect.lineColor = 0xFFFFFF;
       tower._protectRect.alpha = 0.7;
-      tower._protectRect.drawCircle(towers.children[0].x, towers.children[0].y, 30 + towers.children[0].shieldPower / 10);
+      tower._protectRect.drawCircle(towers.children[0].x, towers.children[0].y, towers.children[0].width + towers.children[0].shieldPower / 10);
     }
   }
 };
