@@ -81,7 +81,7 @@ SpaceGame.Main.prototype = {
     game.physics.enable(towers, Phaser.Physics.P2JS, debug);
     game.physics.p2.setImpactEvents(true);
     game.camera.follow(towers);
-    game.world.setBounds(0, 0, 1600, 800);
+    game.world.setBounds(0, 0, getWidth()*4, 800);
     /*
      * Heart
      */
@@ -200,7 +200,7 @@ SpaceGame.Main.prototype = {
     );
   },
   createBackground: function () {
-    SpaceGame._background = game.add.tileSprite(0, 0, 1700, 800, 'background');
+    SpaceGame._background = game.add.tileSprite(0, 0, getWidth()*4, 800, 'background');
     SpaceGame._background.alpha = 1;
   },
   createSun: function () {
