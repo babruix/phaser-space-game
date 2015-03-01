@@ -65,12 +65,13 @@ var Tower = function (worldX, worldY, tile) {
   var _this = this;
   this.tower.update = function () {
     // Fire
-    SpaceGame._fireButton.onDown.add(function () {
+    Tower.prototype.fire(_this.tower);
+    /*SpaceGame._fireButton.onDown.add(function () {
       Tower.prototype.fire(_this.tower);
     }, _this);
     if (SpaceGame._fireButton.isDown) {
       Tower.prototype.fire(_this.tower);
-    }
+    }*/
 
     // Wall
     SpaceGame._brickButton.onDown.add(function () {
