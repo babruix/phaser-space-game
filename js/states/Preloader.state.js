@@ -33,19 +33,18 @@ SpaceGame.Preloader.prototype = {
     game.load.image('bullet', 'assets/sprites/bullet.png');
     game.load.image('missle', 'assets/sprites/missile.png');
 
-    game.load.image("background", "assets/sprites/bg0.png");
+    game.load.image('background', 'assets/sprites/bg0.png');
 
     for (var i = 0; i < 7; i++) {
-      game.load.image("cloud" + i, "assets/sprites/cloud_"+i+".png");
+      game.load.image('cloud' + i, 'assets/sprites/cloud_' + i + '.png');
     }
-    game.load.image("flow", "assets/sprites/flow.png");
+    game.load.image('flow', 'assets/sprites/flow.png');
+    game.load.image('sign_left', 'assets/sprites/sign_left.png');
+    game.load.image('sign_right', 'assets/sprites/sign_right.png');
+
     /*
      * Enemys
      */
-    game.load.spritesheet('duck', 'assets/sprites/duck.png', 32, 32, 8);
-    game.load.spritesheet('panda', 'assets/sprites/panda.png', 32, 32, 3);
-    game.load.spritesheet('dog', 'assets/sprites/dog.png', 32, 32, 6);
-    game.load.spritesheet('penguin', 'assets/sprites/penguin.png', 32, 32, 4);
     game.load.spritesheet('alian', 'assets/sprites/space_alian5.png', 32, 40, 9);
     game.load.spritesheet('bazyaka', 'assets/sprites/bazyaka.png', 70, 64, 80);
     game.load.spritesheet('ufo', 'assets/sprites/tarelka.png', 108, 64, 10);

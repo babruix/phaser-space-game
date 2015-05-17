@@ -81,7 +81,8 @@ SpaceGame.Main.prototype = {
     game.physics.enable(towers, Phaser.Physics.P2JS, debug);
     game.physics.p2.setImpactEvents(true);
     game.camera.follow(towers);
-    game.world.setBounds(0, 0, getWidth()*4, 800);
+    game.world.setBounds(0, 0, getWidth()*2, 800);
+
     /*
      * Heart
      */
@@ -168,6 +169,10 @@ SpaceGame.Main.prototype = {
     enemys.physicsBodyType = Phaser.Physics.P2JS;
     game.physics.p2.enableBody(enemys, debug);
     game.physics.p2.setBoundsToWorld(true, true, true, true, false);
+    enemys.stealSignLeft = game.add.sprite(0, 0, 'sign_left');
+    enemys.stealSignLeft.alpha = 0;
+    enemys.stealSignRight = game.add.sprite(0, 0, 'sign_right');
+    enemys.stealSignRight.alpha = 0;
 
     nextLevel();
 
@@ -379,6 +384,7 @@ SpaceGame.Main.prototype = {
             else {
               // plant stealing in progress...
               enemys.stealing = true;
+              Enemy.prototype.showStealingSign(enemy);
               enemy.closestPlant.stealing = true;
               enemy.closestPlant.scale.x = (0.5);
               enemy.closestPlant.scale.y = (0.5);

@@ -1,6 +1,6 @@
 var Enemy = function (x, y, anim, animLength) {
-  var xDestination = game.rnd.integerInRange(100, game.world.width-200);
-  var rndInt = game.rnd.integerInRange(0, game.audio.ufoSnd.length-1);
+  var xDestination = game.rnd.integerInRange(100, game.world.width / 2);
+  var rndInt = game.rnd.integerInRange(0, game.audio.ufoSnd.length - 1);
   game.audio.ufoSnd[rndInt].play();
   var ufo = game.add.sprite(0, 0, 'ufo');
   ufo.animations.add('walk');
@@ -21,7 +21,7 @@ var Enemy = function (x, y, anim, animLength) {
   this.enemy.ufo = ufo;
   this.enemy.ufo_sound = game.audio.ufoSnd[rndInt];
   ufo.body.velocity.x = 100;
-  this.enemy.to_x = xDestination;
+  this.enemy.drop_enemy_at_x = xDestination;
 
   var _this = this;
   this.enemy.update = function () {
@@ -32,7 +32,7 @@ var Enemy = function (x, y, anim, animLength) {
       ufoScale = ufoScale < 0.1 ? 0.1 : ufoScale;
       _this.enemy.ufo.scale.x = ufoScale;
       _this.enemy.ufo.scale.y = ufoScale;
-      if (_this.enemy.ufo.x > _this.enemy.to_x) {
+      if (_this.enemy.ufo.x > _this.enemy.drop_enemy_at_x) {
         _this.enemy.ufo.body.velocity.x = 0;
         _this.enemy.body.velocity.x = 0;
         _this.enemy.body.velocity.y = 20;
@@ -92,7 +92,7 @@ Enemy.prototype = {
     enemy.ufo_exists = false;
     enemy.ufo = null;
 
-    enemy.body.onBeginContact.add(function (body1, shapeA, shapeB) {
+    enemy.body.onBeginContact.add(function (body1) {
       if (!body1 || !body1.sprite) return;
       if (body1.sprite.key == 'bullet' && !body1.sprite.enemyBullet) {
         game.audio.smackSnd.play();
@@ -127,6 +127,8 @@ Enemy.prototype = {
           enemy.closestPlant.scale.x = (1);
           enemy.closestPlant.scale.y = (1);
           enemy.closestPlant = null;
+          enemys.stealSignLeft.alpha = 0;
+          enemys.stealSignRight.alpha = 0;
         }
       }
     }, this);
@@ -174,5 +176,23 @@ Enemy.prototype = {
     scale = scale < 0.2 ? 0.2 : scale;
     enemy.scale.x = scale;
     enemy.scale.y = scale;
+  },
+  showStealingSign: function (enemy) {
+    // show left/right sign
+    var stealingDirection = enemy.x < towers.children[0].x ? 'left' : 'right';
+    if (stealingDirection == 'left') {
+      enemys.stealSignLeft.alpha = 1;
+      enemys.stealSignRight.alpha = 0;
+    }
+    else {
+      enemys.stealSignRight.alpha = 1;
+      enemys.stealSignLeft.alpha = 0;
+    }
+
+    enemys.stealSignLeft.x = towers.children[0].x;
+    enemys.stealSignLeft.y = towers.children[0].y - 250;
+
+    enemys.stealSignRight.x = towers.children[0].x;
+    enemys.stealSignRight.y = towers.children[0].y - 250;
   }
 };
