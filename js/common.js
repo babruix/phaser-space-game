@@ -149,7 +149,7 @@ function levelCompleted() {
         1000 /*delay*/)
         .onComplete.add(function () {
           levelText.destroy();
-          if (towers && towers.children && typeof towers.children[0] != "undefined") {
+          if (towers && towers.children && typeof towers.children[0] != 'undefined') {
             SpaceGame._playerShield = towers.children[0].shieldPower;
             SpaceGame._playerBricks = towers.children[0].countBricks;
             SpaceGame._playerMissles = towers.children[0].missles;

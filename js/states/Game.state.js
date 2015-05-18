@@ -80,7 +80,6 @@ SpaceGame.Main.prototype = {
     towers = game.add.group();
     game.physics.enable(towers, Phaser.Physics.P2JS, debug);
     game.physics.p2.setImpactEvents(true);
-    game.camera.follow(towers);
     game.world.setBounds(0, 0, getWidth()*2, 800);
 
     /*
@@ -164,15 +163,12 @@ SpaceGame.Main.prototype = {
     /*
      * Enemy
      */
-    enemys = game.add.group();
-    enemys.enableBody = true;
-    enemys.physicsBodyType = Phaser.Physics.P2JS;
-    game.physics.p2.enableBody(enemys, debug);
+    SpaceGame.enemys = game.add.group();
+    SpaceGame.enemys.enableBody = true;
+    SpaceGame.enemys.physicsBodyType = Phaser.Physics.P2JS;
+    game.physics.p2.enableBody(SpaceGame.enemys, debug);
     game.physics.p2.setBoundsToWorld(true, true, true, true, false);
-    enemys.stealSignLeft = game.add.sprite(0, 0, 'sign_left');
-    enemys.stealSignLeft.alpha = 0;
-    enemys.stealSignRight = game.add.sprite(0, 0, 'sign_right');
-    enemys.stealSignRight.alpha = 0;
+    this.stealingSignInit();
 
     nextLevel();
 
@@ -196,7 +192,8 @@ SpaceGame.Main.prototype = {
     this.createBgTween();
   },
   createBgTween: function () {
-    SpaceGame._backgroundTw = game.add.tween(SpaceGame._background).to({alpha: 0}, SpaceGame.dayLength,
+    SpaceGame._backgroundTw = game.add.tween(SpaceGame._background)
+      .to({alpha: 0.1}, SpaceGame.dayLength,
       Phaser.Easing.Quintic.InOut,
       true, //autostart?,
       0, //delay,
@@ -284,7 +281,7 @@ SpaceGame.Main.prototype = {
   },
   update: function () {
     SpaceGame._background.tilePosition.set(game.camera.x * -0.5, game.camera.y * -0.5);
-    if (enemys.countLiving() == 0
+    if (SpaceGame.enemys.countLiving() == 0
       && SpaceGame._allEnemysAdded
       && !SpaceGame._newLevelStarted) {
       SpaceGame._newLevelStarted = true;
@@ -294,15 +291,15 @@ SpaceGame.Main.prototype = {
     /*
      *  Enemy
      */
-    enemys.stealing = false;
-    enemys.forEach(function (enemy) {
+    SpaceGame.enemys.stealing = false;
+    SpaceGame.enemys.forEach(function (enemy) {
 
       if (enemy && enemy.alive) {
 
         // steal a plant
         if (enemy.closestPlant && enemy.closestPlant.alive) {
           if (enemy.closestPlant.stealing) {
-            enemys.stealing = true;
+            SpaceGame.enemys.stealing = true;
             enemy.body.velocity.y = -100;
             enemy.closestPlant.x = enemy.x;
             enemy.closestPlant.y = enemy.y;
@@ -358,7 +355,7 @@ SpaceGame.Main.prototype = {
         }
 
         // plant is too far, forget
-        if (enemy.y < 300 && enemy.closestPlant && !enemys.stealing) {
+        if (enemy.y < 300 && enemy.closestPlant && !SpaceGame.enemys.stealing) {
           enemy.closestPlant.stealing = false;
           enemy.closestPlant = false;
         }
@@ -383,7 +380,7 @@ SpaceGame.Main.prototype = {
             }
             else {
               // plant stealing in progress...
-              enemys.stealing = true;
+              SpaceGame.enemys.stealing = true;
               Enemy.prototype.showStealingSign(enemy);
               enemy.closestPlant.stealing = true;
               enemy.closestPlant.scale.x = (0.5);
@@ -474,5 +471,32 @@ SpaceGame.Main.prototype = {
     SpaceGame._fireGraph.x = game.camera.x;
     SpaceGame._lifeGraph.x = game.camera.x;
     SpaceGame._scoreText.x = game.camera.x;
-  }
+  },
+  stealingSignInit: function () {
+    SpaceGame.enemys.stealSignLeft = game.add.sprite(game.width / 2, game.height / 2, 'sign_left');
+    SpaceGame.enemys.stealSignLeft.anchor.setTo(0.5, 0.5);
+    var text_l = game.add.text(SpaceGame.enemys.stealSignLeft.height / 2, -SpaceGame.enemys.stealSignLeft.width / 2,
+      'Stealing detected!', {
+      font: "24px Tahoma",
+      fill: "#FFF",
+      align: "center"
+    });
+    text_l.anchor.setTo(0.5, 0.5);
+    SpaceGame.enemys.stealSignLeft.addChild(text_l);
+    SpaceGame.enemys.stealSignLeft.alpha = 0;
+    SpaceGame.enemys.stealSignLeft.fixedToCamera = true;
+
+    SpaceGame.enemys.stealSignRight = game.add.sprite(game.width / 2, game.height / 2, 'sign_right');
+    SpaceGame.enemys.stealSignRight.anchor.setTo(0.5, 0.5);
+    SpaceGame.enemys.stealSignRight.alpha = 0;
+    var text_r = game.add.text(SpaceGame.enemys.stealSignRight.height / 2, -SpaceGame.enemys.stealSignRight.width / 2,
+      'Stealing detected!', {
+        font: "24px Tahoma",
+        fill: "#FFF",
+        align: "center"
+      });
+    text_r.anchor.setTo(0.5, 0.5);
+    SpaceGame.enemys.stealSignRight.addChild(text_r);
+    SpaceGame.enemys.stealSignRight.fixedToCamera = true;
+  },
 };

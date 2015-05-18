@@ -57,7 +57,7 @@ var Enemy = function (x, y, anim, animLength) {
     }
   };
 
-  enemys.add(this.enemy);
+  SpaceGame.enemys.add(this.enemy);
 };
 
 Enemy.prototype = {
@@ -127,22 +127,23 @@ Enemy.prototype = {
           enemy.closestPlant.scale.x = (1);
           enemy.closestPlant.scale.y = (1);
           enemy.closestPlant = null;
-          enemys.stealSignLeft.alpha = 0;
-          enemys.stealSignRight.alpha = 0;
+          // Hide stealing sign.
+          SpaceGame.enemys.stealSignLeft.alpha = 0;
+          SpaceGame.enemys.stealSignRight.alpha = 0;
         }
       }
     }, this);
 
     enemy.update = function () {
       if (enemy) {
-        if ((enemy.closestPlant && enemy.closestPlant.alive && enemy.closestPlant.stealing) || enemys.stealing) {
+        if ((enemy.closestPlant && enemy.closestPlant.alive && enemy.closestPlant.stealing) || SpaceGame.enemys.stealing) {
           Enemy.prototype.fire(enemy);
         }
         Enemy.prototype.scale(enemy);
       }
     };
 
-    enemys.add(enemy);
+    SpaceGame.enemys.add(enemy);
   },
   fire: function (enemy) {
     if (enemy.alive && game.time.now > enemy.fireLastTime) {
@@ -166,7 +167,8 @@ Enemy.prototype = {
       explode.animations.add('explode');
       //// To play the animation with the new texture ( 'key', frameRate, loop, killOnComplete)
       explode.animations.play('explode', 19, false, true);
-
+      SpaceGame.enemys.stealSignLeft.alpha = 0;
+      SpaceGame.enemys.stealSignRight.alpha = 0;
     }
   },
   scale: function(enemy) {
@@ -181,18 +183,18 @@ Enemy.prototype = {
     // show left/right sign
     var stealingDirection = enemy.x < towers.children[0].x ? 'left' : 'right';
     if (stealingDirection == 'left') {
-      enemys.stealSignLeft.alpha = 1;
-      enemys.stealSignRight.alpha = 0;
+      SpaceGame.enemys.stealSignLeft.alpha = 1;
+      SpaceGame.enemys.stealSignRight.alpha = 0;
     }
     else {
-      enemys.stealSignRight.alpha = 1;
-      enemys.stealSignLeft.alpha = 0;
+      SpaceGame.enemys.stealSignRight.alpha = 1;
+      SpaceGame.enemys.stealSignLeft.alpha = 0;
     }
 
-    enemys.stealSignLeft.x = towers.children[0].x;
-    enemys.stealSignLeft.y = towers.children[0].y - 250;
+    SpaceGame.enemys.stealSignLeft.x = towers.children[0].x;
+    SpaceGame.enemys.stealSignLeft.y = towers.children[0].y - 250;
 
-    enemys.stealSignRight.x = towers.children[0].x;
-    enemys.stealSignRight.y = towers.children[0].y - 250;
+    SpaceGame.enemys.stealSignRight.x = towers.children[0].x;
+    SpaceGame.enemys.stealSignRight.y = towers.children[0].y - 250;
   }
 };
