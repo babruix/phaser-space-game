@@ -1,6 +1,9 @@
 SpaceGame.Menu = function(game){ };
 SpaceGame.Menu.prototype = {
-  create : function(){
+  create: function() {
+    this._background = game.add.tileSprite(0, 0, getWidth()*4, 800, 'background');
+    this._background.alpha = 1;
+      
     this._buttonStart = game.add.button((game.width-401)/2, -143,
       'button-start', this.startGame, this, 1, 0, 2);
     this._buttonStart.input.useHandCursor = true;
@@ -17,7 +20,7 @@ SpaceGame.Menu.prototype = {
     }, 1000, Phaser.Easing.Circular.Out, true, 50, 0);
 
     // start immediately...
-    game.state.start('Main');
+//    game.state.start('Main');
   },
   startGame: function() {
     game.state.start('Main');

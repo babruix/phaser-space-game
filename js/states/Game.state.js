@@ -74,7 +74,7 @@ SpaceGame.Main.prototype = {
     game.physics.p2.gravity.x = 0;
     game.physics.p2.gravity.y = 300;
 
-    /*
+    /**
      * Tower
      */
     towers = game.add.group();
@@ -82,25 +82,25 @@ SpaceGame.Main.prototype = {
     game.physics.p2.setImpactEvents(true);
     game.world.setBounds(0, 0, getWidth()*2, 800);
 
-    /*
+    /**
      * Heart
      */
     SpaceGame._hearts = game.add.group();
     SpaceGame._hearts.createMultiple(1, 'heart');
 
-    /*
+    /**
      * Shield
      */
     SpaceGame._shields = game.add.group();
     SpaceGame._shields.createMultiple(1, 'shield');
 
-    /*
+    /**
      * Brick
      */
     SpaceGame._bricks = game.add.group();
     SpaceGame._bricks.createMultiple(1, 'brick');
 
-    /*
+    /**
      * Wall
      */
     SpaceGame._walls = game.add.group();
@@ -112,14 +112,14 @@ SpaceGame.Main.prototype = {
     SpaceGame._ufos = game.add.group();
     SpaceGame._ufos.createMultiple(4, 'ufo');
 
-    /*
+    /**
      * Bombs
      */
     SpaceGame._bombs = game.add.group();
     SpaceGame._bombs.createMultiple(1, 'bomb');
 
 
-    /*
+    /**
      * Towers Bullets
      */
     SpaceGame._bullets = game.add.group();
@@ -132,7 +132,7 @@ SpaceGame.Main.prototype = {
     SpaceGame._bullets.setAll('anchor.x', 0.5);
     SpaceGame._bullets.setAll('anchor.y', 1);
 
-    /*
+    /**
      * Enemy Bullets
      */
     SpaceGame._enemy_bullets = game.add.group();
@@ -146,7 +146,7 @@ SpaceGame.Main.prototype = {
     SpaceGame._enemy_bullets.setAll('anchor.x', 0.5);
     SpaceGame._enemy_bullets.setAll('anchor.y', 1);
 
-    /*
+    /**
      * Missles
      */
     SpaceGame._missles = game.add.group();
@@ -160,7 +160,7 @@ SpaceGame.Main.prototype = {
     SpaceGame._missles.setAll('anchor.x', 0.5);
     SpaceGame._missles.setAll('anchor.y', 1);
 
-    /*
+    /**
      * Enemy
      */
     SpaceGame.enemys = game.add.group();
@@ -288,7 +288,7 @@ SpaceGame.Main.prototype = {
       updateScore();
       levelCompleted();
     }
-    /*
+    /**
      *  Enemy
      */
     SpaceGame.enemys.stealing = false;
