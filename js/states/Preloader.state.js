@@ -2,10 +2,11 @@ SpaceGame.Preloader = function(game){ };
 SpaceGame.Preloader.prototype = {
   preload : function(){
     // Preloader
-    game.preloadBar = game.add.sprite((game.width-288)/2,
-      (game.height-24)/2, 'preloaderBar');
+    game.preloadBar = game.add.sprite(game.world.centerX, game.world.centerY, 'preloaderBar');
+    game.preloadBar.anchor.setTo(0.5, 0.5);
     game.load.setPreloadSprite(game.preloadBar);
-    /*
+      
+    /**
      * Sounds
      */
     game.load.audio('gulp', ['assets/audio/gulp-2.wav']);
