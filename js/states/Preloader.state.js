@@ -1,7 +1,9 @@
 SpaceGame.Preloader = function(game){ };
 SpaceGame.Preloader.prototype = {
-  preload : function(){
-    // Preloader
+  preload: function(){
+    /**
+     * Preloader
+     */
     game.preloadBar = game.add.sprite(game.world.centerX, game.world.centerY, 'preloaderBar');
     game.preloadBar.anchor.setTo(0.5, 0.5);
     game.load.setPreloadSprite(game.preloadBar);
@@ -43,7 +45,7 @@ SpaceGame.Preloader.prototype = {
     game.load.image('sign_left', 'assets/sprites/sign_left.png');
     game.load.image('sign_right', 'assets/sprites/sign_right.png');
 
-    /*
+    /**
      * Enemys
      */
     game.load.spritesheet('alian', 'assets/sprites/space_alian5.png', 32, 40, 9);
@@ -65,8 +67,11 @@ SpaceGame.Preloader.prototype = {
     game.load.spritesheet('shield', 'assets/sprites/shield.png', 55, 64, 2);
     game.load.spritesheet('button-start', 'assets/sprites/button-start.png', 401, 143);
   },
-  create : function(){
+  create: function(){
     game.preloadBar.kill();
-    game.state.start('Menu');
+    this.showMenu();
+  },
+  showMenu: function() {
+      game.state.start('Menu');
   }
 };

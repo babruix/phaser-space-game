@@ -38,6 +38,30 @@ SpaceGame.Main.prototype = {
   create: function () {
     SpaceGame._newLevelStarted = false;
 
+    this.prepareAudio();
+    this.setPlayerKeys();
+
+    this.createDayTime();
+    this.generateClouds.call(this);
+    this.shakeFlowers();
+
+    /**
+     * Init map
+     */
+    game.physics.startSystem(Phaser.Physics.P2JS);
+    game.physics.p2.applyGravity = true;
+    game.physics.p2.gravity.x = 0;
+    game.physics.p2.gravity.y = 300;
+
+    this.setupGameGroups();
+    this.stealingSignInit();
+
+    nextLevel();
+
+    score -= 10;
+    updateScore();
+  },
+  prepareAudio: function () {
     game.audio.enemySndFire = game.add.audio('gulp', 2);
     game.audio.playerSndFire = game.add.audio('gunshot', 0.01);
     game.audio.toilSnd = game.add.audio('toil', 0.1);
@@ -55,125 +79,11 @@ SpaceGame.Main.prototype = {
       game.add.audio('scifi5', 0.3)
     ];
     game.audio.completedSnd = game.add.audio('completed', 1);
-
-    this.createDayTime();
-
-    this.generateClouds.call(this);
-
-    this.shakeFlowers();
-
+  },
+  setPlayerKeys: function () {
     SpaceGame._fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     SpaceGame._brickButton = game.input.keyboard.addKey(Phaser.Keyboard.B);
     SpaceGame._missleButton = game.input.keyboard.addKey(Phaser.Keyboard.M);
-
-    /**
-     * Init map
-     */
-    game.physics.startSystem(Phaser.Physics.P2JS);
-    game.physics.p2.applyGravity = true;
-    game.physics.p2.gravity.x = 0;
-    game.physics.p2.gravity.y = 300;
-
-    /*
-     * Tower
-     */
-    towers = game.add.group();
-    game.physics.enable(towers, Phaser.Physics.P2JS, debug);
-    game.physics.p2.setImpactEvents(true);
-    game.world.setBounds(0, 0, getWidth()*2, 800);
-
-    /*
-     * Heart
-     */
-    SpaceGame._hearts = game.add.group();
-    SpaceGame._hearts.createMultiple(1, 'heart');
-
-    /*
-     * Shield
-     */
-    SpaceGame._shields = game.add.group();
-    SpaceGame._shields.createMultiple(1, 'shield');
-
-    /*
-     * Brick
-     */
-    SpaceGame._bricks = game.add.group();
-    SpaceGame._bricks.createMultiple(1, 'brick');
-
-    /*
-     * Wall
-     */
-    SpaceGame._walls = game.add.group();
-    SpaceGame._walls.createMultiple(1, 'wall');
-
-    /*
-     * Ufo
-     */
-    SpaceGame._ufos = game.add.group();
-    SpaceGame._ufos.createMultiple(4, 'ufo');
-
-    /*
-     * Bombs
-     */
-    SpaceGame._bombs = game.add.group();
-    SpaceGame._bombs.createMultiple(1, 'bomb');
-
-
-    /*
-     * Towers Bullets
-     */
-    SpaceGame._bullets = game.add.group();
-    SpaceGame._bullets.enableBody = true;
-    SpaceGame._bullets.physicsBodyType = Phaser.Physics.P2JS;
-    SpaceGame._bullets.createMultiple(20, 'bullet');
-    SpaceGame._bullets.setAll('checkWorldBounds', true);
-    SpaceGame._bullets.setAll('outOfBoundsKill', true);
-    SpaceGame._bullets.setAll('collideWorldBounds', false);
-    SpaceGame._bullets.setAll('anchor.x', 0.5);
-    SpaceGame._bullets.setAll('anchor.y', 1);
-
-    /*
-     * Enemy Bullets
-     */
-    SpaceGame._enemy_bullets = game.add.group();
-    SpaceGame._enemy_bullets.enableBody = true;
-    SpaceGame._enemy_bullets.physicsBodyType = Phaser.Physics.P2JS;
-
-    SpaceGame._enemy_bullets.createMultiple(40, 'bullet');
-    SpaceGame._enemy_bullets.setAll('checkWorldBounds', true);
-    SpaceGame._enemy_bullets.setAll('outOfBoundsKill', true);
-    SpaceGame._enemy_bullets.setAll('collideWorldBounds', false);
-    SpaceGame._enemy_bullets.setAll('anchor.x', 0.5);
-    SpaceGame._enemy_bullets.setAll('anchor.y', 1);
-
-    /*
-     * Missles
-     */
-    SpaceGame._missles = game.add.group();
-    SpaceGame._missles.enableBody = true;
-    SpaceGame._missles.physicsBodyType = Phaser.Physics.P2JS;
-
-    SpaceGame._missles.createMultiple(10, 'missle');
-    SpaceGame._missles.setAll('checkWorldBounds', true);
-    SpaceGame._missles.setAll('outOfBoundsKill', true);
-    SpaceGame._missles.setAll('collideWorldBounds', false);
-    SpaceGame._missles.setAll('anchor.x', 0.5);
-    SpaceGame._missles.setAll('anchor.y', 1);
-
-    /*
-     * Enemy
-     */
-    SpaceGame.enemys = game.add.group();
-    SpaceGame.enemys.enableBody = true;
-    SpaceGame.enemys.physicsBodyType = Phaser.Physics.P2JS;
-    game.physics.p2.enableBody(SpaceGame.enemys, debug);
-    game.physics.p2.setBoundsToWorld(true, true, true, true, false);
-    this.stealingSignInit();
-
-    nextLevel();
-
-    score -= 10;
-    updateScore();
     SpaceGame._cursors = game.input.keyboard.createCursorKeys();
   },
   createDayTime: function () {
@@ -279,6 +189,101 @@ SpaceGame.Main.prototype = {
     }
 
   },
+  setupGameGroups: function () {
+    /**
+     * Tower
+     */
+    towers = game.add.group();
+    game.physics.enable(towers, Phaser.Physics.P2JS, debug);
+    game.physics.p2.setImpactEvents(true);
+    game.world.setBounds(0, 0, getWidth() * 2, 800);
+
+    /**
+     * Heart
+     */
+    SpaceGame._hearts = game.add.group();
+    SpaceGame._hearts.createMultiple(1, 'heart');
+
+    /**
+     * Shield
+     */
+    SpaceGame._shields = game.add.group();
+    SpaceGame._shields.createMultiple(1, 'shield');
+
+    /**
+     * Brick
+     */
+    SpaceGame._bricks = game.add.group();
+    SpaceGame._bricks.createMultiple(1, 'brick');
+
+    /**
+     * Wall
+     */
+    SpaceGame._walls = game.add.group();
+    SpaceGame._walls.createMultiple(1, 'wall');
+
+    /**
+     * Ufo
+     */
+    SpaceGame._ufos = game.add.group();
+    SpaceGame._ufos.createMultiple(4, 'ufo');
+
+    /**
+     * Bombs
+     */
+    SpaceGame._bombs = game.add.group();
+    SpaceGame._bombs.createMultiple(1, 'bomb');
+
+    /**
+     * Towers Bullets
+     */
+    SpaceGame._bullets = game.add.group();
+    SpaceGame._bullets.enableBody = true;
+    SpaceGame._bullets.physicsBodyType = Phaser.Physics.P2JS;
+    SpaceGame._bullets.createMultiple(20, 'bullet');
+    SpaceGame._bullets.setAll('checkWorldBounds', true);
+    SpaceGame._bullets.setAll('outOfBoundsKill', true);
+    SpaceGame._bullets.setAll('collideWorldBounds', false);
+    SpaceGame._bullets.setAll('anchor.x', 0.5);
+    SpaceGame._bullets.setAll('anchor.y', 1);
+
+    /**
+     * Enemy Bullets
+     */
+    SpaceGame._enemy_bullets = game.add.group();
+    SpaceGame._enemy_bullets.enableBody = true;
+    SpaceGame._enemy_bullets.physicsBodyType = Phaser.Physics.P2JS;
+
+    SpaceGame._enemy_bullets.createMultiple(40, 'bullet');
+    SpaceGame._enemy_bullets.setAll('checkWorldBounds', true);
+    SpaceGame._enemy_bullets.setAll('outOfBoundsKill', true);
+    SpaceGame._enemy_bullets.setAll('collideWorldBounds', false);
+    SpaceGame._enemy_bullets.setAll('anchor.x', 0.5);
+    SpaceGame._enemy_bullets.setAll('anchor.y', 1);
+
+    /**
+     * Missles
+     */
+    SpaceGame._missles = game.add.group();
+    SpaceGame._missles.enableBody = true;
+    SpaceGame._missles.physicsBodyType = Phaser.Physics.P2JS;
+
+    SpaceGame._missles.createMultiple(10, 'missle');
+    SpaceGame._missles.setAll('checkWorldBounds', true);
+    SpaceGame._missles.setAll('outOfBoundsKill', true);
+    SpaceGame._missles.setAll('collideWorldBounds', false);
+    SpaceGame._missles.setAll('anchor.x', 0.5);
+    SpaceGame._missles.setAll('anchor.y', 1);
+
+    /**
+     * Enemys
+     */
+    SpaceGame.enemys = game.add.group();
+    SpaceGame.enemys.enableBody = true;
+    SpaceGame.enemys.physicsBodyType = Phaser.Physics.P2JS;
+    game.physics.p2.enableBody(SpaceGame.enemys, debug);
+    game.physics.p2.setBoundsToWorld(true, true, true, true, false);
+  },
   update: function () {
     SpaceGame._background.tilePosition.set(game.camera.x * -0.5, game.camera.y * -0.5);
     if (SpaceGame.enemys.countLiving() == 0
@@ -288,7 +293,7 @@ SpaceGame.Main.prototype = {
       updateScore();
       levelCompleted();
     }
-    /*
+    /**
      *  Enemy
      */
     SpaceGame.enemys.stealing = false;
