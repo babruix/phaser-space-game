@@ -54,7 +54,7 @@ SpaceGame.Main.prototype = {
     game.physics.p2.gravity.y = 300;
 
     this.setupGameGroups();
-    this.stealingSignInit();
+    this.initStealingSigns();
 
     nextLevel();
 
@@ -72,11 +72,11 @@ SpaceGame.Main.prototype = {
     game.audio.explosionSnd = game.add.audio('explosion', 0.05);
     game.audio.missleSnd = game.add.audio('missle', 0.1);
     game.audio.ufoSnd = [
-      game.add.audio('scifi1', 0.5),
-      game.add.audio('scifi2', 0.5),
-      game.add.audio('scifi3', 0.5),
-      game.add.audio('scifi4', 0.3),
-      game.add.audio('scifi5', 0.3)
+      game.add.audio('scifi1', 0.2),
+      game.add.audio('scifi2', 0.2),
+      game.add.audio('scifi3', 0.1),
+      game.add.audio('scifi4', 0.1),
+      game.add.audio('scifi5', 0.1)
     ];
     game.audio.completedSnd = game.add.audio('completed', 1);
   },
@@ -477,31 +477,26 @@ SpaceGame.Main.prototype = {
     SpaceGame._lifeGraph.x = game.camera.x;
     SpaceGame._scoreText.x = game.camera.x;
   },
-  stealingSignInit: function () {
-    SpaceGame.enemys.stealSignLeft = game.add.sprite(game.width / 2, game.height / 2, 'sign_left');
-    SpaceGame.enemys.stealSignLeft.anchor.setTo(0.5, 0.5);
-    var text_l = game.add.text(SpaceGame.enemys.stealSignLeft.height / 2, -SpaceGame.enemys.stealSignLeft.width / 2,
-      'Stealing detected!', {
-      font: "24px Tahoma",
-      fill: "#FFF",
-      align: "center"
-    });
-    text_l.anchor.setTo(0.5, 0.5);
-    SpaceGame.enemys.stealSignLeft.addChild(text_l);
-    SpaceGame.enemys.stealSignLeft.alpha = 0;
-    SpaceGame.enemys.stealSignLeft.fixedToCamera = true;
+  initStealingSigns: function () {
+    function initOneStealSign(direction) {
+      var stealingSignSprite = game.add.sprite(game.width / 2, game.height / 2, 'sign_' + direction);
+      stealingSignSprite.scale.x = 0.5;
+      stealingSignSprite.scale.y = 0.5;
+      stealingSignSprite.anchor.setTo(0.5, 0.5);
+      var text_l = game.add.text(0, -170,
+        'Stealing detected!', {
+          font: "44px Tahoma",
+          fill: "#D81E00",
+          align: "center"
+        });
+      text_l.anchor.setTo(0.5, 0.5);
+      stealingSignSprite.addChild(text_l);
+      stealingSignSprite.alpha = 0;
+      stealingSignSprite.fixedToCamera = true;
 
-    SpaceGame.enemys.stealSignRight = game.add.sprite(game.width / 2, game.height / 2, 'sign_right');
-    SpaceGame.enemys.stealSignRight.anchor.setTo(0.5, 0.5);
-    SpaceGame.enemys.stealSignRight.alpha = 0;
-    var text_r = game.add.text(SpaceGame.enemys.stealSignRight.height / 2, -SpaceGame.enemys.stealSignRight.width / 2,
-      'Stealing detected!', {
-        font: "24px Tahoma",
-        fill: "#FFF",
-        align: "center"
-      });
-    text_r.anchor.setTo(0.5, 0.5);
-    SpaceGame.enemys.stealSignRight.addChild(text_r);
-    SpaceGame.enemys.stealSignRight.fixedToCamera = true;
-  },
+      return stealingSignSprite;
+    }
+    SpaceGame.enemys.stealSignLeft = initOneStealSign('left');
+    SpaceGame.enemys.stealSignRight = initOneStealSign('right');
+  }
 };
