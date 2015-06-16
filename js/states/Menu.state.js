@@ -1,6 +1,8 @@
 SpaceGame.Menu = function(game){ };
 SpaceGame.Menu.prototype = {
   create: function() {
+    this._anim_elem = document.getElementById('anim_elem');
+
     this._background = game.add.tileSprite(0, 0, getWidth()*4, 800, 'background');
     this._background.alpha = 1;
       
@@ -23,6 +25,9 @@ SpaceGame.Menu.prototype = {
 //    game.state.start('Main');
   },
   startGame: function() {
+    // Hide CSS element
+    this._anim_elem.style.display = 'none';
+    // Start game
     game.state.start('Main');
   }
 };
