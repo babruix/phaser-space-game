@@ -20,6 +20,9 @@
   top: 50%;
   left: 50%;
 }
+.gameCreated .img1, .gameCreated .img2 {
+  display: none;
+}
 
 .css-effect:after,
 .css-effect:before {

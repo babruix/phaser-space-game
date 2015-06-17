@@ -118,6 +118,8 @@ Enemy.prototype = {
 
         if (enemy.health == 1) {
           this.explode(enemy);
+
+          this.hideStealingSign();
         }
 
         // put plant back
@@ -127,9 +129,8 @@ Enemy.prototype = {
           enemy.closestPlant.scale.x = (1);
           enemy.closestPlant.scale.y = (1);
           enemy.closestPlant = null;
-          // Hide stealing sign.
-          SpaceGame.enemys.stealSignLeft.alpha = 0;
-          SpaceGame.enemys.stealSignRight.alpha = 0;
+
+          this.hideStealingSign();
         }
       }
     }, this);
@@ -167,8 +168,8 @@ Enemy.prototype = {
       explode.animations.add('explode');
       //// To play the animation with the new texture ( 'key', frameRate, loop, killOnComplete)
       explode.animations.play('explode', 19, false, true);
-      SpaceGame.enemys.stealSignLeft.alpha = 0;
-      SpaceGame.enemys.stealSignRight.alpha = 0;
+
+      this.hideStealingSign();
     }
   },
   scale: function(enemy) {
@@ -180,6 +181,7 @@ Enemy.prototype = {
     enemy.scale.y = scale;
   },
   showStealingSign: function (enemy) {
+    SpaceGame._anim_elem.style.display = 'block';
     // show left/right sign
     var stealingDirection = enemy.x < towers.children[0].x ? 'left' : 'right';
     if (stealingDirection == 'left') {
@@ -192,9 +194,17 @@ Enemy.prototype = {
     }
 
     SpaceGame.enemys.stealSignLeft.x = towers.children[0].x;
-    SpaceGame.enemys.stealSignLeft.y = towers.children[0].y - 250;
+    SpaceGame.enemys.stealSignLeft.y = 0;
 
     SpaceGame.enemys.stealSignRight.x = towers.children[0].x;
-    SpaceGame.enemys.stealSignRight.y = towers.children[0].y - 250;
+    SpaceGame.enemys.stealSignRight.y = 0;
+  },
+  hideStealingSign: function () {
+    // Hide stealing sign.
+    SpaceGame.enemys.stealSignLeft.alpha = 0;
+    SpaceGame.enemys.stealSignRight.alpha = 0;
+
+    // Hide CSS3 animation effect div
+    SpaceGame._anim_elem.style.display = 'none';
   }
 };

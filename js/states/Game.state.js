@@ -36,6 +36,10 @@ SpaceGame.Main = function (game) {
 };
 SpaceGame.Main.prototype = {
   create: function () {
+    // Hide CSS element
+    SpaceGame._anim_elem.style.display = 'none';
+    SpaceGame._anim_elem.className += ' gameCreated';
+    
     SpaceGame._newLevelStarted = false;
 
     this.prepareAudio();
@@ -479,13 +483,13 @@ SpaceGame.Main.prototype = {
   },
   initStealingSigns: function () {
     function initOneStealSign(direction) {
-      var stealingSignSprite = game.add.sprite(game.width / 2, game.height / 2, 'sign_' + direction);
-      stealingSignSprite.scale.x = 0.5;
-      stealingSignSprite.scale.y = 0.5;
+      var stealingSignSprite = game.add.sprite(game.width / 2, 130, 'sign_' + direction);
+      stealingSignSprite.scale.x = 0.3;
+      stealingSignSprite.scale.y = 0.3;
       stealingSignSprite.anchor.setTo(0.5, 0.5);
       var text_l = game.add.text(0, -170,
         'Stealing detected!', {
-          font: "44px Tahoma",
+          font: "50px Tahoma",
           fill: "#D81E00",
           align: "center"
         });
