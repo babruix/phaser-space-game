@@ -177,7 +177,7 @@ SpaceGame.Main.prototype = {
     for (var i = 0; i < level + 1; i++) {
       plant = game.add.sprite(76, 174, 'flow');
       plant.x = game.rnd.integerInRange(0, game.width);
-      plant.y = game.rnd.integerInRange(game.height - 130 * 2, game.height - 70);
+      plant.y = game.rnd.integerInRange(game.height, game.height - 70);
       plant.anchor.setTo(0.5, 1);
       plant.angle = -10 * i;
       SpaceGame._flowerPlants.add(plant);
@@ -298,7 +298,7 @@ SpaceGame.Main.prototype = {
       levelCompleted();
     }
     /**
-     *  Enemy
+     *  Enemy stealing check
      */
     SpaceGame.enemys.stealing = false;
     SpaceGame.enemys.forEach(function (enemy) {
@@ -364,12 +364,12 @@ SpaceGame.Main.prototype = {
         }
 
         // plant is too far, forget
-        if (enemy.y < 300 && enemy.closestPlant && !SpaceGame.enemys.stealing) {
+        if (enemy.y < 100 && enemy.closestPlant && !SpaceGame.enemys.stealing) {
           enemy.closestPlant.stealing = false;
           enemy.closestPlant = false;
         }
 
-        if (enemy.y > 460) {
+        if (enemy.y > 600) {
           // find closest  plant
           enemy.closestPlant = SpaceGame._flowerPlants.getFirstAlive();
           SpaceGame._flowerPlants.forEachAlive(function (plant) {
