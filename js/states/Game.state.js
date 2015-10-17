@@ -34,6 +34,11 @@ SpaceGame.Main = function (game) {
   SpaceGame._enemy_bullets = null;
   SpaceGame._ufos = null;
 };
+SpaceGame.GameOverWithScreenshot = function () {
+  // save game screenshot.
+  SpaceGame.canvasDataURI = game.canvas.toDataURL();
+  game.state.start('GameOver');
+};
 SpaceGame.Main.prototype = {
   create: function () {
     // Hide CSS element
@@ -373,14 +378,15 @@ SpaceGame.Main.prototype = {
             }
           }
         }
+        SpaceGame.GameOver.prototype._flowerLiving = SpaceGame._flowerPlants.countLiving();
+        if (!SpaceGame.GameOver.prototype._flowerLiving) {
+          Enemy.prototype.explode(enemy);
+        }
       }
     });
 
     if (!SpaceGame._flowerPlants.countLiving()) {
-      // save game screenshot.
-      SpaceGame.canvasDataURI = game.canvas.toDataURL();
-
-      game.state.start('GameOver');
+      game.time.events.add(Phaser.Timer.SECOND * 2, SpaceGame.GameOverWithScreenshot, this).autoDestroy = true;
     }
 
     towers.forEachAlive(function (tower) {
@@ -390,7 +396,7 @@ SpaceGame.Main.prototype = {
 
       // Move tower
       tower.body.setZeroVelocity();
-      var speed = 50 + game.height - tower.body.y / 1.3;
+      var speed =  game.height/1.3 + game.height - tower.body.y / 1.3;
 
       if (SpaceGame._cursors.left.isDown) {
         tower.angle = -30;

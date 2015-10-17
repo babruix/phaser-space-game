@@ -262,7 +262,7 @@ function updateScore($lifeLost) {
   }
   updateScoreText();
   if (lives < 0) {
-    game.state.start('GameOver');
+    game.time.events.add(Phaser.Timer.SECOND * 2, SpaceGame.GameOverWithScreenshot, this).autoDestroy = true;
   }
 }
 
