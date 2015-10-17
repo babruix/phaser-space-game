@@ -290,6 +290,7 @@ SpaceGame.Main.prototype = {
   },
   update: function () {
     SpaceGame._background.tilePosition.set(game.camera.x * -0.5, game.camera.y * -0.5);
+
     if (SpaceGame.enemys.countLiving() == 0
       && SpaceGame._allEnemysAdded
       && !SpaceGame._newLevelStarted) {
@@ -297,6 +298,7 @@ SpaceGame.Main.prototype = {
       updateScore();
       levelCompleted();
     }
+
     /**
      *  Enemy stealing check
      */
@@ -326,39 +328,10 @@ SpaceGame.Main.prototype = {
           // use plant
           if (enemy.closestPlant.y < 100 && enemy.closestPlant) {
             game.audio.springSnd.play();
-            //enemy.kill();
             enemy.closestPlant.destroy();
-            var cRect = game.add.graphics(0, 0)
-              .beginFill(0xff5a00)
-              .drawCircle(towers.children[0].x, towers.children[0].y, 40);
-            var health = game.add.text(towers.children[0].x - 10, towers.children[0].y - 15, '-' + enemy.health, {
-              font: "20px Tahoma",
-              fill: "#000000",
-              align: "center"
-            });
-            var health_tween = game.add.tween(health);
-            health_tween.to({opacity: 0.3}, 1000,
-              Phaser.Easing.Cubic.NONE,
-              true /*autostart?*/,
-              100 /*delay*/,
-              false /*yoyo?*/);
-            //
-            health_tween.onLoop.add(function () {
-              health.destroy();
-              cRect.destroy();
-            }, this);
-
-            if (towers.children[0].health > enemy.health) {
-              towers.children[0].damage(enemy.health);
-            }
-            else {
-              towers.children[0].damage(enemy.health - 1);
-            }
             if (towers && towers.children[0]) {
-              towers.children[0].fireTime += enemy.health;
+              towers.children[0].fireTime += enemy.health * 2;
             }
-            //
-            // enemy.kill();
             updateScoreText();
           }
         }
@@ -404,6 +377,9 @@ SpaceGame.Main.prototype = {
     });
 
     if (!SpaceGame._flowerPlants.countLiving()) {
+      // save game screenshot.
+      SpaceGame.canvasDataURI = game.canvas.toDataURL();
+
       game.state.start('GameOver');
     }
 
