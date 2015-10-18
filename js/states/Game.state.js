@@ -330,12 +330,13 @@ SpaceGame.Main.prototype = {
             updateScoreText();
           }
 
-          // use plant
+          // use/steal plant
           if (enemy.closestPlant.y < 100 && enemy.closestPlant) {
             game.audio.springSnd.play();
             enemy.closestPlant.destroy();
             if (towers && towers.children[0]) {
               towers.children[0].fireTime += enemy.health * 2;
+              lives--;
             }
             updateScoreText();
           }

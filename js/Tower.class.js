@@ -96,6 +96,7 @@ Tower.prototype = {
   addToPoint: function (worldX, worldY) {
     new Tower(worldX, worldY, 'spaceship');
     towers.children[0].alpha = 0;
+    towers.children[0].fireTime = 200;
     towers.children[0].anchor.setTo(0.5,0.5);
     game.add.tween(towers.children[0])
       .to({alpha: 1}, 500, Phaser.Easing.Linear.In,
