@@ -183,7 +183,8 @@ function addEnemys() {
   var enemysBcl = game.time.events.loop(level/2 * Phaser.Timer.SECOND, function () {
     // Generate i=level number of enemys
     if (i < level ) {
-      var animEnemy = SpaceGame.enemySprites[game.rnd.integerInRange(0, SpaceGame.enemySprites.length-1)];
+      var rndKey = game.rnd.integerInRange(0, SpaceGame.enemySprites.length-1);
+      var animEnemy = SpaceGame.enemySprites[rndKey];
       var enemy = new Enemy(0, 0, animEnemy.name, animEnemy.length);
       var param = {
         x: parseInt(game.rnd.integerInRange(0, game.width)),

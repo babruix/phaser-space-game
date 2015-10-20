@@ -89,6 +89,10 @@ Enemy.prototype = {
     enemy.body.mass = 1;
     enemy.body.velocity.x = 150;
 
+    // Add  PhysicsEditor bounding shape
+    enemy.body.clearShapes();
+    enemy.body.loadPolygon('enemy_physics', anim);
+
     enemy.ufo_exists = false;
     enemy.ufo = null;
 
