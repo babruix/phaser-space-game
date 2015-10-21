@@ -54,8 +54,12 @@ SpaceGame.Preloader.prototype = {
     game.load.spritesheet('cat', 'assets/sprites/cat.png', 64, 104, 1);
     game.load.spritesheet('nog', 'assets/sprites/nog50.png', 89, 119, 50);
 
+    /**
+     * Physics
+     */
     game.load.physics('enemy_physics', 'assets/sprites/aliens_pshysics.json');
     game.load.physics('spaceship_pshysics', 'assets/sprites/spaceship_pshysics.json');
+
     /**
      * Effects
      */

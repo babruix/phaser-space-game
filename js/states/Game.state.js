@@ -14,7 +14,6 @@ SpaceGame.Main = function (game) {
   SpaceGame._cursors = null;
 
   SpaceGame._scoreText = null;
-  SpaceGame._lifeGraph = null;
   SpaceGame._fireGraph = null;
 
   SpaceGame._shipTrail = null;
@@ -461,7 +460,6 @@ SpaceGame.Main.prototype = {
     });
 
     SpaceGame._fireGraph.x = game.camera.x;
-    SpaceGame._lifeGraph.x = game.camera.x;
     SpaceGame._scoreText.x = game.camera.x;
   },
   initStealingSigns: function () {

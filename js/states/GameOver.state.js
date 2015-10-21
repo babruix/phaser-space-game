@@ -25,7 +25,6 @@ SpaceGame.GameOver.prototype = {
 
     // Init score
     SpaceGame._scoreText = undefined;
-    SpaceGame._lifeGraph = undefined;
     SpaceGame._fireGraph = undefined;
   },
   update : function() {

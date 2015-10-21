@@ -60,14 +60,7 @@ function animateScore(moveOut) {
     Phaser.Easing.Linear.None /*easing type*/,
     true /*autostart?*/,
     moveOut ? 500 : 300 /*delay*/);
-  SpaceGame._lifeGraph.x = moveOut ? 10 : -SpaceGame._lifeGraph.width;
-  SpaceGame._lifeGraph.alpha = moveOut ? 1 : 0;
-  game.add.tween(SpaceGame._lifeGraph)
-    .to({alpha: moveOut ? 0 : 1, x: moveOut ? -SpaceGame._lifeGraph.width : 10},
-    500 /*duration (in ms)*/,
-    Phaser.Easing.Linear.None /*easing type*/,
-    true /*autostart?*/,
-    moveOut ? 600 : 400 /*delay*/);
+
 
   try {
     if (SpaceGame._scoreText != null && SpaceGame._scoreText._font != "") {
@@ -158,7 +151,6 @@ function levelCompleted() {
           game.state.start('Main');
           // Init score
           SpaceGame._scoreText = undefined;
-          SpaceGame._lifeGraph = undefined;
           SpaceGame._fireGraph = undefined;
         }, this);
     }, this);
@@ -219,21 +211,11 @@ function updateScoreText() {
 
 
   // Take life
-  if (health <= 2) {
+  if (health < 3) {
     towers.children[0].health = 10;
     updateScore(true);
     updateScoreText();
   }
-
-  // Draw a life rectangle
-  if (SpaceGame._lifeGraph == undefined) {
-    //SpaceGame._lifeGraph.destroy();
-    SpaceGame._lifeGraph = game.add.graphics(0, 0);
-    SpaceGame._lifeGraph.beginFill(0x03660D);
-  }
-  SpaceGame._lifeGraph.clear();
-  SpaceGame._lifeGraph.drawRect(10, game.height - 40, health * 15, 10);
-  SpaceGame._lifeGraph.update();
 
   // Draw a fireTime rectangle
   if (SpaceGame._fireGraph == undefined) {
