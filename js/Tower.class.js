@@ -23,6 +23,8 @@ var Tower = function (worldX, worldY, tile) {
   this.tower.body.collideWorldBounds = true;
   towers.add(this.tower);
   game.camera.follow(this.tower);
+
+
   this.tower.body.onBeginContact.add(function (body1, shapeA, shapeB) {
     if (body1 && body1.sprite != null && body1.sprite.key == 'bullet') {
       game.audio.smackSnd.play();
@@ -89,6 +91,10 @@ var Tower = function (worldX, worldY, tile) {
     // Keep the SpaceGame._shipTrail lined up with the ship
     SpaceGame._shipTrail.x = _this.tower.x;
     SpaceGame._shipTrail.y = _this.tower.y+10;
+
+    var bar = _this.tower.towerHealthBar;
+    bar.setPercent(_this.tower.health * 10);
+    bar.setPosition(_this.tower.x, _this.tower.y + 30);
   }
 };
 
@@ -96,6 +102,9 @@ Tower.prototype = {
   addToPoint: function (worldX, worldY) {
     new Tower(worldX, worldY, 'spaceship');
 
+    var barConfig = {x: towers.children[0].health, y: -40,height:10,width:towers.children[0].width};
+    towers.children[0].towerHealthBar = new HealthBar(game, barConfig);
+    console.log(towers.children[0].health);
     // Add  PhysicsEditor bounding shape
     towers.children[0].body.clearShapes();
     towers.children[0].body.loadPolygon('spaceship_pshysics', 'spaceship');
