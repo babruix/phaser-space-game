@@ -22,7 +22,8 @@ SpaceGame.Menu.prototype = {
     }, 1000, Phaser.Easing.Circular.Out, true, 50, 0);
 
     // start immediately...
-//    game.state.start('Main');
+    level=5;
+    game.state.start('Main');
   },
   startGame: function() {
     // Start game

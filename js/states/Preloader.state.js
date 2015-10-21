@@ -49,12 +49,13 @@ SpaceGame.Preloader.prototype = {
      * Enemys
      */
     game.load.spritesheet('alian', 'assets/sprites/space_alian5.png', 32, 40, 9);
-    game.load.physics('enemy_physics', 'assets/sprites/aliens.json');
     game.load.spritesheet('bazyaka', 'assets/sprites/bazyaka.png', 70, 64, 80);
     game.load.spritesheet('ufo', 'assets/sprites/tarelka.png', 108, 64, 10);
     game.load.spritesheet('cat', 'assets/sprites/cat.png', 64, 104, 1);
     game.load.spritesheet('nog', 'assets/sprites/nog50.png', 89, 119, 50);
 
+    game.load.physics('enemy_physics', 'assets/sprites/aliens_pshysics.json');
+    game.load.physics('spaceship_pshysics', 'assets/sprites/spaceship_pshysics.json');
     /**
      * Effects
      */

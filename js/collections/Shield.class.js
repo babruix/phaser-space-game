@@ -16,6 +16,17 @@ var Shield = function() {
 
   this.shield.body.onBeginContact.add(function (body1, shapeA, shapeB) {
     if (body1 && body1.sprite && body1.sprite.key=='spaceship') {
+
+      if (!this.shield.hitCooldown) {
+        this.shield.hitCooldown = true;
+        game.time.events.add(1000, function () {
+          this.shield.hitCooldown = false;
+        }, this);
+      }
+      else {
+        return;
+      }
+
       // do not kill pickable items, only tower can pickup.
       // @todo: enemy can pickup?
       this.shield.kill();

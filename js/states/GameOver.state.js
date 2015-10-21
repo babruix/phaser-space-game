@@ -11,9 +11,9 @@ SpaceGame.GameOver.prototype = {
     var image = game.add.image(0, 0, 'image-data');
 
     var message  = "GAME OVER! \n try again?";
-    if (!SpaceGame._flowerPlants.countLiving()) {
+    /*if (!SpaceGame._flowerPlants.countLiving()) {
       message = "all flowers are stolen \n" + message;
-    }
+    }*/
     // place the assets and elements in their initial positions, create the state
     this._fontStyle = { font: "40px Arial", fill: "#FFCC00", stroke: "#333", strokeThickness: 5, align: "center" };
 

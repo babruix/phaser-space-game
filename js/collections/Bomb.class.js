@@ -10,6 +10,18 @@ var Bomb = function() {
 
   this.bomb.body.onBeginContact.add(function (body1, shapeA, shapeB) {
     if (body1 && body1.sprite != null) {
+
+      if (!this.bomb.hitCooldown) {
+        this.bomb.hitCooldown = true;
+        game.time.events.add(1000, function () {
+          this.bomb.hitCooldown = false;
+        }, this);
+      }
+      else {
+        return;
+      }
+
+
       if (body1.sprite.key != 'spaceship') {
         for (var i = 0, x = SpaceGame.enemySprites.length; i < x; i++) {
           if (SpaceGame.enemySprites[i].name == body1.sprite.key) {
@@ -24,8 +36,7 @@ var Bomb = function() {
       else {
         this.bomb.kill();
         game.audio.explosionSnd.play();
-        body1.sprite.damage(10);
-        updateScoreText();
+        updateScore(true);
       }
     }
   }, this);

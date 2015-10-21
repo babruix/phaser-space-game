@@ -13,7 +13,7 @@ var Tower = function (worldX, worldY, tile) {
   game.physics.p2.enable(this.tower, debug);
 
   this.tower.width = 100;
-  this.tower.height = 50;
+  this.tower.height = 42;
   this.tower.body.setRectangle(100,50);
 
   this.tower.body.data.gravityScale = 70;
@@ -95,6 +95,11 @@ var Tower = function (worldX, worldY, tile) {
 Tower.prototype = {
   addToPoint: function (worldX, worldY) {
     new Tower(worldX, worldY, 'spaceship');
+
+    // Add  PhysicsEditor bounding shape
+    towers.children[0].body.clearShapes();
+    towers.children[0].body.loadPolygon('spaceship_pshysics', 'spaceship');
+
     towers.children[0].alpha = 0;
     towers.children[0].fireTime = 200;
     towers.children[0].anchor.setTo(0.5,0.5);

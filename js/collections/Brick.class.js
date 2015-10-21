@@ -13,6 +13,17 @@ var Brick = function () {
 
   this.brick.body.onBeginContact.add(function (body1, shapeA, shapeB) {
     if (body1 && body1.sprite != null && body1.sprite.key == 'spaceship') {
+
+      if (!this.brick.hitCooldown) {
+        this.brick.hitCooldown = true;
+        game.time.events.add(1000, function () {
+          this.brick.hitCooldown = false;
+        }, this);
+      }
+      else {
+        return;
+      }
+
       // do not kill pickable items, only tower can pickup.
       // @todo: enemy can pickup?
       this.brick.kill();
