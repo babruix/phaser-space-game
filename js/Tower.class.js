@@ -67,13 +67,13 @@ var Tower = function (worldX, worldY, tile) {
   var _this = this;
   this.tower.update = function () {
     // Fire
-    Tower.prototype.fire(_this.tower);
-    /*SpaceGame._fireButton.onDown.add(function () {
+    //Tower.prototype.fire(_this.tower);
+    SpaceGame._fireButton.onDown.add(function () {
       Tower.prototype.fire(_this.tower);
     }, _this);
     if (SpaceGame._fireButton.isDown) {
       Tower.prototype.fire(_this.tower);
-    }*/
+    }
 
     // Wall
     SpaceGame._brickButton.onDown.add(function () {
@@ -94,7 +94,10 @@ var Tower = function (worldX, worldY, tile) {
 
     var bar = _this.tower.towerHealthBar;
     bar.setPercent(_this.tower.health * 10);
-    bar.setPosition(_this.tower.x, _this.tower.y + 30);
+    var y = _this.tower.y > game.height - _this.tower.height
+      ? _this.tower.y + 20
+      : _this.tower.y + 30;
+    bar.setPosition(_this.tower.x, y);
   }
 };
 
@@ -132,15 +135,15 @@ Tower.prototype = {
     SpaceGame._shipTrail.alpha = 0;
   },
   fire: function (tower) {
-    if (SpaceGame.enemys.stealing && tower.alive && game.time.now > tower.fireLastTime) {
+    //SpaceGame.enemys.stealing &&
+    if (tower.alive && game.time.now > tower.fireLastTime) {
       game.audio.playerSndFire.play();
-      var bullet = new Bullet(tower.x, tower.y - 1, false);
+      var bullet = new Bullet(tower.x, tower.y - tower.height, false);
       if (bullet != undefined && bullet.body != undefined) {
-        bullet.body.moveUp(500*level);
-        //game.physics.arcade.moveToObject(bullet, towers.children[0], level*100);
+        bullet.body.moveUp(150*level);
         bullet = null;
-        tower.fireLastTime = game.time.now + tower.fireTime;
       }
+      tower.fireLastTime = game.time.now + tower.fireTime;
     }
   },
   fireMissle: function (tower) {

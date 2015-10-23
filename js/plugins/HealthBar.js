@@ -127,4 +127,4 @@ HealthBar.prototype.setWidth = function(newWidth){
 };
 
 
-module.exports = HealthBar; // for browserify, if not needed
+//module.exports = HealthBar; // for browserify, if not needed
