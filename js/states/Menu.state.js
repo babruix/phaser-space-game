@@ -21,12 +21,13 @@ SpaceGame.Menu.prototype = {
       y: (game.height-250)/2
     }, 1000, Phaser.Easing.Circular.Out, true, 50, 0);
 
-    // start immediately...
-    level=5;
-    game.state.start('Main');
+    // to start immediately...
+    //level=5;
+    //game.state.start('Main');
   },
   startGame: function() {
+
     // Start game
-    game.state.start('Main');
+    SpaceGame.transitionPlugin.to('Main');
   }
 };

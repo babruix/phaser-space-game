@@ -148,7 +148,7 @@ function levelCompleted() {
             SpaceGame._playerMissles = towers.children[0].missles;
             SpaceGame._playerFireSpeed = towers.children[0].fireTime;
           }
-          game.state.start('Main');
+          SpaceGame.transitionPlugin.to('Main');
           // Init score
           SpaceGame._scoreText = undefined;
           SpaceGame._fireGraph = undefined;

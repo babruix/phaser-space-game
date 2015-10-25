@@ -36,7 +36,7 @@ SpaceGame.Main = function (game) {
 SpaceGame.GameOverWithScreenshot = function () {
   // save game screenshot.
   SpaceGame.canvasDataURI = game.canvas.toDataURL();
-  game.state.start('GameOver');
+  SpaceGame.transitionPlugin.to('GameOver');
 };
 SpaceGame.Main.prototype = {
   create: function () {

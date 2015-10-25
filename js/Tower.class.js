@@ -107,7 +107,6 @@ Tower.prototype = {
 
     var barConfig = {x: towers.children[0].health, y: -40,height:10,width:towers.children[0].width};
     towers.children[0].towerHealthBar = new HealthBar(game, barConfig);
-    console.log(towers.children[0].health);
     // Add  PhysicsEditor bounding shape
     towers.children[0].body.clearShapes();
     towers.children[0].body.loadPolygon('spaceship_pshysics', 'spaceship');

@@ -33,7 +33,7 @@ SpaceGame.GameOver.prototype = {
       lives = 3;
       level = 0;
       score = 0;
-      game.state.start('Main');
+      SpaceGame.transitionPlugin.to('Main');
     }
   }
 };

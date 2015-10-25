@@ -8,6 +8,27 @@ SpaceGame.Boot.prototype = {
   preload : function(){
     // Load preloader image
     game.load.image('preloaderBar', 'assets/sprites/preload-bar.png');
+
+
+    // transition plugin
+    SpaceGame.transitionPlugin = game.plugins.add(Phaser.Plugin.StateTransition);
+
+    //define new properties to be tweened, duration, even ease
+    SpaceGame.transitionPlugin.settings({
+
+      //how long the animation should take
+      duration: 1000,
+      //ease property
+      ease: Phaser.Easing.Exponential.InOut, /* default ease */
+      //what property should be tweened
+      properties: {
+        alpha: 0,
+        scale: {
+          x: 1.5,
+          y: 1.5
+        }
+      }
+    });
   },
   create : function(){
     // Set scale options
@@ -16,6 +37,6 @@ SpaceGame.Boot.prototype = {
     game.scale.pageAlignHorizontally = true;
     game.scale.pageAlignVertically = true;
     game.scale.setScreenSize(true);
-    game.state.start('Preloader');
+    SpaceGame.transitionPlugin.to('Preloader');
   }
 };
