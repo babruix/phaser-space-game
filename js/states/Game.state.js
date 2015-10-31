@@ -228,7 +228,9 @@ SpaceGame.Main.prototype = {
      * Wall
      */
     SpaceGame._walls = game.add.group();
-    SpaceGame._walls.createMultiple(1, 'wall');
+    SpaceGame._walls.createMultiple(1, 'wall-a');
+    SpaceGame._walls.createMultiple(1, 'wall-b');
+    SpaceGame._walls.createMultiple(1, 'wall-c');
 
     /**
      * Ufo
@@ -295,6 +297,7 @@ SpaceGame.Main.prototype = {
   update: function () {
     SpaceGame._background.tilePosition.set(game.camera.x * -0.5, game.camera.y * -0.5);
 
+    // Level completed.
     if (SpaceGame.enemys.countLiving() == 0
       && SpaceGame._allEnemysAdded
       && !SpaceGame._newLevelStarted) {
@@ -385,6 +388,7 @@ SpaceGame.Main.prototype = {
       }
     });
 
+    // Game over.
     if (!SpaceGame._flowerPlants.countLiving()) {
       game.time.events.add(Phaser.Timer.SECOND * 2, SpaceGame.GameOverWithScreenshot, this).autoDestroy = true;
     }

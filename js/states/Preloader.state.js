@@ -68,7 +68,9 @@ SpaceGame.Preloader.prototype = {
     game.load.image('emit', 'assets/sprites/emit.png');
     game.load.image('heart', 'assets/sprites/heart.png');
     game.load.image('brick', 'assets/sprites/brick.png');
-    game.load.image('wall', 'assets/sprites/wall.png');
+    game.load.image('wall-a', 'assets/sprites/wall-a.png');
+    game.load.image('wall-b', 'assets/sprites/wall-b.png');
+    game.load.image('wall-c', 'assets/sprites/wall-c.png');
     game.load.image('bomb', 'assets/sprites/bomb.png');
     game.load.spritesheet('shield', 'assets/sprites/shield.png', 55, 64, 2);
     game.load.spritesheet('button-start', 'assets/sprites/button-start.png', 401, 143);
