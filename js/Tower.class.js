@@ -11,6 +11,7 @@ var Tower = function (worldX, worldY, tile) {
   this.tower.fireLastTime = game.time.now + this.tower.fireTime;
   this.tower.wallLastTime = game.time.now + this.tower.wallTime;
   game.physics.p2.enable(this.tower, debug);
+  this.tower.bullets = 50;
 
   this.tower.width = 100;
   this.tower.height = 42;
@@ -135,7 +136,8 @@ Tower.prototype = {
   },
   fire: function (tower) {
     //SpaceGame.enemys.stealing &&
-    if (tower.alive && game.time.now > tower.fireLastTime) {
+    if (tower.alive && game.time.now > tower.fireLastTime &&  tower.bullets > 0) {
+      tower.bullets--;
       game.audio.playerSndFire.play();
       var bullet = new Bullet(tower.x, tower.y - tower.height, false);
       if (bullet != undefined && bullet.body != undefined) {

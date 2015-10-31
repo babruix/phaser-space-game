@@ -198,9 +198,9 @@ function updateScoreText() {
   var health = 10;
   if (towers && towers.children && typeof towers.children[0] != "undefined") {
     str += "  Bricks: " + towers.children[0].countBricks;
-    //str+= "  Shield: " + towers.children[0].shieldPower + "%";
     str+= "  Missles: " + towers.children[0].missles + "";
     health = towers.children[0].health;
+    str+= "  Bullets: " + towers.children[0].bullets + "";
   }
   if (SpaceGame._scoreText == undefined) {
     SpaceGame._scoreText = game.add.text(10, game.height - 30, str, style);
