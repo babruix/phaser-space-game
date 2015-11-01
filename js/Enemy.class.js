@@ -89,9 +89,24 @@ Enemy.prototype = {
     enemy.body.mass = 1;
     enemy.body.velocity.x = 150;
 
-    // Add  PhysicsEditor bounding shape
+    // Add  PhysicsEditor bounding shape.
     enemy.body.clearShapes();
     enemy.body.loadPolygon('enemy_physics', anim);
+
+    // Add health bar.
+    var barConfig = {
+      x: enemy.health,
+      y: -40,
+      height: 5,
+      width: enemy.width,
+      bg: {
+        color: '#56807D'
+      },
+      bar: {
+        color: '#D81E00'
+      }
+    };
+    enemy.enemyHealthBar = new HealthBar(game, barConfig);
 
     enemy.ufo_exists = false;
     enemy.ufo = null;
@@ -151,6 +166,14 @@ Enemy.prototype = {
           Enemy.prototype.fire(enemy);
         }
         Enemy.prototype.scale(enemy);
+
+        // Update health bar.
+        var bar = enemy.enemyHealthBar;
+        bar.setPercent(enemy.health * 10);
+        var y = enemy.y > game.height - enemy.height
+          ? enemy.y + 20
+          : enemy.y + 30;
+        bar.setPosition(enemy.x, y);
       }
     };
 

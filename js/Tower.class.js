@@ -93,6 +93,7 @@ var Tower = function (worldX, worldY, tile) {
     SpaceGame._shipTrail.x = _this.tower.x;
     SpaceGame._shipTrail.y = _this.tower.y+10;
 
+    // Update health bar.
     var bar = _this.tower.towerHealthBar;
     bar.setPercent(_this.tower.health * 10);
     var y = _this.tower.y > game.height - _this.tower.height
@@ -106,8 +107,21 @@ Tower.prototype = {
   addToPoint: function (worldX, worldY) {
     new Tower(worldX, worldY, 'spaceship');
 
-    var barConfig = {x: towers.children[0].health, y: -40,height:10,width:towers.children[0].width};
+    // Add health bar.
+    var barConfig = {
+      x: towers.children[0].health,
+      y: -40,
+      height: 5,
+      width: towers.children[0].width,
+      bg: {
+        color: '#56807D'
+      },
+      bar: {
+        color: '#20E331'
+      }
+    };
     towers.children[0].towerHealthBar = new HealthBar(game, barConfig);
+
     // Add  PhysicsEditor bounding shape
     towers.children[0].body.clearShapes();
     towers.children[0].body.loadPolygon('spaceship_pshysics', 'spaceship');
