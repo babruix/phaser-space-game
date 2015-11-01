@@ -169,13 +169,19 @@ Enemy.prototype = {
 
         // Update health bar.
         var bar = enemy.enemyHealthBar;
-        bar.setPercent(enemy.health * 10);
-        var y = enemy.y > game.height - enemy.height
-          ? enemy.y + 20
-          : enemy.y + 30;
-        bar.setPosition(enemy.x, y);
+        if (bar.barSprite) {
+          bar.setPercent(enemy.health * 10);
+          var y = enemy.y > game.height - enemy.height
+            ? enemy.y + 20
+            : enemy.y + 30;
+          bar.setPosition(enemy.x, y);
+        }
       }
     };
+    enemy.events.onKilled.add(function (enemy) {
+      enemy.enemyHealthBar.barSprite.kill();
+      enemy.enemyHealthBar.bgSprite.kill();
+    });
 
     SpaceGame.enemys.add(enemy);
   },

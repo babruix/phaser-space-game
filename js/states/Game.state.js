@@ -9,6 +9,7 @@ SpaceGame.Main = function (game) {
   this._background = null;
 
   SpaceGame._fireButton = null;
+  SpaceGame._sateliteButton = null;
   SpaceGame._brickButton = null;
   SpaceGame._missleButton = null;
   SpaceGame._cursors = null;
@@ -91,6 +92,7 @@ SpaceGame.Main.prototype = {
   },
   setPlayerKeys: function () {
     SpaceGame._fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    SpaceGame._sateliteButton = game.input.keyboard.addKey(Phaser.Keyboard.S);
     SpaceGame._brickButton = game.input.keyboard.addKey(Phaser.Keyboard.B);
     SpaceGame._missleButton = game.input.keyboard.addKey(Phaser.Keyboard.M);
     SpaceGame._cursors = game.input.keyboard.createCursorKeys();
@@ -166,13 +168,14 @@ SpaceGame.Main.prototype = {
         console.log({'x': this._cloud.x, 'y': this._cloud.y});
       }, this);
 
-      var speed = game.rnd.integerInRange(this._cloud.x+this._cloud.width*50, this._cloud.width * 500);
-       this._tweenClouds[i] = game.add.tween(this._cloud).to({x: game.rnd.integerInRange(this._cloud.x, this._cloud.x+this._cloud.width)}, speed,
-       Phaser.Easing.Sinusoidal.InOut,
-       true, //autostart?,
-       0, //delay,
-       false, //repeat?
-       true //yoyo?
+      var speed = game.rnd.integerInRange(this._cloud.x + this._cloud.width * 50, this._cloud.width * 500);
+      var state = {x: game.rnd.integerInRange(this._cloud.x, this._cloud.x + this._cloud.width)};
+      this._tweenClouds[i] = game.add.tween(this._cloud).to(state, speed,
+        Phaser.Easing.Sinusoidal.InOut,
+        true, //autostart?,
+        0, //delay,
+        false, //repeat?
+        true //yoyo?
        );
     }
   },

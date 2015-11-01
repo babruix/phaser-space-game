@@ -91,7 +91,7 @@ var Tower = function (worldX, worldY, tile) {
 
     // Keep the SpaceGame._shipTrail lined up with the ship
     SpaceGame._shipTrail.x = _this.tower.x;
-    SpaceGame._shipTrail.y = _this.tower.y+10;
+    SpaceGame._shipTrail.y = _this.tower.y + 10;
 
     // Update health bar.
     var bar = _this.tower.towerHealthBar;
@@ -100,6 +100,12 @@ var Tower = function (worldX, worldY, tile) {
       ? _this.tower.y + 20
       : _this.tower.y + 30;
     bar.setPosition(_this.tower.x, y);
+
+    if (SpaceGame._sateliteButton) {
+      SpaceGame._sateliteButton.onDown.add(function () {
+        Tower.prototype.addSatelite(_this.tower);
+      }, _this);
+    }
   }
 };
 
@@ -156,7 +162,7 @@ Tower.prototype = {
       game.audio.playerSndFire.play();
       var bullet = new Bullet(tower.x, tower.y - tower.height, false);
       if (bullet != undefined && bullet.body != undefined) {
-        bullet.body.moveUp(150*level);
+        bullet.body.moveUp(200*level);
         bullet = null;
       }
       tower.fireLastTime = game.time.now + tower.fireTime;
@@ -195,5 +201,16 @@ Tower.prototype = {
       tower._protectRect.alpha = 0.7;
       tower._protectRect.drawCircle(towers.children[0].x, towers.children[0].y, towers.children[0].width + towers.children[0].shieldPower / 10);
     }
+  },
+  addSatelite: function (tower) {
+    // @todo: move to separate class and fire against enemy
+    if (score > 10) {
+      score -= 10;
+      updateScoreText();
+      tower.satelite = game.add.sprite(tower.x, tower.y, 'satelite');
+      tower.satelite.scale.setTo(0.5, 0.5);
+      game.physics.p2.enable(tower.satelite, debug);
+    }
+
   }
 };
