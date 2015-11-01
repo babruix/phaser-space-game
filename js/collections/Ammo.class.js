@@ -30,7 +30,7 @@ var Ammo = function() {
     }
   }, this);
   this.ammo.events.onKilled.add(function (heart) {
-    game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 60), Ammo.prototype.generateAmmo, this);
+    game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(20, 40), Ammo.prototype.generateAmmo, this);
   });
 };
 

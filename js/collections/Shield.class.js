@@ -35,7 +35,7 @@ var Shield = function() {
     }
   }, this);
   this.shield.events.onKilled.add(function (shield) {
-    game.time.events.add(Phaser.Timer.SECOND * 3.85, Shield.prototype.generateShield, this);
+    game.time.events.add(Phaser.Timer.SECOND * 4, Shield.prototype.generateShield, this);
   });
 };
 

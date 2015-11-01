@@ -33,7 +33,7 @@ var Heart = function() {
     }
   }, this);
   this.heart.events.onKilled.add(function (heart) {
-    game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 100), Heart.prototype.generateHeart, this);
+    game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(70, 100), Heart.prototype.generateHeart, this);
   });
 };
 
