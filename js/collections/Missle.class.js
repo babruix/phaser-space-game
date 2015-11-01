@@ -37,7 +37,7 @@ var Missle = function(x, y) {
         body1.sprite.missles++;
         updateScoreText();
         this.missle.destroy();
-        game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 60), Missle.prototype.generateMissle);
+        game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30), Missle.prototype.generateMissle);
       }
     }
 

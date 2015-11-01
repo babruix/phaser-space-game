@@ -72,7 +72,7 @@ Enemy.prototype = {
     enemy.destroy();
 
     enemy = game.add.sprite(x, y, anim);
-    enemy.health = level * 2;
+    enemy.health = level * 3;
     enemy.anchor.setTo(0.5, 0.5);
     enemy.speed = 1;
     enemy.speedX = 0;
@@ -99,26 +99,32 @@ Enemy.prototype = {
     enemy.body.onBeginContact.add(function (body1) {
       if (!body1 || !body1.sprite) return;
       if (body1.sprite.key == 'bullet' && !body1.sprite.enemyBullet) {
-        game.audio.smackSnd.play();
-        enemy.damage(1);
-        var style = {
-          font: "20px Tahoma",
-          fontWeight: 500,
-          fill: "#FFF",
-          align: "center"
-        };
-        var shift = enemy.health > 9 ? 11 : 6;
-        var cRect = game.add.graphics(0, 0).beginFill(0xff5a00).drawCircle(enemy.x + shift, enemy.y + 13, 30);
-        var health = game.add.text(enemy.x, enemy.y, enemy.health, style);
-        var health_tween = game.add.tween(cRect).to({alpha: 0.3}, 500,
-          Phaser.Easing.Linear.In,
-          true /*autostart?*/,
-          1000 /*delay*/);
-        //
-        health_tween.onComplete.add(function () {
-          health.destroy();
-          cRect.destroy();
-        }, this);
+        if (!enemy.lastDamage) {
+          enemy.lastDamage = game.time.now;
+        }
+        if (enemy.lastDamage + 1000 < game.time.now) {
+          enemy.lastDamage = game.time.now;
+          game.audio.smackSnd.play();
+          enemy.damage(1);
+          var style = {
+            font: "20px Tahoma",
+            fontWeight: 500,
+            fill: "#FFF",
+            align: "center"
+          };
+          var shift = enemy.health > 9 ? 11 : 6;
+          var cRect = game.add.graphics(0, 0).beginFill(0xff5a00).drawCircle(enemy.x + shift, enemy.y + 13, 30);
+          var health = game.add.text(enemy.x, enemy.y, enemy.health, style);
+          var health_tween = game.add.tween(cRect).to({alpha: 0.3}, 500,
+            Phaser.Easing.Linear.In,
+            true /*autostart?*/,
+            1000 /*delay*/);
+          //
+          health_tween.onComplete.add(function () {
+            health.destroy();
+            cRect.destroy();
+          }, this);
+        }
 
         if (enemy.health == 1) {
           this.explode(enemy);

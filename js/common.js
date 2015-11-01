@@ -20,7 +20,7 @@ game.state.start('Boot');
 
 function nextLevel() {
   level++;
-  Tower.prototype.addToPoint(game.width/2, game.height-50);
+  Tower.prototype.addToPoint(game.width / 2, game.height - 50);
   showLevelTitle();
   updateScoreText();
   addRndBricks();
@@ -30,9 +30,11 @@ function nextLevel() {
 
   Brick.prototype.generateBrick();
   game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 100), Heart.prototype.generateHeart, this);
-  game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30), Shield.prototype.generateShield, this);
+  game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 50), Shield.prototype.generateShield, this);
+  game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 40), Ammo.prototype.generateAmmo, this);
   game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30), Missle.prototype.generateMissle, this);
-  for (var i = 0; i < parseInt(level/2); i++) {
+
+  for (var i = 0; i < parseInt(level / 2); i++) {
     Bomb.prototype.generateBomb();
   }
 }
@@ -163,7 +165,7 @@ function addWalls() {
 }
 
 function addRndBricks() {
-  for (var i = 1; i < parseInt(level/2)*3; i++) {
+  for (var i = 1; i < level * 3; i++) {
     new Wall(game.rnd.integerInRange(0,game.width), game.rnd.integerInRange(0,game.height));
   }
   SpaceGame._walls.setAll('alpha', 0);
@@ -173,8 +175,8 @@ function addEnemys() {
   var i = 0;
   SpaceGame._allEnemysAdded = false;
   var enemysBcl = game.time.events.loop(level/2 * Phaser.Timer.SECOND, function () {
-    // Generate i=level number of enemys
-    if (i < level ) {
+    // Generate i=3*level number of enemys
+    if (i < 2 * level ) {
       var rndKey = game.rnd.integerInRange(0, SpaceGame.enemySprites.length-1);
       var animEnemy = SpaceGame.enemySprites[rndKey];
       var enemy = new Enemy(0, 0, animEnemy.name, animEnemy.length);

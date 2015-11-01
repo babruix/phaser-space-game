@@ -32,7 +32,7 @@ var Brick = function () {
     }
   }, this);
   this.brick.events.onKilled.add(function (brick) {
-    game.time.events.add(Phaser.Timer.SECOND, Brick.prototype.generateBrick, this);
+    game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 10), Brick.prototype.generateBrick, this);
   });
 };
 

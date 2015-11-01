@@ -138,6 +138,7 @@ Tower.prototype = {
     //SpaceGame.enemys.stealing &&
     if (tower.alive && game.time.now > tower.fireLastTime &&  tower.bullets > 0) {
       tower.bullets--;
+      updateScoreText();
       game.audio.playerSndFire.play();
       var bullet = new Bullet(tower.x, tower.y - tower.height, false);
       if (bullet != undefined && bullet.body != undefined) {

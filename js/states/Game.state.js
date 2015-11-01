@@ -87,6 +87,7 @@ SpaceGame.Main.prototype = {
       game.add.audio('scifi5', 0.1)
     ];
     game.audio.completedSnd = game.add.audio('completed', 1);
+    game.audio.reloadSnd = game.add.audio('reload', 0.6);
   },
   setPlayerKeys: function () {
     SpaceGame._fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
@@ -198,6 +199,7 @@ SpaceGame.Main.prototype = {
 
   },
   setupGameGroups: function () {
+
     /**
      * Tower
      */
@@ -211,6 +213,12 @@ SpaceGame.Main.prototype = {
      */
     SpaceGame._hearts = game.add.group();
     SpaceGame._hearts.createMultiple(1, 'heart');
+
+    /**
+     * Ammo
+     */
+    SpaceGame._ammos = game.add.group();
+    SpaceGame._ammos.createMultiple(1, 'ammo');
 
     /**
      * Shield
@@ -296,6 +304,12 @@ SpaceGame.Main.prototype = {
   },
   update: function () {
     SpaceGame._background.tilePosition.set(game.camera.x * -0.5, game.camera.y * -0.5);
+
+    // Game over if no alive flowers.
+    if (!SpaceGame._flowerPlants.countLiving()) {
+      game.time.events.add(0, SpaceGame.GameOverWithScreenshot, this).autoDestroy = true;
+      return;
+    }
 
     // Level completed.
     if (SpaceGame.enemys.countLiving() == 0
@@ -388,10 +402,6 @@ SpaceGame.Main.prototype = {
       }
     });
 
-    // Game over.
-    if (!SpaceGame._flowerPlants.countLiving()) {
-      game.time.events.add(Phaser.Timer.SECOND * 2, SpaceGame.GameOverWithScreenshot, this).autoDestroy = true;
-    }
 
     towers.forEachAlive(function (tower) {
       if (tower.alpha < 1) {

@@ -27,6 +27,7 @@ SpaceGame.Preloader.prototype = {
     game.load.audio('scifi5', ['assets/audio/scifi5.wav']);
     game.load.audio('completed', ['assets/audio/level-completed.mp3']);
     game.load.audio('gameOver', ['assets/audio/game-over.wav']);
+    game.load.audio('reload', ['assets/audio/reload.mp3']);
 
     game.load.tilemap('desert', 'assets/maps/tower-defense-clean.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('tiles', 'assets/maps/tmw_desert_spacing.png');
@@ -35,6 +36,7 @@ SpaceGame.Preloader.prototype = {
 
     game.load.image('bullet', 'assets/sprites/bullet.png');
     game.load.image('missle', 'assets/sprites/missile.png');
+    game.load.image('ammo', 'assets/sprites/ammo.png');
 
     game.load.image('background', 'assets/sprites/bg0.png');
 
