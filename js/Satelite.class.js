@@ -7,7 +7,10 @@ var Satelite = function (worldX, worldY) {
   this.satelite.fireLastTime = game.time.now;
   this.satelite.fireTime = 300;
 
+  this.satelite.body.mass = 100;
+  this.satelite.body.damping = 1;
 
+  this.satelite.scale.setTo(0.5, 0.5);
 
   // Add health bar.
   var barConfig = {
@@ -57,15 +60,36 @@ var Satelite = function (worldX, worldY) {
 Satelite.prototype = {
   addToPoint: function (worldX, worldY) {
     new Satelite(worldX, worldY, 'satelite');
-    towers.children[0].satelite.scale.setTo(0.5, 0.5);
+  },
+  getClosestEnemy: function (satelite) {
+    var closestEnemy = SpaceGame.enemys.getFirstAlive();
+    SpaceGame.enemys.forEachAlive(function (enemy) {
+
+      // Distance
+      var a = satelite.x - closestEnemy.x;
+      var b = satelite.y - closestEnemy.y;
+      var c = Math.sqrt( a*a + b*b );
+
+      var a = satelite.x - enemy.x;
+      var b = satelite.y - enemy.y;
+      var newC = Math.sqrt( a*a + b*b );
+
+      if (newC < c) {
+        closestEnemy = enemy;
+      }
+    });
+    return closestEnemy;
   },
   fire: function (satelite) {
     if (satelite.alive && game.time.now > satelite.fireLastTime) {
       game.audio.enemySndFire.play();
       var bullet = new Bullet(satelite.x, satelite.y, false);
 
-      // @todo: find closest enemy
-      var closestEnemy = SpaceGame.enemys.getFirstAlive();
+      // Find closest enemy.
+      var closestEnemy = this.getClosestEnemy(satelite);
+      if (!closestEnemy || !closestEnemy.alive) {
+        return;
+      }
 
       bullet.rotation = parseFloat(game.physics.arcade.angleToXY(bullet, closestEnemy.x, closestEnemy.y)) * 180 / Math.PI;
       game.physics.arcade.moveToObject(bullet, closestEnemy, level*100);
