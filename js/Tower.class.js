@@ -94,7 +94,7 @@ var Tower = function (worldX, worldY, tile) {
     SpaceGame._shipTrail.y = _this.tower.y + 10;
 
     // Update health bar.
-    var bar = _this.tower.towerHealthBar;
+    var bar = _this.tower.HealthBar;
     bar.setPercent(_this.tower.health * 10);
     var y = _this.tower.y > game.height - _this.tower.height
       ? _this.tower.y + 20
@@ -126,7 +126,7 @@ Tower.prototype = {
         color: '#20E331'
       }
     };
-    towers.children[0].towerHealthBar = new HealthBar(game, barConfig);
+    towers.children[0].HealthBar = new HealthBar(game, barConfig);
 
     // Add  PhysicsEditor bounding shape
     towers.children[0].body.clearShapes();
@@ -203,14 +203,10 @@ Tower.prototype = {
     }
   },
   addSatelite: function (tower) {
-    // @todo: move to separate class and fire against enemy
-    if (score > 10) {
-      score -= 10;
+    if (score >= 5) {
+      score -= 5;
       updateScoreText();
-      tower.satelite = game.add.sprite(tower.x, tower.y, 'satelite');
-      tower.satelite.scale.setTo(0.5, 0.5);
-      game.physics.p2.enable(tower.satelite, debug);
+      Satelite.prototype.addToPoint(tower.x, tower.y);
     }
-
   }
 };
