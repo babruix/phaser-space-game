@@ -40,7 +40,6 @@ SpaceGame.Boot.prototype = {
     game.scale.pageAlignVertically = true;
     game.scale.setScreenSize(true);
     SpaceGame.transitionPlugin.to('Preloader');
-
   }
 };
 SpaceGame.epsyPluginConfig = {};
@@ -79,6 +78,46 @@ SpaceGame.epsyPluginConfig.circles = [{
   "active": true,
   "duration": null,
   "id": "emitter2",
+  "aFactor": {"x": 0, "y": 0},
+  "xFactor": {"x": 0, "y": 0},
+  "border": {"top": 200, "left": 200, "bottom": 200, "right": 200},
+  "zIndex": 0
+}];
+SpaceGame.epsyPluginConfig.galaxy = [{
+  "pos": {"x": 0, "y": 0},
+  "posVar": {"x": 10, "y": 0},
+  "speed": 60,
+  "speedVar": 10,
+  "angle": 90,
+  "angleVar": 360,
+  "life": 4,
+  "lifeVar": 1,
+  "radius": 40,
+  "radiusVar": 10,
+  "textureAdditive": true,
+  "startScale": 1,
+  "startScaleVar": 0,
+  "endScale": 1,
+  "endScaleVar": 0,
+  "startColor": [30, 63, 193, 1],
+  "startColorVar": [0, 0, 0, 0],
+  "endColor": [0, 0, 0, 1],
+  "endColorVar": [0, 0, 0, 0],
+  "colorList": [],
+  "gravity": {"x": 0, "y": 0},
+  "radialAccel": -80,
+  "radialAccelVar": 0,
+  "tangentialAccel": 80,
+  "tangentialAccelVar": 0,
+  "texture": "assets/sprites/particle.png",
+  "totalParticles": 200,
+  "emissionRate": 50,
+  "xEquation": "",
+  "yEquation": "",
+  "textureEnabled": true,
+  "active": true,
+  "duration": null,
+  "id": "galax",
   "aFactor": {"x": 0, "y": 0},
   "xFactor": {"x": 0, "y": 0},
   "border": {"top": 200, "left": 200, "bottom": 200, "right": 200},
