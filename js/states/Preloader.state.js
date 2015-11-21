@@ -1,6 +1,13 @@
 SpaceGame.Preloader = function(game){ };
 SpaceGame.Preloader.prototype = {
   preload: function(){
+
+    // Nice practicles :)
+    var particleSystem1 = SpaceGame.epsyPlugin.loadSystem(SpaceGame.epsyPluginConfig.galaxy, game.width / 2, 50);
+    // let Phaser add the particle system to world group or choose to add it to a specific group
+    this.myGroup = game.add.group();
+    this.myGroup.add(particleSystem1);
+
     /**
      * Preloader
      */
