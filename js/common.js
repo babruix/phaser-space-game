@@ -32,6 +32,7 @@ function nextLevel() {
   game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 100), Heart.prototype.generateHeart, this);
   game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 50), Shield.prototype.generateShield, this);
   game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 40), Ammo.prototype.generateAmmo, this);
+  game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30), Fuel.prototype.generateFuel, this);
   game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30), Missle.prototype.generateMissle, this);
 
   for (var i = 0; i < parseInt(level / 2); i++) {
@@ -203,6 +204,7 @@ function updateScoreText() {
     str+= "  Missles: " + towers.children[0].missles + "";
     health = towers.children[0].health;
     str+= "  Bullets: " + towers.children[0].bullets + "";
+    str+= "  Fuel: " + towers.children[0].fuel + "";
   }
   if (SpaceGame._scoreText == undefined) {
     SpaceGame._scoreText = game.add.text(10, game.height - 30, str, style);

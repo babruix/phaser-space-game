@@ -45,6 +45,7 @@ SpaceGame.Preloader.prototype = {
     game.load.image('bullet', 'assets/sprites/bullet.png');
     game.load.image('missle', 'assets/sprites/missile.png');
     game.load.image('ammo', 'assets/sprites/ammo.png');
+    game.load.image('fuel', 'assets/sprites/fuel.png');
 
     game.load.image('background', 'assets/sprites/bg0.png');
 

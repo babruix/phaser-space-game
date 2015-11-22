@@ -239,6 +239,12 @@ SpaceGame.Main.prototype = {
     SpaceGame._ammos.createMultiple(1, 'ammo');
 
     /**
+     * Fuel
+     */
+    SpaceGame._fuels = game.add.group();
+    SpaceGame._fuels.createMultiple(1, 'fuel');
+
+    /**
      * Shield
      */
     SpaceGame._shields = game.add.group();
@@ -449,7 +455,11 @@ SpaceGame.Main.prototype = {
       }
       speed *= 2;
       if (SpaceGame._cursors.up.isDown) {
-        tower.body.velocity.y = -speed;
+        if (tower.fuel > 0) {
+          tower.body.velocity.y = -speed;
+          tower.fuel--;
+          updateScoreText();
+        }
       }
       else if (SpaceGame._cursors.down.isDown) {
         tower.body.velocity.y = speed;

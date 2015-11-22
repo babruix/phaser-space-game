@@ -12,6 +12,7 @@ var Tower = function (worldX, worldY, tile) {
   this.tower.wallLastTime = game.time.now + this.tower.wallTime;
   game.physics.p2.enable(this.tower, debug);
   this.tower.bullets = 50;
+  this.tower.fuel = 200;
 
   this.tower.width = 100;
   this.tower.height = 42;
@@ -203,8 +204,8 @@ Tower.prototype = {
     }
   },
   addSatelite: function (tower) {
-    if (score >= 20 && game.time.now > tower.wallLastTime) {
-      score -= 20;
+    if (score >= 25 && game.time.now > tower.wallLastTime) {
+      score -= 25;
       updateScoreText();
       // use last wall time variable
       tower.wallLastTime = game.time.now + tower.wallTime;
