@@ -280,3 +280,8 @@ function getHeight() {
     return document.body.clientHeight;
   }
 }
+function caculatetDistance (sprite1,sprite2) {
+  var a = sprite1.x - sprite2.x;
+  var b = sprite1.y - sprite2.y;
+  return Math.sqrt(a * a + b * b);
+}
