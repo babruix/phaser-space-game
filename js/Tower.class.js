@@ -203,9 +203,11 @@ Tower.prototype = {
     }
   },
   addSatelite: function (tower) {
-    if (score >= 5) {
-      score -= 5;
+    if (score >= 20 && game.time.now > tower.wallLastTime) {
+      score -= 20;
       updateScoreText();
+      // use last wall time variable
+      tower.wallLastTime = game.time.now + tower.wallTime;
       Satelite.prototype.addToPoint(tower.x, tower.y);
     }
   }

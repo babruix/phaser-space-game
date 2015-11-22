@@ -41,7 +41,7 @@ SpaceGame.GameOverWithScreenshot = function () {
 };
 SpaceGame.Main.prototype = {
   create: function () {
-    // Hide CSS element
+    // Hide CSS element.
     SpaceGame._anim_elem.style.display = 'none';
     SpaceGame._anim_elem.className += ' gameCreated';
     
@@ -55,7 +55,7 @@ SpaceGame.Main.prototype = {
     this.shakeFlowers();
 
     /**
-     * Init map
+     * Init map.
      */
     game.physics.startSystem(Phaser.Physics.P2JS);
     game.physics.p2.applyGravity = true;
@@ -163,9 +163,12 @@ SpaceGame.Main.prototype = {
       this._cloud.events.onDragStart.add(function () {
         console.log('key=' + this._cloud.key);
         console.log({x: this._cloud.x, y: this._cloud.y});
+
       }, this);
       this._cloud.events.onDragStop.add(function () {
         console.log({'x': this._cloud.x, 'y': this._cloud.y});
+        this._rainGroup.children[0].y = this._cloud.y;
+        console.log(this._rainGroup.children[0].width);
       }, this);
 
       var speed = game.rnd.integerInRange(this._cloud.x + this._cloud.width * 50, this._cloud.width * 500);
@@ -178,6 +181,18 @@ SpaceGame.Main.prototype = {
         true //yoyo?
        );
     }
+
+    this.makeRain(this._cloud.x, this._cloud.y);
+    //this.removeRain();
+  },
+  makeRain: function (x,y) {
+    var particleSystem1 = SpaceGame.epsyPlugin.loadSystem(SpaceGame.epsyPluginConfig.rain, x, y);
+    // let Phaser add the particle system to world group or choose to add it to a specific group
+    this._rainGroup = game.add.group();
+    this._rainGroup.add(particleSystem1);
+  },
+  removeRain:function(){
+    this._rainGroup.destroy();
   },
   shakeFlowers: function () {
     SpaceGame._flowerPlants = game.add.group();

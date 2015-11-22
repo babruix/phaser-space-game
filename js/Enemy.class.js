@@ -117,7 +117,7 @@ Enemy.prototype = {
         if (!enemy.lastDamage) {
           enemy.lastDamage = game.time.now;
         }
-        if (enemy.lastDamage + 1000 < game.time.now) {
+        if (enemy.lastDamage + 500 < game.time.now) {
           enemy.lastDamage = game.time.now;
           game.audio.smackSnd.play();
           enemy.damage(1);
@@ -139,11 +139,12 @@ Enemy.prototype = {
             health.destroy();
             cRect.destroy();
           }, this);
+
+          score += enemy.health%3;
         }
 
         if (enemy.health == 1) {
           this.explode(enemy);
-
           this.hideStealingSign();
         }
 
@@ -154,7 +155,6 @@ Enemy.prototype = {
           enemy.closestPlant.scale.x = (1);
           enemy.closestPlant.scale.y = (1);
           enemy.closestPlant = null;
-
           this.hideStealingSign();
         }
       }
