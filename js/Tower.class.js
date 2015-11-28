@@ -5,7 +5,7 @@ var Tower = function (worldX, worldY, tile) {
   this.tower.health = 10;
   this.tower.wallTime = 100;
   this.tower.fireTime = SpaceGame._playerFireSpeed || 200;
-  this.tower.missles = SpaceGame._playerMissles  || 0;
+  this.tower.missles = SpaceGame._playerMissles || 0;
   this.tower.countBricks = SpaceGame._playerBricks || 0;
   this.tower.shieldPower = SpaceGame._playerShield || 0;
   this.tower.fireLastTime = game.time.now + this.tower.fireTime;
@@ -16,7 +16,7 @@ var Tower = function (worldX, worldY, tile) {
 
   this.tower.width = 100;
   this.tower.height = 42;
-  this.tower.body.setRectangle(100,50);
+  this.tower.body.setRectangle(100, 50);
 
   this.tower.body.data.gravityScale = 70;
   this.tower.body.mass = 50;
@@ -56,7 +56,7 @@ var Tower = function (worldX, worldY, tile) {
   }, this);
 
   var that = this;
-  this.tower.events.onKilled.add(function() {
+  this.tower.events.onKilled.add(function () {
     if (SpaceGame._shipTrail != null) {
       SpaceGame._shipTrail.destroy();
     }
@@ -135,13 +135,13 @@ Tower.prototype = {
 
     towers.children[0].alpha = 0;
     towers.children[0].fireTime = 200;
-    towers.children[0].anchor.setTo(0.5,0.5);
+    towers.children[0].anchor.setTo(0.5, 0.5);
     game.add.tween(towers.children[0])
       .to({alpha: 1}, 500, Phaser.Easing.Linear.In,
-      true, 1000, true, false)
-      .onComplete.add(function() {
-        SpaceGame._shipTrail.alpha = 1;
-      });
+        true, 1000, true, false)
+      .onComplete.add(function () {
+      SpaceGame._shipTrail.alpha = 1;
+    });
 
     // Add an emitter for the ship's trail
     SpaceGame._shipTrail = game.add.emitter(game, towers.children[0].x, towers.children[0].y + 10, 400);
@@ -157,13 +157,13 @@ Tower.prototype = {
   },
   fire: function (tower) {
     //SpaceGame.enemys.stealing &&
-    if (tower.alive && game.time.now > tower.fireLastTime &&  tower.bullets > 0) {
+    if (tower.alive && game.time.now > tower.fireLastTime && tower.bullets > 0) {
       tower.bullets--;
       updateScoreText();
       game.audio.playerSndFire.play();
       var bullet = new Bullet(tower.x, tower.y - tower.height, false);
       if (bullet != undefined && bullet.body != undefined) {
-        bullet.body.moveUp(200*level);
+        bullet.body.moveUp(500 * level);
         bullet = null;
       }
       tower.fireLastTime = game.time.now + tower.fireTime;
