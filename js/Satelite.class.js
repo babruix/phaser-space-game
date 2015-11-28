@@ -76,11 +76,11 @@ Satelite.prototype = {
         closestEnemy = enemy;
       }
     });
-    if (closestEnemy){
+    if (closestEnemy) {
       var closestDistance = caculatetDistance(satelite, closestEnemy);
     }
     // Satellite fire only when enemy distance less 700.
-    return closestDistance < 700 ? closestEnemy: false;
+    return closestDistance < 700 ? closestEnemy : false;
   },
   fire: function (satelite) {
     if (satelite.alive && game.time.now > satelite.fireLastTime) {
@@ -94,7 +94,7 @@ Satelite.prototype = {
       }
 
       bullet.rotation = parseFloat(game.physics.arcade.angleToXY(bullet, closestEnemy.x, closestEnemy.y)) * 180 / Math.PI;
-      game.physics.arcade.moveToObject(bullet, closestEnemy, level*300);
+      game.physics.arcade.moveToObject(bullet, closestEnemy, level * 300);
       bullet = null;
       satelite.fireLastTime = game.time.now + satelite.fireTime;
     }

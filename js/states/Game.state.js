@@ -44,7 +44,7 @@ SpaceGame.Main.prototype = {
     // Hide CSS element.
     SpaceGame._anim_elem.style.display = 'none';
     SpaceGame._anim_elem.className += ' gameCreated';
-    
+
     SpaceGame._newLevelStarted = false;
 
     this.prepareAudio();
@@ -115,15 +115,15 @@ SpaceGame.Main.prototype = {
   createBgTween: function () {
     SpaceGame._backgroundTw = game.add.tween(SpaceGame._background)
       .to({alpha: 0.1}, SpaceGame.dayLength,
-      Phaser.Easing.Quintic.InOut,
-      true, //autostart?,
-      0, //delay,
-      1, //repeat?
-      true //yoyo?
-    );
+        Phaser.Easing.Quintic.InOut,
+        true, //autostart?,
+        0, //delay,
+        1, //repeat?
+        true //yoyo?
+      );
   },
   createBackground: function () {
-    SpaceGame._background = game.add.tileSprite(0, 0, getWidth()*4, 800, 'background');
+    SpaceGame._background = game.add.tileSprite(0, 0, getWidth() * 4, 800, 'background');
     SpaceGame._background.alpha = 1;
   },
   createSun: function () {
@@ -179,19 +179,19 @@ SpaceGame.Main.prototype = {
         0, //delay,
         false, //repeat?
         true //yoyo?
-       );
+      );
     }
 
     this.makeRain(this._cloud.x, this._cloud.y);
     //this.removeRain();
   },
-  makeRain: function (x,y) {
+  makeRain: function (x, y) {
     var particleSystem1 = SpaceGame.epsyPlugin.loadSystem(SpaceGame.epsyPluginConfig.rain, x, y);
     // let Phaser add the particle system to world group or choose to add it to a specific group
     this._rainGroup = game.add.group();
     this._rainGroup.add(particleSystem1);
   },
-  removeRain:function(){
+  removeRain: function () {
     this._rainGroup.destroy();
   },
   shakeFlowers: function () {
@@ -434,7 +434,7 @@ SpaceGame.Main.prototype = {
 
       // Move tower
       tower.body.setZeroVelocity();
-      var speed =  game.height/1.3 + game.height - tower.body.y / 1.3;
+      var speed = game.height / 1.3 + game.height - tower.body.y / 1.3;
 
       if (SpaceGame._cursors.left.isDown) {
         tower.angle = -30;
@@ -523,6 +523,7 @@ SpaceGame.Main.prototype = {
 
       return stealingSignSprite;
     }
+
     SpaceGame.enemys.stealSignLeft = initOneStealSign('left');
     SpaceGame.enemys.stealSignRight = initOneStealSign('right');
   }

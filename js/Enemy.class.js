@@ -140,7 +140,7 @@ Enemy.prototype = {
             cRect.destroy();
           }, this);
 
-          score += enemy.health%3;
+          score += enemy.health % 3;
         }
 
         if (enemy.health == 1) {
@@ -190,7 +190,7 @@ Enemy.prototype = {
       game.audio.enemySndFire.play();
       var bullet = new Bullet(enemy.x, enemy.y, true);
       bullet.rotation = parseFloat(game.physics.arcade.angleToXY(bullet, towers.children[0].x, towers.children[0].y)) * 180 / Math.PI;
-      game.physics.arcade.moveToObject(bullet, towers.children[0], level*100);
+      game.physics.arcade.moveToObject(bullet, towers.children[0], level * 100);
       bullet = null;
       enemy.fireLastTime = game.time.now + enemy.fireTime;
     }
@@ -211,7 +211,7 @@ Enemy.prototype = {
       this.hideStealingSign();
     }
   },
-  scale: function(enemy) {
+  scale: function (enemy) {
     // Scale depending on enemy.y
     var scale = parseInt(enemy.y / 2.5) / 100;
     scale = scale > 1.5 ? 1.5 : scale;

@@ -1,11 +1,11 @@
-var Bullet = function(worldX, worldY, enemyBullet) {
+var Bullet = function (worldX, worldY, enemyBullet) {
   if (enemyBullet) {
     SpaceGame._enemy_bullets.createMultiple(1, 'bullet', 0, false);
     this.bullet = SpaceGame._enemy_bullets.getFirstExists(false);
-    this.bullet.blendMode=6;
+    this.bullet.blendMode = 6;
     this.bullet.enemyBullet = true;
     this.bullet.towerBullet = false;
-    worldY +=10;
+    worldY += 10;
   }
   else {
     SpaceGame._bullets.createMultiple(1, 'bullet', 0, false);

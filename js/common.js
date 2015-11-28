@@ -45,13 +45,13 @@ function animateScore(moveOut) {
   moveOut = moveOut || false;
 
   // Animate walls
-  SpaceGame._walls.forEachAlive(function (brick){
+  SpaceGame._walls.forEachAlive(function (brick) {
     game.add.tween(brick)
       .to({alpha: moveOut ? 0 : 1},
-      1000 /*duration (in ms)*/,
-      Phaser.Easing.Linear.None /*easing type*/,
-      true /*autostart?*/,
-      0 /*delay*/);
+        1000 /*duration (in ms)*/,
+        Phaser.Easing.Linear.None /*easing type*/,
+        true /*autostart?*/,
+        0 /*delay*/);
   });
 
   // Animate score
@@ -59,10 +59,10 @@ function animateScore(moveOut) {
   SpaceGame._fireGraph.alpha = moveOut ? 1 : 0;
   game.add.tween(SpaceGame._fireGraph)
     .to({alpha: moveOut ? 0 : 1, x: moveOut ? -SpaceGame._fireGraph.width : 10},
-    500 /*duration (in ms)*/,
-    Phaser.Easing.Linear.None /*easing type*/,
-    true /*autostart?*/,
-    moveOut ? 500 : 300 /*delay*/);
+      500 /*duration (in ms)*/,
+      Phaser.Easing.Linear.None /*easing type*/,
+      true /*autostart?*/,
+      moveOut ? 500 : 300 /*delay*/);
 
 
   try {
@@ -70,13 +70,16 @@ function animateScore(moveOut) {
       SpaceGame._scoreText.x = moveOut ? 10 : -SpaceGame._scoreText.width;
       SpaceGame._scoreText.alpha = moveOut ? 1 : 0;
       game.add.tween(SpaceGame._scoreText)
-        .to({alpha: moveOut ? 0 : 1, x: moveOut ?  -SpaceGame._scoreText.width : 10},
-        500 /*duration (in ms)*/,
-        Phaser.Easing.Linear.None /*easing type*/,
-        true /*autostart?*/,
-        moveOut ? 700 : 500 /*delay*/);
+        .to({
+            alpha: moveOut ? 0 : 1,
+            x: moveOut ? -SpaceGame._scoreText.width : 10
+          },
+          500 /*duration (in ms)*/,
+          Phaser.Easing.Linear.None /*easing type*/,
+          true /*autostart?*/,
+          moveOut ? 700 : 500 /*delay*/);
     }
-}
+  }
   catch (e) {
     debugger;
   }
@@ -90,27 +93,27 @@ function showLevelTitle() {
   };
   var levelText = game.add.text(0, 0, 'Level ' + level, style);
   levelText.x = game.width / 2 - levelText.width / 2;
-  levelText.y =  -levelText.height;
+  levelText.y = -levelText.height;
   levelText.alpha = 0;
 
   // Animate
   game.add.tween(levelText)
-    .to({alpha:1, y: game.height / 2 - levelText.height / 2},
-    1000 /*duration (in ms)*/,
-    Phaser.Easing.Bounce.Out /*easing type*/,
-    true /*autostart?*/,
-    0 /*delay*/)
+    .to({alpha: 1, y: game.height / 2 - levelText.height / 2},
+      1000 /*duration (in ms)*/,
+      Phaser.Easing.Bounce.Out /*easing type*/,
+      true /*autostart?*/,
+      0 /*delay*/)
     .onComplete.add(function () {
-      game.add.tween(levelText)
-        .to({y: -levelText.height, alpha:0 },
+    game.add.tween(levelText)
+      .to({y: -levelText.height, alpha: 0},
         1000 /*duration (in ms)*/,
         Phaser.Easing.Bounce.In /*easing type*/,
         true /*autostart?*/,
         2000 /*delay*/)
-        .onComplete.add(function () {
-          levelText.destroy();
-        })
-    }, this);
+      .onComplete.add(function () {
+      levelText.destroy();
+    })
+  }, this);
 }
 
 function levelCompleted() {
@@ -125,38 +128,38 @@ function levelCompleted() {
   };
   var levelText = game.add.text(0, 0, 'Level Completed!', style);
   levelText.x = game.width / 2 - levelText.width / 2;
-  levelText.y =  -levelText.height / 2;
+  levelText.y = -levelText.height / 2;
   levelText.alpha = 0;
 
   // Animate
   game.add.tween(levelText)
-    .to({alpha:1, y: game.height / 2 - levelText.height / 2},
-    1000 /*duration (in ms)*/,
-    Phaser.Easing.Bounce.Out /*easing type*/,
-    true /*autostart?*/,
-    0 /*delay*/)
+    .to({alpha: 1, y: game.height / 2 - levelText.height / 2},
+      1000 /*duration (in ms)*/,
+      Phaser.Easing.Bounce.Out /*easing type*/,
+      true /*autostart?*/,
+      0 /*delay*/)
     .onComplete.add(function () {
-      animateScore(true);
-      game.add.tween(levelText)
-        .to({y: -levelText.height / 2, alpha:0},
+    animateScore(true);
+    game.add.tween(levelText)
+      .to({y: -levelText.height / 2, alpha: 0},
         1000 /*duration (in ms)*/,
         Phaser.Easing.Bounce.In /*easing type*/,
         true /*autostart?*/,
         1000 /*delay*/)
-        .onComplete.add(function () {
-          levelText.destroy();
-          if (towers && towers.children && typeof towers.children[0] != 'undefined') {
-            SpaceGame._playerShield = towers.children[0].shieldPower;
-            SpaceGame._playerBricks = towers.children[0].countBricks;
-            SpaceGame._playerMissles = towers.children[0].missles;
-            SpaceGame._playerFireSpeed = towers.children[0].fireTime;
-          }
-          SpaceGame.transitionPlugin.to('Main');
-          // Init score
-          SpaceGame._scoreText = undefined;
-          SpaceGame._fireGraph = undefined;
-        }, this);
+      .onComplete.add(function () {
+      levelText.destroy();
+      if (towers && towers.children && typeof towers.children[0] != 'undefined') {
+        SpaceGame._playerShield = towers.children[0].shieldPower;
+        SpaceGame._playerBricks = towers.children[0].countBricks;
+        SpaceGame._playerMissles = towers.children[0].missles;
+        SpaceGame._playerFireSpeed = towers.children[0].fireTime;
+      }
+      SpaceGame.transitionPlugin.to('Main');
+      // Init score
+      SpaceGame._scoreText = undefined;
+      SpaceGame._fireGraph = undefined;
     }, this);
+  }, this);
 }
 
 function addWalls() {
@@ -167,7 +170,7 @@ function addWalls() {
 
 function addRndBricks() {
   for (var i = 1; i < level * 3; i++) {
-    new Wall(game.rnd.integerInRange(0,game.width), game.rnd.integerInRange(0,game.height));
+    new Wall(game.rnd.integerInRange(0, game.width), game.rnd.integerInRange(0, game.height));
   }
   SpaceGame._walls.setAll('alpha', 0);
 }
@@ -175,10 +178,10 @@ function addRndBricks() {
 function addEnemys() {
   var i = 0;
   SpaceGame._allEnemysAdded = false;
-  var enemysBcl = game.time.events.loop(level/2 * Phaser.Timer.SECOND, function () {
+  var enemysBcl = game.time.events.loop(level / 2 * Phaser.Timer.SECOND, function () {
     // Generate i=3*level number of enemys
-    if (i < 2 * level ) {
-      var rndKey = game.rnd.integerInRange(0, SpaceGame.enemySprites.length-1);
+    if (i < 2 * level) {
+      var rndKey = game.rnd.integerInRange(0, SpaceGame.enemySprites.length - 1);
       var animEnemy = SpaceGame.enemySprites[rndKey];
       var enemy = new Enemy(0, 0, animEnemy.name, animEnemy.length);
       var param = {
@@ -201,10 +204,10 @@ function updateScoreText() {
   var health = 10;
   if (towers && towers.children && typeof towers.children[0] != "undefined") {
     str += "  Bricks: " + towers.children[0].countBricks;
-    str+= "  Missles: " + towers.children[0].missles + "";
+    str += "  Missles: " + towers.children[0].missles + "";
     health = towers.children[0].health;
-    str+= "  Bullets: " + towers.children[0].bullets + "";
-    str+= "  Fuel: " + towers.children[0].fuel + "";
+    str += "  Bullets: " + towers.children[0].bullets + "";
+    str += "  Fuel: " + towers.children[0].fuel + "";
   }
   if (SpaceGame._scoreText == undefined) {
     SpaceGame._scoreText = game.add.text(10, game.height - 30, str, style);
@@ -280,7 +283,8 @@ function getHeight() {
     return document.body.clientHeight;
   }
 }
-function caculatetDistance (sprite1,sprite2) {
+
+function caculatetDistance(sprite1, sprite2) {
   var a = sprite1.x - sprite2.x;
   var b = sprite1.y - sprite2.y;
   return Math.sqrt(a * a + b * b);

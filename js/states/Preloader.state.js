@@ -1,6 +1,7 @@
-SpaceGame.Preloader = function(game){ };
+SpaceGame.Preloader = function (game) {
+};
 SpaceGame.Preloader.prototype = {
-  preload: function(){
+  preload: function () {
 
     // Nice practicles :)
     var particleSystem1 = SpaceGame.epsyPlugin.loadSystem(SpaceGame.epsyPluginConfig.galaxy, game.width / 2, 50);
@@ -14,7 +15,7 @@ SpaceGame.Preloader.prototype = {
     game.preloadBar = game.add.sprite(game.world.centerX, game.world.centerY, 'preloaderBar');
     game.preloadBar.anchor.setTo(0.5, 0.5);
     game.load.setPreloadSprite(game.preloadBar);
-      
+
     /**
      * Sounds
      */
@@ -86,11 +87,11 @@ SpaceGame.Preloader.prototype = {
     game.load.spritesheet('shield', 'assets/sprites/shield.png', 55, 64, 2);
     game.load.spritesheet('button-start', 'assets/sprites/button-start.png', 401, 143);
   },
-  create: function(){
+  create: function () {
     game.preloadBar.kill();
     this.showMenu();
   },
-  showMenu: function() {
-      game.state.start('Menu');
+  showMenu: function () {
+    game.state.start('Menu');
   }
 };

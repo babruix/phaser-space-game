@@ -1,4 +1,4 @@
-var Fuel = function() {
+var Fuel = function () {
   var x2 = game.rnd.integerInRange(0, game.width);
   var y2 = game.rnd.integerInRange(0, game.height);
   this.fuel = game.add.sprite(x2, y2, 'fuel');
@@ -8,7 +8,7 @@ var Fuel = function() {
   SpaceGame._fuels.add(this.fuel);
 
   this.fuel.body.onBeginContact.add(function (body1, shapeA, shapeB) {
-    if (body1 && body1.sprite != null && body1.sprite.key=='spaceship') {
+    if (body1 && body1.sprite != null && body1.sprite.key == 'spaceship') {
 
       if (!this.fuel.hitCooldown) {
         this.fuel.hitCooldown = true;

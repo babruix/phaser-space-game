@@ -3,9 +3,10 @@ var lives = 3;
 var level = 0;
 var score = 0;
 var towers;
-SpaceGame.Boot = function(game){ };
+SpaceGame.Boot = function (game) {
+};
 SpaceGame.Boot.prototype = {
-  preload : function(){
+  preload: function () {
     // Load preloader image
     game.load.image('preloaderBar', 'assets/sprites/preload-bar.png');
 
@@ -32,7 +33,7 @@ SpaceGame.Boot.prototype = {
     // Praclecles plugin
     SpaceGame.epsyPlugin = game.plugins.add(Phaser.Plugin.EPSY);
   },
-  create : function(){
+  create: function () {
     // Set scale options
     game.input.maxPointers = 1; // No multi-touch
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
