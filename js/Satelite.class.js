@@ -112,18 +112,55 @@ Satelite.prototype = {
       //game.audio.enemySndFire.play();
 
       // Find closest enemy.
-      var closestEnemy = this.getClosestEnemy(satelite, 800);
+      var closestEnemy = this.getClosestEnemy(satelite, 500);
       if (!closestEnemy || !closestEnemy.alive) {
         return;
       }
 
+      // Highlight closest enemy.
+      Satelite.prototype.drawProtectRect(closestEnemy);
+      this._protectRect = closestEnemy._protectRect;
+      this._dot = closestEnemy._dot;
+      game.time.events.add(Phaser.Timer.SECOND * 2, Satelite.prototype.removeProtectRect, this);
+
       var freezingBullet = true;
       var bullet = new Bullet(satelite.x, satelite.y, false, freezingBullet);
       bullet.rotation = parseFloat(game.physics.arcade.angleToXY(bullet, closestEnemy.x, closestEnemy.y)) * 180 / Math.PI;
-      game.physics.arcade.moveToObject(bullet, closestEnemy, level * 300);
+      game.physics.arcade.moveToObject(bullet, closestEnemy, level * 200);
       bullet = null;
 
-      satelite.fireLastTime = game.time.now + satelite.fireTime;
+      satelite.fireLastTime = game.time.now + satelite.fireTime + level * 200;
+    }
+  },
+  drawProtectRect: function (enemy) {
+    if (enemy._protectRect != undefined) {
+      enemy._protectRect.destroy();
+    }
+    enemy._protectRect = game.add.graphics(0, 0);
+    enemy._protectRect.lineWidth =  5;
+    enemy._protectRect.lineColor = 0xD81E00;
+    enemy._protectRect.alpha = 0.7;
+    enemy._protectRect.drawCircle(enemy.x, enemy.y, enemy.width + 10);
+
+    // dot
+    if (enemy._dot != undefined) {
+      enemy._dot.destroy();
+    }
+    enemy._dot = game.add.graphics(0, 0);
+    enemy._dot.lineWidth =  5;
+    enemy._dot.lineColor = 0xD81E00;
+    enemy._dot.alpha = 0.7;
+    enemy._dot.drawCircle(enemy.x, enemy.y, 5);
+
+  },
+  removeProtectRect: function () {
+    // Hilight remove from enemy.
+    if (this._protectRect != undefined) {
+      this._protectRect.destroy();
+    }
+    if (this._dot != undefined) {
+      this._dot.destroy();
     }
   }
 };
+
