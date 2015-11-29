@@ -1,4 +1,5 @@
-var Bullet = function (worldX, worldY, enemyBullet) {
+var Bullet = function (worldX, worldY, enemyBullet, freezingBullet) {
+
   if (enemyBullet) {
     SpaceGame._enemy_bullets.createMultiple(1, 'bullet', 0, false);
     this.bullet = SpaceGame._enemy_bullets.getFirstExists(false);
@@ -14,6 +15,7 @@ var Bullet = function (worldX, worldY, enemyBullet) {
     this.bullet.towerBullet = true;
     this.bullet.blendMode = 0;
   }
+  this.bullet.freezingBullet = freezingBullet || false;
 
   if (this.bullet.body) {
     this.bullet.body.setCircle(15);

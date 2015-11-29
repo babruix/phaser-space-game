@@ -1,4 +1,4 @@
-var Satelite = function (worldX, worldY) {
+var Satelite = function (worldX, worldY, freeze) {
   this.satelite = game.add.sprite(worldX, worldY, 'satelite');
   this.satelite.worldX = worldX;
   this.satelite.worldY = worldY;
@@ -6,6 +6,7 @@ var Satelite = function (worldX, worldY) {
   game.physics.p2.enable(this.satelite, debug);
   this.satelite.fireLastTime = game.time.now;
   this.satelite.fireTime = 300;
+  this.satelite.freezing = freeze || false;
 
   this.satelite.body.mass = 100;
   this.satelite.body.damping = 1;
@@ -42,8 +43,13 @@ var Satelite = function (worldX, worldY) {
 
   var _this = this;
   this.satelite.update = function () {
-    // Fire
-    Satelite.prototype.fire(_this.satelite);
+
+    // Fire of freeze
+    if (_this.satelite.freezing) {
+      Satelite.prototype.freeze_fire(_this.satelite);
+    } else {
+      Satelite.prototype.fire(_this.satelite);
+    }
 
     // Update health bar.
     var bar = _this.satelite.HealthBar;
@@ -61,10 +67,12 @@ var Satelite = function (worldX, worldY) {
 };
 
 Satelite.prototype = {
-  addToPoint: function (worldX, worldY) {
-    new Satelite(worldX, worldY, 'satelite');
+  addToPoint: function (worldX, worldY, freezing) {
+    new Satelite(worldX, worldY, 'satelite', freezing);
   },
-  getClosestEnemy: function (satelite) {
+  getClosestEnemy: function (satelite, minimalReactDistance) {
+    // Satellite fire only when enemy distance less 700.
+    minimalReactDistance = minimalReactDistance || 700;
     var closestEnemy = SpaceGame.enemys.getFirstAlive();
     SpaceGame.enemys.forEachAlive(function (enemy) {
 
@@ -79,8 +87,8 @@ Satelite.prototype = {
     if (closestEnemy) {
       var closestDistance = caculatetDistance(satelite, closestEnemy);
     }
-    // Satellite fire only when enemy distance less 700.
-    return closestDistance < 700 ? closestEnemy : false;
+
+    return closestDistance < minimalReactDistance ? closestEnemy : false;
   },
   fire: function (satelite) {
     if (satelite.alive && game.time.now > satelite.fireLastTime) {
@@ -96,6 +104,25 @@ Satelite.prototype = {
       bullet.rotation = parseFloat(game.physics.arcade.angleToXY(bullet, closestEnemy.x, closestEnemy.y)) * 180 / Math.PI;
       game.physics.arcade.moveToObject(bullet, closestEnemy, level * 300);
       bullet = null;
+      satelite.fireLastTime = game.time.now + satelite.fireTime;
+    }
+  },
+  freeze_fire: function (satelite) {
+    if (satelite.alive && game.time.now > satelite.fireLastTime) {
+      //game.audio.enemySndFire.play();
+
+      // Find closest enemy.
+      var closestEnemy = this.getClosestEnemy(satelite, 800);
+      if (!closestEnemy || !closestEnemy.alive) {
+        return;
+      }
+
+      var freezingBullet = true;
+      var bullet = new Bullet(satelite.x, satelite.y, false, freezingBullet);
+      bullet.rotation = parseFloat(game.physics.arcade.angleToXY(bullet, closestEnemy.x, closestEnemy.y)) * 180 / Math.PI;
+      game.physics.arcade.moveToObject(bullet, closestEnemy, level * 300);
+      bullet = null;
+
       satelite.fireLastTime = game.time.now + satelite.fireTime;
     }
   }

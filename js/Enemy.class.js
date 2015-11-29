@@ -117,31 +117,38 @@ Enemy.prototype = {
         if (!enemy.lastDamage) {
           enemy.lastDamage = game.time.now;
         }
-        if (enemy.lastDamage + 500 < game.time.now) {
-          enemy.lastDamage = game.time.now;
-          game.audio.smackSnd.play();
-          enemy.damage(1);
-          var style = {
-            font: "20px Tahoma",
-            fontWeight: 500,
-            fill: "#FFF",
-            align: "center"
-          };
-          var shift = enemy.health > 9 ? 11 : 6;
-          var cRect = game.add.graphics(0, 0).beginFill(0xff5a00).drawCircle(enemy.x + shift, enemy.y + 13, 30);
-          var health = game.add.text(enemy.x, enemy.y, enemy.health, style);
-          var health_tween = game.add.tween(cRect).to({alpha: 0.3}, 500,
-            Phaser.Easing.Linear.In,
-            true /*autostart?*/,
-            1000 /*delay*/);
-          //
-          health_tween.onComplete.add(function () {
-            health.destroy();
-            cRect.destroy();
-          }, this);
-
-          score += enemy.health % 3;
+        if (body1.sprite.freezingBullet) {
+          enemy.freezed = true;
+          enemy.lastFreezed = game.time.now;
         }
+        else {
+          if (enemy.lastDamage + 500 < game.time.now) {
+            enemy.lastDamage = game.time.now;
+            game.audio.smackSnd.play();
+            enemy.damage(1);
+            var style = {
+              font: "20px Tahoma",
+              fontWeight: 500,
+              fill: "#FFF",
+              align: "center"
+            };
+            var shift = enemy.health > 9 ? 11 : 6;
+            var cRect = game.add.graphics(0, 0).beginFill(0xff5a00).drawCircle(enemy.x + shift, enemy.y + 13, 30);
+            var health = game.add.text(enemy.x, enemy.y, enemy.health, style);
+            var health_tween = game.add.tween(cRect).to({alpha: 0.3}, 500,
+              Phaser.Easing.Linear.In,
+              true /*autostart?*/,
+              1000 /*delay*/);
+            //
+            health_tween.onComplete.add(function () {
+              health.destroy();
+              cRect.destroy();
+            }, this);
+
+            score += enemy.health % 3;
+          }
+        }
+
 
         if (enemy.health == 1) {
           this.explode(enemy);
@@ -162,11 +169,21 @@ Enemy.prototype = {
 
     enemy.update = function () {
       if (enemy) {
-        if ((enemy.closestPlant && enemy.closestPlant.alive && enemy.closestPlant.stealing) || SpaceGame.enemys.stealing) {
-          Enemy.prototype.fire(enemy);
+        if (enemy.freezed == true) {
+          enemy.body.velocity.x=0;
+          enemy.body.velocity.y=0;
+          // Unfreeze after 4s.
+          if (enemy.lastFreezed + Phaser.Timer.SECOND * 4 < game.time.now) {
+            enemy.freezed = false;
+          }
         }
-        Enemy.prototype.scale(enemy);
+        else {
+          if ((enemy.closestPlant && enemy.closestPlant.alive && enemy.closestPlant.stealing) || SpaceGame.enemys.stealing) {
+            Enemy.prototype.fire(enemy);
+          }
+        }
 
+        Enemy.prototype.scale(enemy);
         // Update health bar.
         var bar = enemy.enemyHealthBar;
         if (bar.barSprite) {
