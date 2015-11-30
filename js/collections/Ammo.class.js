@@ -34,9 +34,10 @@ var Ammo = function() {
       updateScoreText();
     }
   }, this);
-  this.ammo.events.onKilled.add(function (heart) {
-    SpaceGame._ammoTimer = game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(20, 40), Ammo.prototype.generateAmmo, this);
-    // @todo: update spawn bar
+  this.ammo.events.onKilled.add(function (ammo) {
+    var nextSpawnTime = Phaser.Timer.SECOND * game.rnd.integerInRange(20, 40);
+    SpaceGame._ammoTimer = game.time.events.add(nextSpawnTime, Ammo.prototype.generateAmmo, this);
+    Plant.prototype.updateSpawnBar(nextSpawnTime, 'ammo');
   });
 };
 

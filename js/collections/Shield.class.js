@@ -39,9 +39,12 @@ var Shield = function() {
       updateScoreText();
     }
   }, this);
+
+
   this.shield.events.onKilled.add(function (shield) {
-    SpaceGame._shieldTimer = game.time.events.add(Phaser.Timer.SECOND * 4, Shield.prototype.generateShield, this);
-    // @todo: update spawn bar
+    var nextSpawnTime = Phaser.Timer.SECOND * 4;
+    SpaceGame._shieldTimer = game.time.events.add(nextSpawnTime, Shield.prototype.generateShield, this);
+    Plant.prototype.updateSpawnBar(nextSpawnTime, 'shield');
   });
 };
 

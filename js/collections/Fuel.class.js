@@ -33,9 +33,10 @@ var Fuel = function () {
       updateScoreText();
     }
   }, this);
-  this.fuel.events.onKilled.add(function (heart) {
-    SpaceGame._fuelTimer = game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(20, 40), Fuel.prototype.generateFuel, this);
-    // @todo: update spawn bar
+  this.fuel.events.onKilled.add(function (fuel) {
+    var nextSpawnTime = Phaser.Timer.SECOND * game.rnd.integerInRange(20, 40);
+    SpaceGame._fuelTimer = game.time.events.add(nextSpawnTime, Fuel.prototype.generateFuel, this);
+    Plant.prototype.updateSpawnBar(nextSpawnTime, 'fuel');
   });
 };
 

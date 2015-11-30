@@ -47,8 +47,9 @@ var Missle = function(x, y) {
 
   }, this);
   this.missle.events.onKilled.add(function (missle) {
-    SpaceGame._missleTimer = game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(10, 30), Missle.prototype.generateMissle);
-    // @todo: update spawn bar
+    var nextSpawnTime = Phaser.Timer.SECOND * game.rnd.integerInRange(10, 30);
+    SpaceGame._missleTimer = game.time.events.add(nextSpawnTime, Missle.prototype.generateMissle);
+    Plant.prototype.updateSpawnBar(nextSpawnTime, 'missle');
   });
   return this.missle;
 };

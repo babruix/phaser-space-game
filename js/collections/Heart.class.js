@@ -38,8 +38,9 @@ var Heart = function() {
     }
   }, this);
   this.heart.events.onKilled.add(function (heart) {
-    SpaceGame._heartTimer = game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(70, 100), Heart.prototype.generateHeart, this);
-    // @todo: update spawn bar
+    var nextSpawnTime = Phaser.Timer.SECOND * game.rnd.integerInRange(70, 100);
+    SpaceGame._heartTimer = game.time.events.add(nextSpawnTime, Heart.prototype.generateHeart, this);
+    Plant.prototype.updateSpawnBar(nextSpawnTime, 'heart');
   });
 };
 
