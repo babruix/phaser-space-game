@@ -65,7 +65,7 @@ SpaceGame.Main.prototype = {
     this.setupGameGroups();
     this.initStealingSigns();
 
-    nextLevel();
+    this.nextLevel();
 
     score -= 10;
     updateScore();
@@ -93,6 +93,7 @@ SpaceGame.Main.prototype = {
   setPlayerKeys: function () {
     SpaceGame._fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     SpaceGame._sateliteButton = game.input.keyboard.addKey(Phaser.Keyboard.S);
+    SpaceGame.rewpawnPickupsButton = game.input.keyboard.addKey(Phaser.Keyboard.R);
     SpaceGame._brickButton = game.input.keyboard.addKey(Phaser.Keyboard.B);
     SpaceGame._missleButton = game.input.keyboard.addKey(Phaser.Keyboard.M);
     SpaceGame._cursors = game.input.keyboard.createCursorKeys();
@@ -163,7 +164,6 @@ SpaceGame.Main.prototype = {
       this._cloud.events.onDragStart.add(function () {
         console.log('key=' + this._cloud.key);
         console.log({x: this._cloud.x, y: this._cloud.y});
-
       }, this);
       this._cloud.events.onDragStop.add(function () {
         console.log({'x': this._cloud.x, 'y': this._cloud.y});
@@ -200,7 +200,7 @@ SpaceGame.Main.prototype = {
     for (var i = 0; i < level + 1; i++) {
       plant = game.add.sprite(76, 174, 'flow');
       plant.x = game.rnd.integerInRange(0, game.width);
-      plant.y = game.rnd.integerInRange(game.height, game.height - 70);
+      plant.y = game.rnd.integerInRange(game.height-50, game.height - 100);
       plant.anchor.setTo(0.5, 1);
       plant.angle = -10 * i;
       SpaceGame._flowerPlants.add(plant);
@@ -326,9 +326,123 @@ SpaceGame.Main.prototype = {
     game.physics.p2.enableBody(SpaceGame.enemys, debug);
     game.physics.p2.setBoundsToWorld(true, true, true, true, false);
   },
+  nextLevel: function () {
+    level++;
+    Tower.prototype.addToPoint(game.width / 2, game.height - 50);
+    showLevelTitle();
+    updateScoreText();
+    addRndBricks();
+    //addWalls();
+    animateScore();
+    addEnemys();
+
+    Brick.prototype.generateBrick();
+    for (var i = 0; i < parseInt(level / 2); i++) {
+      Bomb.prototype.generateBomb();
+    }
+
+    this.generateGrowingPickups();
+  },
+  generateGrowingPickups : function() {
+    var itemsToGrow = [];
+    SpaceGame._flowerPlants.forEachAlive(function (plant) {
+      var randomSpawnTime = 0;
+      if (plant.growingItem) {
+        plant.growingItem.kill();
+      }
+      var defaultItemToGrow = game.rnd.integerInRange(0, 5);
+      switch (defaultItemToGrow) {
+        case 0:
+          itemsToGrow.push('ammo');
+          randomSpawnTime = Phaser.Timer.SECOND * game.rnd.integerInRange(0, 40);
+          plant.growingItem = game.add.sprite(plant.x, plant.y + 10, 'ammo');
+          break;
+        case 1:
+          itemsToGrow.push('shield');
+          randomSpawnTime = Phaser.Timer.SECOND * game.rnd.integerInRange(0, 50);
+          plant.growingItem = game.add.sprite(plant.x, plant.y + 10, 'shield');
+          plant.growingItem.animations.add('blim');
+          plant.growingItem.animations.play('blim', 2, true);
+          break;
+        case 2:
+          itemsToGrow.push('heart');
+          randomSpawnTime = Phaser.Timer.SECOND * game.rnd.integerInRange(0, 100);
+          plant.growingItem = game.add.sprite(plant.x, plant.y + 10, 'heart');
+          break;
+        case 3:
+          itemsToGrow.push('fuel');
+          randomSpawnTime = Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30);
+          plant.growingItem = game.add.sprite(plant.x, plant.y + 10, 'fuel');
+          break;
+        case 4:
+          itemsToGrow.push('missle');
+          randomSpawnTime = Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30);
+          plant.growingItem = game.add.sprite(plant.x, plant.y + 10, 'missle');
+          break;
+        case 5:
+          itemsToGrow.push('ammo');
+          randomSpawnTime = Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30);
+          plant.growingItem = game.add.sprite(plant.x, plant.y + 10, 'ammo');
+          break;
+      }
+      plant.growingItem.scale.setTo(.4, .4);
+      plant.growingItem.blendMode = 4;
+      // Add spawn bar.
+      var barConfig = SpaceGame.Main.prototype.getBarConfig(randomSpawnTime, plant);
+      plant.spawnBar = new HealthBar(game, barConfig);
+      plant.randomSpawnTime = game.time.now + randomSpawnTime;
+    });
+    if (SpaceGame._heartTimer) {
+      game.time.events.remove(SpaceGame._heartTimer);
+    }
+    if (SpaceGame._shieldTimer) {
+      game.time.events.remove(SpaceGame._shieldTimer);
+    }
+    if (SpaceGame._ammoTimer) {
+      game.time.events.remove(SpaceGame._ammoTimer);
+    }
+    if (SpaceGame._fuelTimer) {
+      game.time.events.remove(SpaceGame._fuelTimer);
+    }
+    if (SpaceGame._missleTimer) {
+      game.time.events.remove(SpaceGame._missleTimer);
+    }
+    if (itemsToGrow.indexOf('heart') >= 0) {
+      SpaceGame._heartTimer = game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 100), Heart.prototype.generateHeart, this);
+    }
+    if (itemsToGrow.indexOf('shield') >= 0) {
+      SpaceGame._shieldTimer = game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 50), Shield.prototype.generateShield, this);
+    }
+    if (itemsToGrow.indexOf('ammo') >= 0) {
+      SpaceGame._ammoTimer = game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 40), Ammo.prototype.generateAmmo, this);
+    }
+    if (itemsToGrow.indexOf('fuel') >= 0) {
+      SpaceGame._fuelTimer = game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30), Fuel.prototype.generateFuel, this);
+    }
+    if (itemsToGrow.indexOf('missle') >= 0) {
+      SpaceGame._missleTimer = game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30), Missle.prototype.generateMissle, this);
+    }
+  },
+  getBarConfig: function (randomSpawnTime, plant) {
+    var barConfig = {
+      x: 100,
+      y: -40,
+      height: 5,
+      width: 100,
+      bg: {
+        color: '#0509D8'
+      },
+      bar: {
+        color: '#20E331'
+      }
+    };
+    return barConfig;
+  },
   update: function () {
     SpaceGame._background.tilePosition.set(game.camera.x * -0.5, game.camera.y * -0.5);
-
+    SpaceGame.rewpawnPickupsButton.onDown.add(function () {
+      SpaceGame.Main.prototype.generateGrowingPickups();
+    }, this);
     // Game over if no alive flowers.
     if (!SpaceGame._flowerPlants.countLiving()) {
       game.time.events.add(0, SpaceGame.GameOverWithScreenshot, this).autoDestroy = true;
@@ -497,6 +611,26 @@ SpaceGame.Main.prototype = {
           // Multiple touches/pointers
           /*if (this.game.input.pointer1.isDown && this.game.input.pointer2.isDown)
            alert(this.game.input.pointer2.isDown);*/
+        }
+      }
+    });
+
+    // Update spawn bar.
+    SpaceGame._flowerPlants.forEachAlive(function (plant) {
+      var bar = plant.spawnBar;
+      if (bar) {
+        if (!plant.stealing) {
+          bar.barSprite.alpha = 1;
+          bar.bgSprite.alpha = 1;
+        }
+        else {
+          bar.barSprite.alpha = 0;
+          bar.bgSprite.alpha = 0;
+        }
+        if (plant.alive) {
+          var newValue = (plant.randomSpawnTime - game.time.now) * 100 / plant.randomSpawnTime;
+          bar.setPercent(newValue);
+          bar.setPosition(plant.x, plant.y);
         }
       }
     });

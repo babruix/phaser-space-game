@@ -1,5 +1,10 @@
 var Fuel = function () {
   var x2 = game.rnd.integerInRange(0, game.width);
+  SpaceGame._flowerPlants.forEachAlive(function (plant) {
+    if (plant.growingItem.key == 'fuel') {
+      x2 = plant.x;
+    }
+  });
   var y2 = game.rnd.integerInRange(0, game.height);
   this.fuel = game.add.sprite(x2, y2, 'fuel');
   this.fuel.anchor.setTo(0.5, 0.5);
@@ -29,7 +34,8 @@ var Fuel = function () {
     }
   }, this);
   this.fuel.events.onKilled.add(function (heart) {
-    game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(20, 40), Fuel.prototype.generateFuel, this);
+    SpaceGame._fuelTimer = game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(20, 40), Fuel.prototype.generateFuel, this);
+    // @todo: update spawn bar
   });
 };
 

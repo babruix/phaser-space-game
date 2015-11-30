@@ -1,6 +1,11 @@
 var Missle = function(x, y) {
   var x2 = x ? x : game.rnd.integerInRange(0, game.width);
-  var y2 = y ? y : game.rnd.integerInRange(0, game.height);
+  SpaceGame._flowerPlants.forEachAlive(function (plant) {
+    if (plant.growingItem.key == 'missle') {
+      x2 = plant.x;
+    }
+  });
+  var y2 = game.rnd.integerInRange(0, game.height);
   SpaceGame._missles.createMultiple(1, 'missle', 0, false);
   this.missle = SpaceGame._missles.getFirstExists(false);
   this.missle.body.setCircle(15);
@@ -36,12 +41,15 @@ var Missle = function(x, y) {
         game.audio.laughSnd.play();
         body1.sprite.missles++;
         updateScoreText();
-        this.missle.destroy();
-        game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(10, 30), Missle.prototype.generateMissle);
+        this.missle.kill();
       }
     }
 
   }, this);
+  this.missle.events.onKilled.add(function (missle) {
+    SpaceGame._missleTimer = game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(10, 30), Missle.prototype.generateMissle);
+    // @todo: update spawn bar
+  });
   return this.missle;
 };
 
@@ -56,9 +64,6 @@ Missle.prototype = {
       var explode = game.add.sprite(missle.x - 100, missle.y - 150, 'explode', 19);
       var anim = explode.animations.add('explode');
       explode.animations.play('explode', 19, false, true);
-      anim.onComplete.add(function(){
-        game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 60), Missle.prototype.generateMissle);
-      });
     }
   }
 };

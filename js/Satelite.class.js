@@ -8,7 +8,7 @@ var Satelite = function (worldX, worldY, freeze) {
   this.satelite.fireTime = 300;
   this.satelite.freezing = freeze || false;
 
-  this.satelite.body.mass = 100;
+  this.satelite.body.mass = 50;
   this.satelite.body.damping = 1;
 
   this.satelite.scale.setTo(0.5, 0.5);

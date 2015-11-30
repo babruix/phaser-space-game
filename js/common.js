@@ -18,29 +18,6 @@ game.state.start('Boot');
  * Common functions
  */
 
-function nextLevel() {
-  level++;
-  Tower.prototype.addToPoint(game.width / 2, game.height - 50);
-  showLevelTitle();
-  updateScoreText();
-  addRndBricks();
-  //addWalls();
-  animateScore();
-  addEnemys();
-
-  Brick.prototype.generateBrick();
-  game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 100), Heart.prototype.generateHeart, this);
-  game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 50), Shield.prototype.generateShield, this);
-  game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 40), Ammo.prototype.generateAmmo, this);
-  game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30), Fuel.prototype.generateFuel, this);
-  game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(0, 30), Missle.prototype.generateMissle, this);
-
-  for (var i = 0; i < parseInt(level / 2); i++) {
-    Bomb.prototype.generateBomb();
-  }
-}
-
-
 function animateScore(moveOut) {
   moveOut = moveOut || false;
 
@@ -101,8 +78,7 @@ function showLevelTitle() {
     .to({alpha: 1, y: game.height / 2 - levelText.height / 2},
       1000 /*duration (in ms)*/,
       Phaser.Easing.Bounce.Out /*easing type*/,
-      true /*autostart?*/,
-      0 /*delay*/)
+      true /*autostart?*/)
     .onComplete.add(function () {
     game.add.tween(levelText)
       .to({y: -levelText.height, alpha: 0},
@@ -136,8 +112,7 @@ function levelCompleted() {
     .to({alpha: 1, y: game.height / 2 - levelText.height / 2},
       1000 /*duration (in ms)*/,
       Phaser.Easing.Bounce.Out /*easing type*/,
-      true /*autostart?*/,
-      0 /*delay*/)
+      true /*autostart?*/)
     .onComplete.add(function () {
     animateScore(true);
     game.add.tween(levelText)

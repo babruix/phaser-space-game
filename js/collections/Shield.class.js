@@ -1,5 +1,10 @@
 var Shield = function() {
   var x2 = game.rnd.integerInRange(0, game.width);
+  SpaceGame._flowerPlants.forEachAlive(function (plant) {
+    if (plant.growingItem.key == 'shield') {
+      x2 = plant.x;
+    }
+  });
   var y2 = game.rnd.integerInRange(0, game.height);
   this.shield = game.add.sprite(x2, y2, 'shield');
   this.shield.animations.add('blim');
@@ -35,7 +40,8 @@ var Shield = function() {
     }
   }, this);
   this.shield.events.onKilled.add(function (shield) {
-    game.time.events.add(Phaser.Timer.SECOND * 4, Shield.prototype.generateShield, this);
+    SpaceGame._shieldTimer = game.time.events.add(Phaser.Timer.SECOND * 4, Shield.prototype.generateShield, this);
+    // @todo: update spawn bar
   });
 };
 

@@ -1,5 +1,10 @@
 var Ammo = function() {
   var x2 = game.rnd.integerInRange(0, game.width);
+  SpaceGame._flowerPlants.forEachAlive(function (plant) {
+    if (plant.growingItem.key == 'ammo') {
+      x2 = plant.x;
+    }
+  });
   var y2 = game.rnd.integerInRange(0, game.height);
   this.ammo = game.add.sprite(x2, y2, 'ammo');
   this.ammo.anchor.setTo(0.5, 0.5);
@@ -30,7 +35,8 @@ var Ammo = function() {
     }
   }, this);
   this.ammo.events.onKilled.add(function (heart) {
-    game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(20, 40), Ammo.prototype.generateAmmo, this);
+    SpaceGame._ammoTimer = game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(20, 40), Ammo.prototype.generateAmmo, this);
+    // @todo: update spawn bar
   });
 };
 

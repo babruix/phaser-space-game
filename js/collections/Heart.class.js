@@ -1,5 +1,10 @@
 var Heart = function() {
   var x2 = game.rnd.integerInRange(0, game.width);
+  SpaceGame._flowerPlants.forEachAlive(function (plant) {
+    if (plant.growingItem.key == 'heart') {
+      x2 = plant.x;
+    }
+  });
   var y2 = game.rnd.integerInRange(0, game.height);
   this.heart = game.add.sprite(x2, y2, 'heart');
   this.heart.anchor.setTo(0.5, 0.5);
@@ -33,7 +38,8 @@ var Heart = function() {
     }
   }, this);
   this.heart.events.onKilled.add(function (heart) {
-    game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(70, 100), Heart.prototype.generateHeart, this);
+    SpaceGame._heartTimer = game.time.events.add(Phaser.Timer.SECOND * game.rnd.integerInRange(70, 100), Heart.prototype.generateHeart, this);
+    // @todo: update spawn bar
   });
 };
 
