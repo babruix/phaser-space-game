@@ -93,6 +93,7 @@ function showLevelTitle() {
 }
 
 function levelCompleted() {
+  lives++;
   game.audio.completedSnd.play();
 
   var style = {

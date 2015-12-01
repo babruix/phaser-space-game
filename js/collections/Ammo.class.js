@@ -3,6 +3,7 @@ var Ammo = function() {
   SpaceGame._flowerPlants.forEachAlive(function (plant) {
     if (plant.growingItem.key == 'ammo') {
       x2 = plant.x;
+      Plant.prototype.removeSpawnBar(plant);
     }
   });
   var y2 = game.rnd.integerInRange(0, game.height);

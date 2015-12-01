@@ -15,10 +15,19 @@ Plant.prototype = {
   generatePlant: function () {
     return new Plant();
   },
+  update: function () {
+    SpaceGame._flowerPlants.forEachAlive(function (plant) {
+      if (plant.stealing) {
+        Plant.prototype.removeSpawnBar(plant);
+      }
+    });
+  },
   generate_pickup: function (plant) {
     if (plant._spawnTimer) {
       game.time.events.remove(plant._spawnTimer);
     }
+    // Remove old bar
+    this.removeSpawnBar(plant);
     if (plant.alive) {
       if (plant.growingItem) {
         plant.growingItem.kill();
@@ -71,13 +80,23 @@ Plant.prototype = {
       nextSpawnTime: nextSpawnTime
     };
   },
+  removeSpawnBar: function (plant) {
+    if (plant.spawnBar && plant.barSprite && plant.spawnBar.bgSprite) {
+      plant.barSprite.kill();
+      plant.spawnBar.bgSprite.kill();
+    }
+  },
   updateSpawnBar: function (nextSpawnTime, sprite) {
-    SpaceGame._flowerPlants.forEachAlive(function (plant) {
+    SpaceGame._flowerPlants.forEach(function (plant) {
       if (plant.growingItem.key == sprite) {
-        // Add spawn bar.
-        var barConfig = SpaceGame.Main.prototype.getBarConfig(nextSpawnTime, plant);
-        plant.spawnBar = new HealthBar(game, barConfig);
-        plant.randomSpawnTime = game.time.now + nextSpawnTime;
+        // Remove old bar
+        Plant.prototype.removeSpawnBar(plant);
+        if (plant.alive) {
+          // Add spawn bar.
+          var barConfig = SpaceGame.Main.prototype.getBarConfig(nextSpawnTime, plant);
+          plant.spawnBar = new HealthBar(game, barConfig);
+          plant.randomSpawnTime = game.time.now + nextSpawnTime;
+        }
       }
     });
   }
