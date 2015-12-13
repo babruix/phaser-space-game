@@ -107,6 +107,13 @@ var Tower = function (worldX, worldY, tile) {
         Tower.prototype.addSatelite(_this.tower);
       }, _this);
     }
+
+    // Take life when health is too small.
+    if (_this.tower.health < 3) {
+      _this.tower.health = 10;
+      updateScore(true);
+      updateScoreText();
+    }
   }
 };
 

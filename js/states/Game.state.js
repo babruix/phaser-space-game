@@ -326,7 +326,7 @@ SpaceGame.Main.prototype = {
     updateScoreText();
     addRndBricks();
     //addWalls();
-    animateScore();
+    this.animateScore();
     addEnemys();
 
     Brick.prototype.generateBrick();
@@ -562,8 +562,6 @@ SpaceGame.Main.prototype = {
     });
 
     // Follow camera.
-    SpaceGame._fireGraph.x = game.camera.x;
-    SpaceGame._scoreText.x = game.camera.x;
     SpaceGame._UiGroup.x = game.camera.x + 20;
   },
   initStealingSigns: function () {
@@ -631,5 +629,24 @@ SpaceGame.Main.prototype = {
     satelite.x = SpaceGame._sateliteInitPos.x;
     satelite.y = SpaceGame._sateliteInitPos.y;
     SpaceGame._sateliteInitPos = {};
+  },
+  animateScore: function (moveOut) {
+    moveOut = moveOut || false;
+
+    SpaceGame._UiGroup.forEach(function (item) {
+
+      // Graphics does not work to animate here :(
+      if (item.type == 0) {
+        item.x = moveOut ? item.x : game.width + item.width;
+        item.alpha = moveOut ? 1 : 0;
+
+        var delay = moveOut ? 700 : 500;
+        var alpha = moveOut ? 0 : 1;
+        var toX = moveOut ? game.width + item.width : game.width - 150;
+
+        game.add.tween(item).to({alpha: alpha, x: toX},
+          700, Phaser.Easing.Linear.None, true, delay);
+      }
+    });
   }
 };

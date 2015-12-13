@@ -18,50 +18,6 @@ game.state.start('Boot');
  * Common functions
  */
 
-function animateScore(moveOut) {
-  moveOut = moveOut || false;
-
-  // Animate walls
-  SpaceGame._walls.forEachAlive(function (brick) {
-    game.add.tween(brick)
-      .to({alpha: moveOut ? 0 : 1},
-        1000 /*duration (in ms)*/,
-        Phaser.Easing.Linear.None /*easing type*/,
-        true /*autostart?*/,
-        0 /*delay*/);
-  });
-
-  // Animate score
-  SpaceGame._fireGraph.x = moveOut ? 10 : -SpaceGame._fireGraph.width;
-  SpaceGame._fireGraph.alpha = moveOut ? 1 : 0;
-  game.add.tween(SpaceGame._fireGraph)
-    .to({alpha: moveOut ? 0 : 1, x: moveOut ? -SpaceGame._fireGraph.width : 10},
-      500 /*duration (in ms)*/,
-      Phaser.Easing.Linear.None /*easing type*/,
-      true /*autostart?*/,
-      moveOut ? 500 : 300 /*delay*/);
-
-
-  try {
-    if (SpaceGame._scoreText != null && SpaceGame._scoreText._font != "") {
-      SpaceGame._scoreText.x = moveOut ? 10 : -SpaceGame._scoreText.width;
-      SpaceGame._scoreText.alpha = moveOut ? 1 : 0;
-      game.add.tween(SpaceGame._scoreText)
-        .to({
-            alpha: moveOut ? 0 : 1,
-            x: moveOut ? -SpaceGame._scoreText.width : 10
-          },
-          500 /*duration (in ms)*/,
-          Phaser.Easing.Linear.None /*easing type*/,
-          true /*autostart?*/,
-          moveOut ? 700 : 500 /*delay*/);
-    }
-  }
-  catch (e) {
-    debugger;
-  }
-}
-
 function showLevelTitle() {
   var style = {
     font: "60px Tahoma",
@@ -115,7 +71,7 @@ function levelCompleted() {
       Phaser.Easing.Bounce.Out /*easing type*/,
       true /*autostart?*/)
     .onComplete.add(function () {
-    animateScore(true);
+    SpaceGame.Main.prototype.animateScore(true);
     game.add.tween(levelText)
       .to({y: -levelText.height / 2, alpha: 0},
         1000 /*duration (in ms)*/,
@@ -175,39 +131,36 @@ function addEnemys() {
 }
 
 function updateScoreText() {
-  var style = {font: "17px Arial", fill: "#FFFFFF", align: "center"};
-  var str = " Lives: " + lives + "  Level: " + level + "  $: " + score;
+  var style = {font: '17px Arial', fill: '#0048D8', align: 'left'};
+  var str = "  Lives: " + lives + " \n  Level: " + level + " \n  $: " + score;
   var health = 10;
   if (towers && towers.children && typeof towers.children[0] != "undefined") {
-    str += "  Bricks: " + towers.children[0].countBricks;
-    str += "  Missles: " + towers.children[0].missles + "";
+    str += "\n  Bricks: " + towers.children[0].countBricks;
+    str += "\n  Missles: " + towers.children[0].missles + "";
     health = towers.children[0].health;
-    str += "  Bullets: " + towers.children[0].bullets + "";
-    str += "  Fuel: " + towers.children[0].fuel + "";
+    str += "\n  Bullets: " + towers.children[0].bullets + "";
+    str += "\n  Fuel: " + towers.children[0].fuel + "";
   }
   if (SpaceGame._scoreText == undefined) {
-    SpaceGame._scoreText = game.add.text(10, game.height - 30, str, style);
+    SpaceGame._scoreText = game.add.text(game.width-150, game.height - 300, str, style);
+    SpaceGame._UiGroup.add(SpaceGame._scoreText);
   }
   else {
     SpaceGame._scoreText.setText(str);
   }
 
 
-  // Take life
-  if (health < 3) {
-    towers.children[0].health = 10;
-    updateScore(true);
-    updateScoreText();
-  }
+
 
   // Draw a fireTime rectangle
   if (SpaceGame._fireGraph == undefined) {
     SpaceGame._fireGraph = game.add.graphics(0, 0);
-    SpaceGame._fireGraph.beginFill(0xFFFFFF);
+    SpaceGame._fireGraph.beginFill(0x000);
+    SpaceGame._UiGroup.add(SpaceGame._fireGraph);
   }
   if (towers && towers.children && towers.children[0] != undefined && towers.children[0].fireTime > 0) {
     SpaceGame._fireGraph.clear();
-    SpaceGame._fireGraph.drawRect(10, game.height - 60, 300 - towers.children[0].fireTime, 10);
+    SpaceGame._fireGraph.drawRect(game.width-140, game.height - 60, 300 - towers.children[0].fireTime, 10);
     SpaceGame._fireGraph.update();
   }
 
