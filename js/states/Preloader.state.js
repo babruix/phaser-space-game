@@ -41,7 +41,8 @@ SpaceGame.Preloader.prototype = {
     game.load.image('tiles', 'assets/maps/tmw_desert_spacing.png');
 
     game.load.image('spaceship', 'assets/sprites/spaceship.png');
-    game.load.image('satelite', 'assets/sprites/satelite.png');
+    game.load.image('satelite', 'assets/sprites/satelite-fire.png');
+    game.load.image('satelite_freeze', 'assets/sprites/satelite.png');
 
     game.load.image('bullet', 'assets/sprites/bullet.png');
     game.load.image('missle', 'assets/sprites/missile.png');

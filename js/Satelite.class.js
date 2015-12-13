@@ -1,5 +1,6 @@
 var Satelite = function (worldX, worldY, freeze) {
-  this.satelite = game.add.sprite(worldX, worldY, 'satelite');
+  var texture = freeze ? 'satelite_freeze' : 'satelite';
+  this.satelite = game.add.sprite(worldX, worldY, texture);
   this.satelite.worldX = worldX;
   this.satelite.worldY = worldY;
   this.satelite.health = 10;
@@ -20,10 +21,10 @@ var Satelite = function (worldX, worldY, freeze) {
     height: 5,
     width: this.satelite.width,
     bg: {
-      color: '#56807D'
+      color: this.satelite.freezing ? '#56807D': '#56807D'
     },
     bar: {
-      color: '#20E331'
+      color: this.satelite.freezing ? '#20E331': '#56807D'
     }
   };
   this.satelite.HealthBar = new HealthBar(game, barConfig);
@@ -68,7 +69,7 @@ var Satelite = function (worldX, worldY, freeze) {
 
 Satelite.prototype = {
   addToPoint: function (worldX, worldY, freezing) {
-    new Satelite(worldX, worldY, 'satelite', freezing);
+    new Satelite(worldX, worldY, freezing);
   },
   getClosestEnemy: function (satelite, minimalReactDistance) {
     // Satellite fire only when enemy distance less 700.

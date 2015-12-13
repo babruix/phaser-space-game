@@ -64,6 +64,7 @@ SpaceGame.Main.prototype = {
 
     this.setupGameGroups();
     this.initStealingSigns();
+    this.initUI();
 
     this.nextLevel();
 
@@ -560,8 +561,10 @@ SpaceGame.Main.prototype = {
       }
     });
 
+    // Follow camera.
     SpaceGame._fireGraph.x = game.camera.x;
     SpaceGame._scoreText.x = game.camera.x;
+    SpaceGame._UiGroup.x = game.camera.x + 20;
   },
   initStealingSigns: function () {
     function initOneStealSign(direction) {
@@ -585,5 +588,48 @@ SpaceGame.Main.prototype = {
 
     SpaceGame.enemys.stealSignLeft = initOneStealSign('left');
     SpaceGame.enemys.stealSignRight = initOneStealSign('right');
+  },
+  initUI: function () {
+    SpaceGame._UiGraph = game.add.graphics(0, 0);
+    SpaceGame._UiGraph.beginFill(0xFFFFFF);
+    SpaceGame._UiGraph.clear();
+    SpaceGame._UiGraph.drawRect(game.width - 150, 0, 150, game.height);
+    SpaceGame._UiGraph.alpha = .8;
+    SpaceGame._UiGraph.update();
+
+    function createSateliteDraggable(key) {
+      var yPos = key == 'satelite_freeze' ? 150 : 0;
+      var satelite = game.add.sprite(game.width - 150, yPos, key);
+      satelite.inputEnabled = true;
+      satelite.input.enableDrag();
+      // Add dag event handlers.
+      satelite.events.onInputDown.add(this.eventSateliteInputDown);
+      satelite.events.onDragStop.add(this.eventSateliteDragStop);
+
+      return satelite;
+    }
+
+    SpaceGame._sateliteBtn = createSateliteDraggable.call(this, 'satelite');
+    SpaceGame._sateliteFreezeBtn = createSateliteDraggable.call(this, 'satelite_freeze');
+
+    SpaceGame._UiGroup = game.add.group();
+    SpaceGame._UiGroup.add(SpaceGame._UiGraph);
+    SpaceGame._UiGroup.add(SpaceGame._sateliteBtn);
+    SpaceGame._UiGroup.add(SpaceGame._sateliteFreezeBtn);
+  },
+  eventSateliteInputDown: function (satelite) {
+    SpaceGame._sateliteInitPos = {};
+    SpaceGame._sateliteInitPos.x = satelite.x;
+    SpaceGame._sateliteInitPos.y = satelite.y;
+  },
+  eventSateliteDragStop: function (satelite) {
+    if (score >= 25) {
+      score -= 25;
+      updateScoreText();
+      Satelite.prototype.addToPoint(satelite.x, satelite.y, satelite.key == 'satelite_freeze');
+    }
+    satelite.x = SpaceGame._sateliteInitPos.x;
+    satelite.y = SpaceGame._sateliteInitPos.y;
+    SpaceGame._sateliteInitPos = {};
   }
 };
