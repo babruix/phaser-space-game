@@ -633,6 +633,12 @@ SpaceGame.Main.prototype = {
   animateScore: function (moveOut) {
     moveOut = moveOut || false;
 
+    // Animate walls
+    SpaceGame._walls.forEachAlive(function (brick) {
+      game.add.tween(brick)
+        .to({alpha: moveOut ? 0 : 1}, 1000, Phaser.Easing.Linear.None, true, 0);
+    });
+
     SpaceGame._UiGroup.forEach(function (item) {
 
       // Graphics does not work to animate here :(
@@ -640,11 +646,10 @@ SpaceGame.Main.prototype = {
         item.x = moveOut ? item.x : game.width + item.width;
         item.alpha = moveOut ? 1 : 0;
 
-        var delay = moveOut ? 700 : 500;
-        var alpha = moveOut ? 0 : 1;
         var toX = moveOut ? game.width + item.width : game.width - 150;
+        var delay = moveOut ? 700 : 500;
 
-        game.add.tween(item).to({alpha: alpha, x: toX},
+        game.add.tween(item).to({alpha: moveOut ? 0 : 1, x: toX},
           700, Phaser.Easing.Linear.None, true, delay);
       }
     });
