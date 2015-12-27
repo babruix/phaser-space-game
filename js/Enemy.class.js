@@ -135,10 +135,10 @@ Enemy.prototype = {
             var shift = enemy.health > 9 ? 11 : 6;
             var cRect = game.add.graphics(0, 0).beginFill(0xff5a00).drawCircle(enemy.x + shift, enemy.y + 13, 30);
             var health = game.add.text(enemy.x, enemy.y, enemy.health, style);
-            var health_tween = game.add.tween(cRect).to({alpha: 0.3}, 500,
+            var health_tween = game.add.tween(cRect).to({alpha: 0.3}, 100,
               Phaser.Easing.Linear.In,
               true /*autostart?*/,
-              1000 /*delay*/);
+              500 /*delay*/);
             //
             health_tween.onComplete.add(function () {
               health.destroy();
