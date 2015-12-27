@@ -44,13 +44,7 @@ var Satelite = function (worldX, worldY, freeze) {
 
   var _this = this;
   this.satelite.update = function () {
-
-    // Fire of freeze
-    if (_this.satelite.freezing) {
-      Satelite.prototype.freeze_fire(_this.satelite);
-    } else {
-      Satelite.prototype.fire(_this.satelite);
-    }
+    Satelite.prototype.fire(_this.satelite);
 
     // Update health bar.
     var bar = _this.satelite.HealthBar;
@@ -74,90 +68,80 @@ Satelite.prototype = {
   getClosestEnemy: function (satelite, minimalReactDistance) {
     // Satellite fire only when enemy distance less 700.
     minimalReactDistance = minimalReactDistance || 700;
+
     var closestEnemy = SpaceGame.enemys.getFirstAlive();
+
     SpaceGame.enemys.forEachAlive(function (enemy) {
+      if (enemy.body) {
+        // Distance to previous closest enemy
+        var prevClosestDistance = caculatetDistance(satelite, closestEnemy);
+        var newClosestDistance = caculatetDistance(satelite, enemy);
 
-      // Distance to previous closest enemy
-      var prevClosestDistance = caculatetDistance(satelite, closestEnemy);
-      var newClosestDistance = caculatetDistance(satelite, enemy);
-
-      if (newClosestDistance < prevClosestDistance) {
-        closestEnemy = enemy;
+        if (newClosestDistance < prevClosestDistance) {
+          closestEnemy = enemy;
+        }
       }
     });
-    if (closestEnemy) {
-      var closestDistance = caculatetDistance(satelite, closestEnemy);
+    // Not react if enemy was not initialized.
+    if (!closestEnemy || !closestEnemy.alive || closestEnemy.ufo_exists) {
+      return false;
     }
+    var closestDistance = caculatetDistance(satelite, closestEnemy);
+
+    // Highlight closest enemy.
+    Satelite.prototype.drawAimRect(satelite, closestEnemy);
+    this._aimRect = satelite._aimRect;
+    this._dot = satelite._dot;
+    game.time.events.add(Phaser.Timer.SECOND * 1, Satelite.prototype.removeAimRect, this);
 
     return closestDistance < minimalReactDistance ? closestEnemy : false;
   },
   fire: function (satelite) {
     if (satelite.alive && game.time.now > satelite.fireLastTime) {
-      game.audio.enemySndFire.play();
-      var bullet = new Bullet(satelite.x, satelite.y, false);
 
       // Find closest enemy.
       var closestEnemy = this.getClosestEnemy(satelite);
-      if (!closestEnemy || !closestEnemy.alive) {
+      if (!closestEnemy) {
         return;
       }
 
+      game.audio.enemySndFire.play();
+      var enemyBullet = false;
+      var isFreezing = satelite.freezing;
+      var bullet = new Bullet(satelite.x, satelite.y, enemyBullet, isFreezing);
       bullet.rotation = parseFloat(game.physics.arcade.angleToXY(bullet, closestEnemy.x, closestEnemy.y)) * 180 / Math.PI;
       game.physics.arcade.moveToObject(bullet, closestEnemy, level * 300);
       bullet = null;
       satelite.fireLastTime = game.time.now + satelite.fireTime;
-    }
-  },
-  freeze_fire: function (satelite) {
-    if (satelite.alive && game.time.now > satelite.fireLastTime) {
-      //game.audio.enemySndFire.play();
-
-      // Find closest enemy.
-      var closestEnemy = this.getClosestEnemy(satelite, 500);
-      if (!closestEnemy || !closestEnemy.alive) {
-        return;
+      if (isFreezing) {
+        satelite.fireLastTime += 200;
       }
-
-      // Highlight closest enemy.
-      Satelite.prototype.drawProtectRect(closestEnemy);
-      this._protectRect = closestEnemy._protectRect;
-      this._dot = closestEnemy._dot;
-      game.time.events.add(Phaser.Timer.SECOND * 2, Satelite.prototype.removeProtectRect, this);
-
-      var freezingBullet = true;
-      var bullet = new Bullet(satelite.x, satelite.y, false, freezingBullet);
-      bullet.rotation = parseFloat(game.physics.arcade.angleToXY(bullet, closestEnemy.x, closestEnemy.y)) * 180 / Math.PI;
-      game.physics.arcade.moveToObject(bullet, closestEnemy, level * 200);
-      bullet = null;
-
-      satelite.fireLastTime = game.time.now + satelite.fireTime + level * 200;
     }
   },
-  drawProtectRect: function (enemy) {
-    if (enemy._protectRect != undefined) {
-      enemy._protectRect.destroy();
+  drawAimRect: function (satelite, enemy) {
+    if (satelite._aimRect != undefined) {
+      satelite._aimRect.destroy();
     }
-    enemy._protectRect = game.add.graphics(0, 0);
-    enemy._protectRect.lineWidth =  5;
-    enemy._protectRect.lineColor = 0xD81E00;
-    enemy._protectRect.alpha = 0.7;
-    enemy._protectRect.drawCircle(enemy.x, enemy.y, enemy.width + 10);
+    satelite._aimRect = game.add.graphics(0, 0);
+    satelite._aimRect.lineWidth =  2;
+    satelite._aimRect.lineColor = 0xD81E00;
+    satelite._aimRect.alpha = 0.7;
+    satelite._aimRect.drawCircle(enemy.x, enemy.y, enemy.width + 10);
 
     // dot
-    if (enemy._dot != undefined) {
-      enemy._dot.destroy();
+    if (satelite._dot != undefined) {
+      satelite._dot.destroy();
     }
-    enemy._dot = game.add.graphics(0, 0);
-    enemy._dot.lineWidth =  5;
-    enemy._dot.lineColor = 0xD81E00;
-    enemy._dot.alpha = 0.7;
-    enemy._dot.drawCircle(enemy.x, enemy.y, 5);
-
+    satelite._dot = game.add.graphics(0, 0);
+    satelite._dot.lineWidth =  2;
+    satelite._dot.lineColor = 0xD81E00;
+    satelite._dot.alpha = 0.7;
+    satelite._dot.drawCircle(enemy.x, enemy.y, 5);
   },
-  removeProtectRect: function () {
+  removeAimRect: function () {
     // Hilight remove from enemy.
-    if (this._protectRect != undefined) {
-      this._protectRect.destroy();
+    if (this._aimRect != undefined) {
+      this._aimRect.destroy();
     }
     if (this._dot != undefined) {
       this._dot.destroy();
