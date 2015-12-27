@@ -24,6 +24,7 @@ SpaceGame.Main = function (game) {
   SpaceGame._walls = null;
   SpaceGame._missles = null;
   SpaceGame._bullets = null;
+  SpaceGame._frezzing_bullets = null;
   SpaceGame._bombs = null;
 
   SpaceGame._playerShield = null;
@@ -275,12 +276,22 @@ SpaceGame.Main.prototype = {
     SpaceGame._bullets = game.add.group();
     SpaceGame._bullets.enableBody = true;
     SpaceGame._bullets.physicsBodyType = Phaser.Physics.P2JS;
-    SpaceGame._bullets.createMultiple(20, 'bullet');
+    SpaceGame._bullets.createMultiple(20, 'green_bullet');
     SpaceGame._bullets.setAll('checkWorldBounds', true);
     SpaceGame._bullets.setAll('outOfBoundsKill', true);
     SpaceGame._bullets.setAll('collideWorldBounds', false);
     SpaceGame._bullets.setAll('anchor.x', 0.5);
     SpaceGame._bullets.setAll('anchor.y', 1);
+
+    SpaceGame._frezzing_bullets = game.add.group();
+    SpaceGame._frezzing_bullets.enableBody = true;
+    SpaceGame._frezzing_bullets.physicsBodyType = Phaser.Physics.P2JS;
+    SpaceGame._frezzing_bullets.createMultiple(20, 'freezing_bullet');
+    SpaceGame._frezzing_bullets.setAll('checkWorldBounds', true);
+    SpaceGame._frezzing_bullets.setAll('outOfBoundsKill', true);
+    SpaceGame._frezzing_bullets.setAll('collideWorldBounds', false);
+    SpaceGame._frezzing_bullets.setAll('anchor.x', 0.5);
+    SpaceGame._frezzing_bullets.setAll('anchor.y', 1);
 
     /**
      * Enemy Bullets
@@ -289,7 +300,7 @@ SpaceGame.Main.prototype = {
     SpaceGame._enemy_bullets.enableBody = true;
     SpaceGame._enemy_bullets.physicsBodyType = Phaser.Physics.P2JS;
 
-    SpaceGame._enemy_bullets.createMultiple(40, 'bullet');
+    SpaceGame._enemy_bullets.createMultiple(20, 'bullet');
     SpaceGame._enemy_bullets.setAll('checkWorldBounds', true);
     SpaceGame._enemy_bullets.setAll('outOfBoundsKill', true);
     SpaceGame._enemy_bullets.setAll('collideWorldBounds', false);
@@ -597,7 +608,10 @@ SpaceGame.Main.prototype = {
 
     function createSateliteDraggable(key) {
       var yPos = key == 'satelite_freeze' ? 150 : 0;
-      var satelite = game.add.sprite(game.width - 150, yPos, key);
+      var satelite = game.add.sprite(0, yPos, key);
+      satelite.anchor.setTo(0, 0);
+      satelite.scale.setTo(0.7, 0.7);
+
       satelite.inputEnabled = true;
       satelite.input.enableDrag();
       // Add dag event handlers.
