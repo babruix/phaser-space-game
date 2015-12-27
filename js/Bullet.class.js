@@ -23,7 +23,7 @@ var Bullet = function (worldX, worldY, enemyBullet, freezingBullet) {
   if (this.bullet.body) {
     this.bullet.body.setCircle(15);
     this.bullet.body.mass = 100;
-    this.bullet.lifespan = 15000;
+    this.bullet.lifespan = 1000;
 
     this.bullet.reset(worldX, worldY);
     this.bullet.body.damping = 0.1;

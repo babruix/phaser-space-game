@@ -181,7 +181,9 @@ function updateScore($lifeLost) {
   }
   updateScoreText();
   if (lives < 0) {
-    game.time.events.add(Phaser.Timer.SECOND * 2, SpaceGame.GameOverWithScreenshot, this).autoDestroy = true;
+    // save game screenshot.
+    SpaceGame.canvasDataURI = game.canvas.toDataURL();
+    game.time.events.add(Phaser.Timer.SECOND * 2, SpaceGame.GameOverTransition, this).autoDestroy = true;
   }
 }
 

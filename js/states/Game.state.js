@@ -35,9 +35,7 @@ SpaceGame.Main = function (game) {
   SpaceGame._enemy_bullets = null;
   SpaceGame._ufos = null;
 };
-SpaceGame.GameOverWithScreenshot = function () {
-  // save game screenshot.
-  SpaceGame.canvasDataURI = game.canvas.toDataURL();
+SpaceGame.GameOverTransition = function () {
   SpaceGame.transitionPlugin.to('GameOver');
 };
 SpaceGame.Main.prototype = {
@@ -382,7 +380,9 @@ SpaceGame.Main.prototype = {
     }, this);
     // Game over if no alive flowers.
     if (!SpaceGame._flowerPlants.countLiving()) {
-      game.time.events.add(0, SpaceGame.GameOverWithScreenshot, this).autoDestroy = true;
+      // save game screenshot.
+      SpaceGame.canvasDataURI = game.canvas.toDataURL();
+      game.time.events.add(0, SpaceGame.GameOverTransition, this).autoDestroy = true;
       return;
     }
 
@@ -628,6 +628,17 @@ SpaceGame.Main.prototype = {
     SpaceGame._UiGroup.add(SpaceGame._UiGraph);
     SpaceGame._UiGroup.add(SpaceGame._sateliteBtn);
     SpaceGame._UiGroup.add(SpaceGame._sateliteFreezeBtn);
+    SpaceGame._reloadBtn = game.add.sprite(0, 300, 'reload');
+    SpaceGame._reloadBtn.scale.setTo(0.3, 0.3);
+    SpaceGame._reloadBtn.inputEnabled = true;
+    SpaceGame._reloadBtn.events.onInputDown.add(function () {
+      if (game.time.now > SpaceGame.Main.pickupsLastTime + 1000) {
+        SpaceGame.Main.pickupsLastTime = game.time.now + 1000;
+        SpaceGame.Main.prototype.generateGrowingPickups();
+      }
+    }, this);
+    SpaceGame._UiGroup.add(SpaceGame._reloadBtn);
+
   },
   eventSateliteInputDown: function (satelite) {
     SpaceGame._sateliteInitPos = {};

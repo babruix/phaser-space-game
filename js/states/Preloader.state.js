@@ -6,8 +6,8 @@ SpaceGame.Preloader.prototype = {
     // Nice practicles :)
     var particleSystem1 = SpaceGame.epsyPlugin.loadSystem(SpaceGame.epsyPluginConfig.galaxy, game.width / 2, 50);
     // let Phaser add the particle system to world group or choose to add it to a specific group
-    this.myGroup = game.add.group();
-    this.myGroup.add(particleSystem1);
+    this._circlesGroup = game.add.group();
+    this._circlesGroup.add(particleSystem1);
 
     /**
      * Preloader
@@ -50,6 +50,7 @@ SpaceGame.Preloader.prototype = {
     game.load.image('missle', 'assets/sprites/missile.png');
     game.load.image('ammo', 'assets/sprites/ammo.png');
     game.load.image('fuel', 'assets/sprites/fuel.png');
+    game.load.image('reload', 'assets/sprites/reload.png');
 
     game.load.image('background', 'assets/sprites/bg0.png');
 

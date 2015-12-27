@@ -42,7 +42,7 @@ var Tower = function (worldX, worldY, tile) {
         else {
           body1.sprite.destroy();
           towers.children[0].fireTime += 1;
-          this.tower.damage(1);
+          this.tower.damage(2);
         }
 
         if (this.tower.health <= 1) {
@@ -121,6 +121,12 @@ Tower.prototype = {
   addToPoint: function (worldX, worldY) {
     new Tower(worldX, worldY, 'spaceship');
 
+    var particleSystem1 = SpaceGame.epsyPlugin.loadSystem(SpaceGame.epsyPluginConfig.circles, worldX, worldY);
+    // let Phaser add the particle system to world group or choose to add it to a specific group
+    this._circlesGroup = game.add.group();
+    this._circlesGroup.add(particleSystem1);
+    game.time.events.add(2000, Tower.prototype.destroyCirclesGroup, this).autoDestroy = true;
+
     // Add health bar.
     var barConfig = {
       x: towers.children[0].health,
@@ -161,6 +167,9 @@ Tower.prototype = {
     SpaceGame._shipTrail.setScale(0.05, 0.4, 0.05, 0.4, 2000, Phaser.Easing.Quintic.Out);
     SpaceGame._shipTrail.start(false, 5000, 10);
     SpaceGame._shipTrail.alpha = 0;
+  },
+  destroyCirclesGroup: function () {
+    this._circlesGroup.destroy();
   },
   fire: function (tower) {
     //SpaceGame.enemys.stealing &&

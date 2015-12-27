@@ -32,10 +32,10 @@ SpaceGame.Menu.prototype = {
     //level=5;
     //game.state.start('Main');
 
-    var particleSystem1 = SpaceGame.epsyPlugin.loadSystem(SpaceGame.epsyPluginConfig.galaxy, game.width / 2, 50);
+    var particleSystem1 = SpaceGame.epsyPlugin.loadSystem(SpaceGame.epsyPluginConfig.circles, game.width / 2, 50);
     // let Phaser add the particle system to world group or choose to add it to a specific group
-    this.myGroup = game.add.group();
-    this.myGroup.add(particleSystem1);
+    this._circlesGroup = game.add.group();
+    this._circlesGroup.add(particleSystem1);
 
   },
   startGame: function () {
