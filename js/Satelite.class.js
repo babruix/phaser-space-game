@@ -30,7 +30,7 @@ var Satelite = function (worldX, worldY, freeze) {
   this.satelite.HealthBar = new HealthBar(game, barConfig);
 
   this.satelite.body.onBeginContact.add(function (body1, shapeA, shapeB) {
-    if (body1 && body1.sprite != null && body1.sprite.key == 'bullet' && body1.sprite.alive) {
+    if (body1 && body1.sprite != null && body1.sprite.key.indexOf('bullet') >= 0 && body1.sprite.alive) {
 
       if (typeof(body1.sprite.enemyBullet) != "undefined" && body1.sprite.enemyBullet == true) {
         game.audio.smackSnd.play();
@@ -110,7 +110,8 @@ Satelite.prototype = {
       var isFreezing = satelite.freezing;
       var bullet = new Bullet(satelite.x, satelite.y, enemyBullet, isFreezing);
       bullet.rotation = parseFloat(game.physics.arcade.angleToXY(bullet, closestEnemy.x, closestEnemy.y)) * 180 / Math.PI;
-      game.physics.arcade.moveToObject(bullet, closestEnemy, level * 300);
+      var speed = isFreezing ? level * 10 : level * 30;
+      game.physics.arcade.moveToObject(bullet, closestEnemy, speed);
       bullet = null;
       satelite.fireLastTime = game.time.now + satelite.fireTime;
       if (isFreezing) {
@@ -124,7 +125,8 @@ Satelite.prototype = {
     }
     satelite._aimRect = game.add.graphics(0, 0);
     satelite._aimRect.lineWidth =  2;
-    satelite._aimRect.lineColor = 0xD81E00;
+    var lineColor = satelite.freezing ? 0x13D7D8 : 0xD81E00;
+    satelite._aimRect.lineColor = lineColor;
     satelite._aimRect.alpha = 0.7;
     satelite._aimRect.drawCircle(enemy.x, enemy.y, enemy.width + 10);
 
@@ -134,7 +136,7 @@ Satelite.prototype = {
     }
     satelite._dot = game.add.graphics(0, 0);
     satelite._dot.lineWidth =  2;
-    satelite._dot.lineColor = 0xD81E00;
+    satelite._dot.lineColor = lineColor;
     satelite._dot.alpha = 0.7;
     satelite._dot.drawCircle(enemy.x, enemy.y, 5);
   },

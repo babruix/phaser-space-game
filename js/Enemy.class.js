@@ -113,7 +113,7 @@ Enemy.prototype = {
 
     enemy.body.onBeginContact.add(function (body1) {
       if (!body1 || !body1.sprite) return;
-      if (body1.sprite.key == 'bullet' && !body1.sprite.enemyBullet) {
+      if (body1.sprite.key.indexOf('bullet') >= 0 && !body1.sprite.enemyBullet) {
         if (!enemy.lastDamage) {
           enemy.lastDamage = game.time.now;
         }
@@ -237,7 +237,7 @@ Enemy.prototype = {
     enemy.scale.y = scale;
   },
   showStealingSign: function (enemy) {
-    SpaceGame._anim_elem.style.display = 'block';
+    //SpaceGame._anim_elem.style.display = 'block';
     // show left/right sign
     var stealingDirection = enemy.x < towers.children[0].x ? 'left' : 'right';
     if (stealingDirection == 'left') {
