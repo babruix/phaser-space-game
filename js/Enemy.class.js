@@ -120,6 +120,7 @@ Enemy.prototype = {
         if (body1.sprite.freezingBullet) {
           enemy.freezed = true;
           enemy.lastFreezed = game.time.now;
+          enemy.alpha = 0.2;
         }
         else {
           if (enemy.lastDamage + 500 < game.time.now) {
@@ -175,6 +176,7 @@ Enemy.prototype = {
           // Unfreeze after 4s.
           if (enemy.lastFreezed + Phaser.Timer.SECOND * 4 < game.time.now) {
             enemy.freezed = false;
+            enemy.alpha = 1;
           }
         }
         else {
