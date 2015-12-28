@@ -200,6 +200,8 @@ Enemy.prototype = {
     enemy.events.onKilled.add(function (enemy) {
       enemy.enemyHealthBar.barSprite.kill();
       enemy.enemyHealthBar.bgSprite.kill();
+      score += level * 3;
+      updateScoreText();
     });
 
     SpaceGame.enemys.add(enemy);

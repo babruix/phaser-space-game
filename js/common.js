@@ -104,17 +104,17 @@ function addRndBricks() {
   for (var i = 1; i < level * 3; i++) {
     new Wall(game.rnd.integerInRange(0, game.width), game.rnd.integerInRange(0, game.height));
   }
-  SpaceGame._walls.setAll('alpha', 0);
 }
 
 function updateScoreText() {
   var style = {font: '17px Arial', fill: '#0048D8', align: 'left'};
-  var str = "  Lives: " + lives + " \n  Level: " + level + " \n  $: " + score;
-  var health = 10;
+  var str = "  Lives: " + lives
+    + " \n  Flowers: " + SpaceGame._flowerPlants.countLiving()
+    + " \n  Level: " + level
+    + " \n  $: " + score;
   if (towers && towers.children && typeof towers.children[0] != "undefined") {
     str += "\n  Bricks: " + towers.children[0].countBricks;
     str += "\n  Missles: " + towers.children[0].missles + "";
-    health = towers.children[0].health;
     str += "\n  Bullets: " + towers.children[0].bullets + "";
     str += "\n  Fuel: " + towers.children[0].fuel + "";
   }
@@ -125,9 +125,6 @@ function updateScoreText() {
   else {
     SpaceGame._scoreText.setText(str);
   }
-
-
-
 
   // Draw a fireTime rectangle
   if (SpaceGame._fireGraph == undefined) {
@@ -148,8 +145,8 @@ function updateScoreText() {
   }
 }
 
-function updateScore($lifeLost) {
-  if ($lifeLost == true) {
+function updateScore(losingLife) {
+  if (losingLife == true) {
     lives--;
     score -= 10;
   }

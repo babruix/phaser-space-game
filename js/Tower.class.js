@@ -33,9 +33,6 @@ var Tower = function (worldX, worldY, tile) {
       if (typeof(body1.sprite.enemyBullet) != "undefined"
         && body1.sprite.alive
         && body1.sprite.enemyBullet == true) {
-        if (body1.sprite.y > 690) {
-          return;
-        }
         if (this.tower.shieldPower > 0) {
           this.tower.shieldPower -= 10;
         }

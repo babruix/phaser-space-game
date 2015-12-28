@@ -57,6 +57,8 @@ SpaceGame.Main.prototype = {
      * Init map.
      */
     game.physics.startSystem(Phaser.Physics.P2JS);
+    game.physics.p2.setImpactEvents(true);
+    game.physics.p2.restitution = 0.9;
     game.physics.p2.applyGravity = true;
     game.physics.p2.gravity.x = 0;
     game.physics.p2.gravity.y = 300;
@@ -334,6 +336,7 @@ SpaceGame.Main.prototype = {
   },
   nextLevel: function () {
     level++;
+    score += level * 20;
     Tower.prototype.addToPoint(game.width / 2, game.height - 50);
     showLevelTitle();
     updateScoreText();
@@ -374,6 +377,171 @@ SpaceGame.Main.prototype = {
     };
     return barConfig;
   },
+  initStealingSigns: function () {
+    function initOneStealSign(direction) {
+      var stealingSignSprite = game.add.sprite(game.width / 2, 130, 'sign_' + direction);
+      stealingSignSprite.scale.x = 0.3;
+      stealingSignSprite.scale.y = 0.3;
+      stealingSignSprite.anchor.setTo(0.5, 0.5);
+      var text_l = game.add.text(0, -170,
+        'Stealing detected!', {
+          font: "50px Tahoma",
+          fill: "#D81E00",
+          align: "center"
+        });
+      text_l.anchor.setTo(0.5, 0.5);
+      stealingSignSprite.addChild(text_l);
+      stealingSignSprite.alpha = 0;
+      stealingSignSprite.fixedToCamera = true;
+
+      return stealingSignSprite;
+    }
+
+    SpaceGame.enemys.stealSignLeft = initOneStealSign('left');
+    SpaceGame.enemys.stealSignRight = initOneStealSign('right');
+  },
+  initUI: function () {
+    function createUiGraph() {
+      var uiRect = game.add.graphics(0, 0);
+      uiRect.beginFill(0xFFFFFF);
+      uiRect.clear();
+      uiRect.drawRect(game.width - 150, 0, 150, game.height);
+      uiRect.alpha = .8;
+      return uiRect;
+    }
+    function createSateliteDraggable(key) {
+      var yPos = key == 'satelite_freeze' ? 150 : 0;
+      var satelite = game.add.sprite(0, yPos, key);
+      satelite.anchor.setTo(0, 0);
+      satelite.scale.setTo(0.7, 0.7);
+
+      satelite.inputEnabled = true;
+      satelite.input.enableDrag();
+      // Add dag event handlers.
+      satelite.events.onInputDown.add(this.eventSateliteInputDown);
+      satelite.events.onDragStop.add(this.eventSateliteDragStop);
+
+      return satelite;
+    }
+    function createWallDraggable() {
+      var wallBtn = game.add.sprite(0, 300, 'wall-a');
+      wallBtn.scale.setTo(0.4, 0.4);
+      wallBtn.inputEnabled = true;
+      wallBtn.input.enableDrag();
+      // Add dag event handlers.
+      wallBtn.events.onInputDown.add(this.eventWallInputDown);
+      wallBtn.events.onDragStop.add(this.eventWallDragStop);
+
+      return wallBtn;
+    }
+    function createReloadBtn() {
+      var reloadBtn = game.add.sprite(0, 400, 'reload');
+      reloadBtn.scale.setTo(0.2, 0.2);
+      reloadBtn.inputEnabled = true;
+      return reloadBtn;
+    }
+
+    SpaceGame._UiGraph = createUiGraph();
+    SpaceGame._sateliteBtn = createSateliteDraggable.call(this, 'satelite');
+    SpaceGame._sateliteFreezeBtn = createSateliteDraggable.call(this, 'satelite_freeze');
+    SpaceGame._wallBtn = createWallDraggable.call(this);
+    SpaceGame._reloadBtn = createReloadBtn.call(this);
+    SpaceGame._reloadBtn.events.onInputDown.add(function () {
+      if (game.time.now > SpaceGame.Main.pickupsLastTime + 1000) {
+        SpaceGame.Main.pickupsLastTime = game.time.now + 1000;
+        SpaceGame.Main.prototype.generateGrowingPickups();
+      }
+    }, this);
+
+    SpaceGame._UiGroup = game.add.group();
+    SpaceGame._UiGroup.add(SpaceGame._UiGraph);
+    SpaceGame._UiGroup.add(SpaceGame._sateliteBtn);
+    SpaceGame._UiGroup.add(SpaceGame._sateliteFreezeBtn);
+    SpaceGame._UiGroup.add(SpaceGame._wallBtn);
+    SpaceGame._UiGroup.add(SpaceGame._reloadBtn);
+  },
+  eventSateliteInputDown: function (satelite) {
+    SpaceGame._sateliteInitPos = {};
+    SpaceGame._sateliteInitPos.x = satelite.x;
+    SpaceGame._sateliteInitPos.y = satelite.y;
+  },
+  eventSateliteDragStop: function (satelite) {
+    if (score >= 25) {
+      score -= 25;
+      updateScoreText();
+      Satelite.prototype.addToPoint(satelite.x, satelite.y, satelite.key == 'satelite_freeze');
+    }
+    satelite.x = SpaceGame._sateliteInitPos.x;
+    satelite.y = SpaceGame._sateliteInitPos.y;
+    SpaceGame._sateliteInitPos = {};
+  },
+  eventWallInputDown: function (wall) {
+    SpaceGame._wallInitPos = {};
+    SpaceGame._wallInitPos.x = wall.x;
+    SpaceGame._wallInitPos.y = wall.y;
+  },
+  eventWallDragStop: function (wall) {
+    if (towers.children[0].countBricks > 0) {
+      towers.children[0].countBricks--;
+      updateScoreText();
+      new Wall(wall.x, wall.y);
+    }
+    else if (score >= 5) {
+      score -= 5;
+      updateScoreText();
+      new Wall(wall.x, wall.y);
+    }
+
+    wall.x = SpaceGame._wallInitPos.x;
+    wall.y = SpaceGame._wallInitPos.y;
+    SpaceGame._wallInitPos = {};
+  },
+  animateScore: function (moveOut) {
+    moveOut = moveOut || false;
+
+    // Animate walls
+    SpaceGame._walls.forEachAlive(function (brick) {
+      game.add.tween(brick)
+        .to({alpha: moveOut ? 0 : 1}, 1000, Phaser.Easing.Linear.None, true, 0);
+    });
+
+    SpaceGame._UiGroup.forEach(function (item) {
+
+      // Graphics does not work to animate here :(
+      if (item.type == 0) {
+        item.x = moveOut ? item.x : game.width + item.width;
+        item.alpha = moveOut ? 1 : 0;
+
+        var toX = moveOut ? game.width + item.width : game.width - 150;
+        var delay = moveOut ? 700 : 500;
+
+        game.add.tween(item).to({alpha: moveOut ? 0 : 1, x: toX},
+          700, Phaser.Easing.Linear.None, true, delay);
+      }
+    });
+  },
+  addEnemys: function () {
+    var i = 0;
+    SpaceGame._allEnemysAdded = false;
+    var enemysBcl = game.time.events.loop(level / 2 * Phaser.Timer.SECOND, function () {
+      // Generate i=3*level number of enemys
+      if (i < 2 * level) {
+        var rndKey = game.rnd.integerInRange(0, SpaceGame.enemySprites.length - 1);
+        var animEnemy = SpaceGame.enemySprites[rndKey];
+        var enemy = new Enemy(0, 0, animEnemy.name, animEnemy.length);
+        var param = {
+          x: parseInt(game.rnd.integerInRange(0, game.width)),
+          y: parseInt(game.rnd.integerInRange(0, game.height))
+        };
+        param.countBricks = 1;
+        Tower.prototype.addWall(param);
+      } else {
+        enemysBcl = null;
+        SpaceGame._allEnemysAdded = true;
+      }
+      i++;
+    });
+  },
   update: function () {
     SpaceGame._background.tilePosition.set(game.camera.x * -0.5, game.camera.y * -0.5);
     SpaceGame.rewpawnPickupsButton.onDown.add(function () {
@@ -403,6 +571,7 @@ SpaceGame.Main.prototype = {
      *  Enemy stealing check
      */
     SpaceGame.enemys.stealing = false;
+    game.physics.arcade.collide(SpaceGame.enemys);
     SpaceGame.enemys.forEach(function (enemy) {
 
       if (enemy && enemy.alive) {
@@ -429,11 +598,7 @@ SpaceGame.Main.prototype = {
           if (enemy.closestPlant.y < 100 && enemy.closestPlant) {
             game.audio.springSnd.play();
             enemy.closestPlant.destroy();
-            if (towers && towers.children[0]) {
-              towers.children[0].fireTime += enemy.health * 2;
-              lives--;
-            }
-            updateScoreText();
+            updateScore(true);
           }
         }
 
@@ -578,131 +743,5 @@ SpaceGame.Main.prototype = {
 
     // Follow camera.
     SpaceGame._UiGroup.x = game.camera.x + 20;
-  },
-  initStealingSigns: function () {
-    function initOneStealSign(direction) {
-      var stealingSignSprite = game.add.sprite(game.width / 2, 130, 'sign_' + direction);
-      stealingSignSprite.scale.x = 0.3;
-      stealingSignSprite.scale.y = 0.3;
-      stealingSignSprite.anchor.setTo(0.5, 0.5);
-      var text_l = game.add.text(0, -170,
-        'Stealing detected!', {
-          font: "50px Tahoma",
-          fill: "#D81E00",
-          align: "center"
-        });
-      text_l.anchor.setTo(0.5, 0.5);
-      stealingSignSprite.addChild(text_l);
-      stealingSignSprite.alpha = 0;
-      stealingSignSprite.fixedToCamera = true;
-
-      return stealingSignSprite;
-    }
-
-    SpaceGame.enemys.stealSignLeft = initOneStealSign('left');
-    SpaceGame.enemys.stealSignRight = initOneStealSign('right');
-  },
-  initUI: function () {
-    SpaceGame._UiGraph = game.add.graphics(0, 0);
-    SpaceGame._UiGraph.beginFill(0xFFFFFF);
-    SpaceGame._UiGraph.clear();
-    SpaceGame._UiGraph.drawRect(game.width - 150, 0, 150, game.height);
-    SpaceGame._UiGraph.alpha = .8;
-    SpaceGame._UiGraph.update();
-
-    function createSateliteDraggable(key) {
-      var yPos = key == 'satelite_freeze' ? 150 : 0;
-      var satelite = game.add.sprite(0, yPos, key);
-      satelite.anchor.setTo(0, 0);
-      satelite.scale.setTo(0.7, 0.7);
-
-      satelite.inputEnabled = true;
-      satelite.input.enableDrag();
-      // Add dag event handlers.
-      satelite.events.onInputDown.add(this.eventSateliteInputDown);
-      satelite.events.onDragStop.add(this.eventSateliteDragStop);
-
-      return satelite;
-    }
-
-    SpaceGame._sateliteBtn = createSateliteDraggable.call(this, 'satelite');
-    SpaceGame._sateliteFreezeBtn = createSateliteDraggable.call(this, 'satelite_freeze');
-
-    SpaceGame._UiGroup = game.add.group();
-    SpaceGame._UiGroup.add(SpaceGame._UiGraph);
-    SpaceGame._UiGroup.add(SpaceGame._sateliteBtn);
-    SpaceGame._UiGroup.add(SpaceGame._sateliteFreezeBtn);
-    SpaceGame._reloadBtn = game.add.sprite(0, 300, 'reload');
-    SpaceGame._reloadBtn.scale.setTo(0.3, 0.3);
-    SpaceGame._reloadBtn.inputEnabled = true;
-    SpaceGame._reloadBtn.events.onInputDown.add(function () {
-      if (game.time.now > SpaceGame.Main.pickupsLastTime + 1000) {
-        SpaceGame.Main.pickupsLastTime = game.time.now + 1000;
-        SpaceGame.Main.prototype.generateGrowingPickups();
-      }
-    }, this);
-    SpaceGame._UiGroup.add(SpaceGame._reloadBtn);
-
-  },
-  eventSateliteInputDown: function (satelite) {
-    SpaceGame._sateliteInitPos = {};
-    SpaceGame._sateliteInitPos.x = satelite.x;
-    SpaceGame._sateliteInitPos.y = satelite.y;
-  },
-  eventSateliteDragStop: function (satelite) {
-    if (score >= 25) {
-      score -= 25;
-      updateScoreText();
-      Satelite.prototype.addToPoint(satelite.x, satelite.y, satelite.key == 'satelite_freeze');
-    }
-    satelite.x = SpaceGame._sateliteInitPos.x;
-    satelite.y = SpaceGame._sateliteInitPos.y;
-    SpaceGame._sateliteInitPos = {};
-  },
-  animateScore: function (moveOut) {
-    moveOut = moveOut || false;
-
-    // Animate walls
-    SpaceGame._walls.forEachAlive(function (brick) {
-      game.add.tween(brick)
-        .to({alpha: moveOut ? 0 : 1}, 1000, Phaser.Easing.Linear.None, true, 0);
-    });
-
-    SpaceGame._UiGroup.forEach(function (item) {
-
-      // Graphics does not work to animate here :(
-      if (item.type == 0) {
-        item.x = moveOut ? item.x : game.width + item.width;
-        item.alpha = moveOut ? 1 : 0;
-
-        var toX = moveOut ? game.width + item.width : game.width - 150;
-        var delay = moveOut ? 700 : 500;
-
-        game.add.tween(item).to({alpha: moveOut ? 0 : 1, x: toX},
-          700, Phaser.Easing.Linear.None, true, delay);
-      }
-    });
-  },
-  addEnemys: function () {
-    var i = 0;
-    SpaceGame._allEnemysAdded = false;
-    var enemysBcl = game.time.events.loop(level / 2 * Phaser.Timer.SECOND, function () {
-      // Generate i=3*level number of enemys
-      if (i < 2 * level) {
-        var rndKey = game.rnd.integerInRange(0, SpaceGame.enemySprites.length - 1);
-        var animEnemy = SpaceGame.enemySprites[rndKey];
-        var enemy = new Enemy(0, 0, animEnemy.name, animEnemy.length);
-        var param = {
-          x: parseInt(game.rnd.integerInRange(0, game.width)),
-          y: parseInt(game.rnd.integerInRange(0, game.height))
-        };
-        param.countBricks = 1;
-        Tower.prototype.addWall(param);
-      } else {
-        enemysBcl = null;
-        SpaceGame._allEnemysAdded = true;
-      }
-      i++;
-    });
   }
 };
