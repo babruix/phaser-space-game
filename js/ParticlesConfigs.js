@@ -76,7 +76,7 @@ SpaceGame.epsyPluginConfig.rain = [{
   "id": "galax",
   "aFactor": {"x": 0, "y": 0},
   "xFactor": {"x": 0, "y": 0},
-  "border": {"top": 10, "left": 200, "bottom": 400, "right": 200},
+  "border": {"top": 10, "left": 100, "bottom": 400, "right": 200},
   "zIndex": 0
 }];
 SpaceGame.epsyPluginConfig.galaxy = [{

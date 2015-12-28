@@ -145,6 +145,8 @@ SpaceGame.Main.prototype = {
     });
   },
   generateClouds: function () {
+    SpaceGame._cloudsGroup = game.add.group();
+    SpaceGame._rainGroup = game.add.group();
     var cloudSises = {
       '0': {x: 124, y: 54, toX: 485, toY: 13},
       '1': {x: 132, y: 82, toX: 120, toY: 93},
@@ -154,9 +156,10 @@ SpaceGame.Main.prototype = {
       '5': {x: 450, y: 158, toX: 150, toY: 258},
       '6': {x: 352, y: 102, toX: 120, toY: 100}
     };
-    this._tweenClouds = [];
+    SpaceGame._tweenClouds = [];
     for (var i = 0; i <= 6; i++) {
       this._cloud = game.add.tileSprite(cloudSises[i].toX, cloudSises[i].toY, cloudSises[i].x, cloudSises[i].y, 'cloud' + i);
+      SpaceGame._cloudsGroup.add(this._cloud);
       // Also enable sprite for drag
       this._cloud.inputEnabled = true;
       this._cloud.input.enableDrag();
@@ -166,33 +169,34 @@ SpaceGame.Main.prototype = {
         console.log({x: this._cloud.x, y: this._cloud.y});
       }, this);
       this._cloud.events.onDragStop.add(function () {
-        console.log({'x': this._cloud.x, 'y': this._cloud.y});
-        this._rainGroup.children[0].y = this._cloud.y;
-        console.log(this._rainGroup.children[0].width);
+        if (SpaceGame._rainGroup.children[0]) {
+          SpaceGame._rainGroup.children[0].y = this._cloud.y + this._cloud.height;
+          SpaceGame._rainGroup.children[0].x = this._cloud.x + 150;
+        }
       }, this);
-
-      var speed = game.rnd.integerInRange(this._cloud.x + this._cloud.width * 50, this._cloud.width * 500);
-      var state = {x: game.rnd.integerInRange(this._cloud.x, this._cloud.x + this._cloud.width)};
-      this._tweenClouds[i] = game.add.tween(this._cloud).to(state, speed,
-        Phaser.Easing.Sinusoidal.InOut,
-        true, //autostart?,
-        0, //delay,
-        false, //repeat?
-        true //yoyo?
-      );
     }
-
-    this.makeRain(this._cloud.x, this._cloud.y);
-    //this.removeRain();
+    game.time.events.add(300, SpaceGame.Main.prototype.makeRain, this);
   },
-  makeRain: function (x, y) {
-    var particleSystem1 = SpaceGame.epsyPlugin.loadSystem(SpaceGame.epsyPluginConfig.rain, x, y);
+  makeRain: function () {
+    var integerInRange = game.rnd.integerInRange(0,6);
+    var cloud = SpaceGame._cloudsGroup.children[integerInRange];
+    cloud.raining = true;
+
+    var config = SpaceGame.epsyPluginConfig.rain;
+    var particleSystem1 = SpaceGame.epsyPlugin.loadSystem(config, cloud.x, cloud.y + cloud.height);
     // let Phaser add the particle system to world group or choose to add it to a specific group
-    this._rainGroup = game.add.group();
-    this._rainGroup.add(particleSystem1);
+    SpaceGame._rainGroup.add(particleSystem1);
+    SpaceGame._rainGroup.children[0].x = cloud.x + 150;
+    game.time.events.add(5000, SpaceGame.Main.prototype.removeRain, this);
   },
   removeRain: function () {
-    this._rainGroup.destroy();
+    SpaceGame._rainGroup.forEachAlive(function (element) {
+      element.destroy();
+    });
+    SpaceGame._cloudsGroup.forEachAlive(function (cloud) {
+      cloud.raining = false;
+    });
+    game.time.events.add(3000, SpaceGame.Main.prototype.makeRain);
   },
   shakeFlowers: function () {
     SpaceGame._flowerPlants = game.add.group();
@@ -336,7 +340,7 @@ SpaceGame.Main.prototype = {
     addRndBricks();
     //addWalls();
     this.animateScore();
-    addEnemys();
+    this.addEnemys();
 
     Brick.prototype.generateBrick();
     for (var i = 0; i < parseInt(level / 2); i++) {
@@ -677,6 +681,28 @@ SpaceGame.Main.prototype = {
         game.add.tween(item).to({alpha: moveOut ? 0 : 1, x: toX},
           700, Phaser.Easing.Linear.None, true, delay);
       }
+    });
+  },
+  addEnemys: function () {
+    var i = 0;
+    SpaceGame._allEnemysAdded = false;
+    var enemysBcl = game.time.events.loop(level / 2 * Phaser.Timer.SECOND, function () {
+      // Generate i=3*level number of enemys
+      if (i < 2 * level) {
+        var rndKey = game.rnd.integerInRange(0, SpaceGame.enemySprites.length - 1);
+        var animEnemy = SpaceGame.enemySprites[rndKey];
+        var enemy = new Enemy(0, 0, animEnemy.name, animEnemy.length);
+        var param = {
+          x: parseInt(game.rnd.integerInRange(0, game.width)),
+          y: parseInt(game.rnd.integerInRange(0, game.height))
+        };
+        param.countBricks = 1;
+        Tower.prototype.addWall(param);
+      } else {
+        enemysBcl = null;
+        SpaceGame._allEnemysAdded = true;
+      }
+      i++;
     });
   }
 };

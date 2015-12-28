@@ -107,29 +107,6 @@ function addRndBricks() {
   SpaceGame._walls.setAll('alpha', 0);
 }
 
-function addEnemys() {
-  var i = 0;
-  SpaceGame._allEnemysAdded = false;
-  var enemysBcl = game.time.events.loop(level / 2 * Phaser.Timer.SECOND, function () {
-    // Generate i=3*level number of enemys
-    if (i < 2 * level) {
-      var rndKey = game.rnd.integerInRange(0, SpaceGame.enemySprites.length - 1);
-      var animEnemy = SpaceGame.enemySprites[rndKey];
-      var enemy = new Enemy(0, 0, animEnemy.name, animEnemy.length);
-      var param = {
-        x: parseInt(game.rnd.integerInRange(0, game.width)),
-        y: parseInt(game.rnd.integerInRange(0, game.height))
-      };
-      param.countBricks = 1;
-      Tower.prototype.addWall(param);
-    } else {
-      enemysBcl = null;
-      SpaceGame._allEnemysAdded = true;
-    }
-    i++;
-  });
-}
-
 function updateScoreText() {
   var style = {font: '17px Arial', fill: '#0048D8', align: 'left'};
   var str = "  Lives: " + lives + " \n  Level: " + level + " \n  $: " + score;
