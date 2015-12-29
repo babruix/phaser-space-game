@@ -1,6 +1,7 @@
-var Bomb = function() {
-  var x2 = game.rnd.integerInRange(0, game.width);
-  this.bomb = game.add.sprite(x2, 0, 'bomb');
+var Bomb = function(x, y) {
+  var x2 = x || game.rnd.integerInRange(0, game.width);
+  var y2 = y || 0;
+  this.bomb = game.add.sprite(x2, y2, 'bomb');
   this.bomb.anchor.setTo(0.5, 0.5);
 
   game.physics.p2.enable(this.bomb, debug);
@@ -9,29 +10,9 @@ var Bomb = function() {
   this.bomb.body.damping = 1;
 
   this.bomb.body.onBeginContact.add(function (body1, shapeA, shapeB) {
-    if (body1 && body1.sprite != null) {
-
-      if (!this.bomb.hitCooldown) {
-        this.bomb.hitCooldown = true;
-        game.time.events.add(1000, function () {
-          this.bomb.hitCooldown = false;
-        }, this);
-      }
-      else {
-        return;
-      }
-
-
+    if (body1 != null && body1.sprite != null) {
       if (body1.sprite.key != 'spaceship') {
-        for (var i = 0, x = SpaceGame.enemySprites.length; i < x; i++) {
-          if (SpaceGame.enemySprites[i].name == body1.sprite.key) {
-            this.bomb.kill();
-            game.audio.explosionSnd.play();
-            body1.sprite.damage(10);
-            updateScoreText();
-            break;
-          }
-        }
+        Missle.prototype.explode(this.bomb);
       }
       else {
         this.bomb.kill();
@@ -40,21 +21,13 @@ var Bomb = function() {
       }
     }
   }, this);
-  var _this = this;
+
+  var bomb = this.bomb;
   this.bomb.update = function () {
-    if (_this.bomb.alive && _this.bomb.y > game.height - _this.bomb.height) {
-      _this.bomb.kill();
+    if (bomb.alive && bomb.y > game.height - bomb.height) {
+      Missle.prototype.explode(bomb);
     }
   };
-  this.bomb.events.onKilled.add(function (bomb) {
-    game.audio.explosionSnd.play();
-    var explode = game.add.sprite(bomb.x - 100, bomb.y - 150, 'explode', 19);
-    var anim = explode.animations.add('explode');
-    explode.animations.play('explode', 19, false, true);
-    anim.onComplete.add(function () {
-      Bomb.prototype.generateBomb();
-    });
-  }, this);
 
   SpaceGame._bombs.add(this.bomb);
 };

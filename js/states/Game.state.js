@@ -165,8 +165,8 @@ SpaceGame.Main.prototype = {
       this._cloud.input.enableDrag();
 
       this._cloud.events.onDragStart.add(function () {
-        console.log('key=' + this._cloud.key);
-        console.log({x: this._cloud.x, y: this._cloud.y});
+        //console.log('key=' + this._cloud.key);
+        //console.log({x: this._cloud.x, y: this._cloud.y});
       }, this);
       this._cloud.events.onDragStop.add(function () {
         if (SpaceGame._rainGroup.children[0]) {
@@ -404,6 +404,25 @@ SpaceGame.Main.prototype = {
     SpaceGame.enemys.stealSignRight = initOneStealSign('right');
   },
   initUI: function () {
+    // Create elements.
+    SpaceGame._UiGraph = createUiGraph();
+    SpaceGame._sateliteBtn = createSateliteDraggable.call(this, 'satelite');
+    SpaceGame._sateliteFreezeBtn = createSateliteDraggable.call(this, 'satelite_freeze');
+    SpaceGame._wallBtn = createWallDraggable.call(this);
+    SpaceGame._bombBtn = createBombDraggable.call(this);
+    SpaceGame._reloadBtn = createReloadBtn.call(this);
+    SpaceGame._reloadBtn.events.onInputDown.add(reloadPickups);
+
+    // Add elements to UIGroup.
+    SpaceGame._UiGroup = game.add.group();
+    SpaceGame._UiGroup.add(SpaceGame._UiGraph);
+    SpaceGame._UiGroup.add(SpaceGame._sateliteBtn);
+    SpaceGame._UiGroup.add(SpaceGame._sateliteFreezeBtn);
+    SpaceGame._UiGroup.add(SpaceGame._wallBtn);
+    SpaceGame._UiGroup.add(SpaceGame._bombBtn);
+    SpaceGame._UiGroup.add(SpaceGame._reloadBtn);
+
+    // Functions to create elements.
     function createUiGraph() {
       var uiRect = game.add.graphics(0, 0);
       uiRect.beginFill(0xFFFFFF);
@@ -420,9 +439,9 @@ SpaceGame.Main.prototype = {
 
       satelite.inputEnabled = true;
       satelite.input.enableDrag();
-      // Add dag event handlers.
-      satelite.events.onInputDown.add(this.eventSateliteInputDown);
-      satelite.events.onDragStop.add(this.eventSateliteDragStop);
+      // Add drag event handlers.
+      satelite.events.onInputDown.add(eventSateliteInputDown);
+      satelite.events.onDragStop.add(eventSateliteDragStop);
 
       return satelite;
     }
@@ -431,74 +450,93 @@ SpaceGame.Main.prototype = {
       wallBtn.scale.setTo(0.4, 0.4);
       wallBtn.inputEnabled = true;
       wallBtn.input.enableDrag();
-      // Add dag event handlers.
-      wallBtn.events.onInputDown.add(this.eventWallInputDown);
-      wallBtn.events.onDragStop.add(this.eventWallDragStop);
+      // Add drag event handlers.
+      wallBtn.events.onInputDown.add(eventWallInputDown);
+      wallBtn.events.onDragStop.add(eventWallDragStop);
 
       return wallBtn;
+    }
+    function createBombDraggable() {
+      var bombBtn = game.add.sprite(0, 350, 'bomb');
+      bombBtn.scale.setTo(0.7, 0.7);
+      bombBtn.inputEnabled = true;
+      bombBtn.input.enableDrag();
+      // Add drag event handlers.
+      bombBtn.events.onInputDown.add(eventBombInputDown);
+      bombBtn.events.onDragStop.add(eventBombDragStop);
+
+      return bombBtn;
     }
     function createReloadBtn() {
       var reloadBtn = game.add.sprite(0, 400, 'reload');
       reloadBtn.scale.setTo(0.2, 0.2);
       reloadBtn.inputEnabled = true;
+
       return reloadBtn;
     }
 
-    SpaceGame._UiGraph = createUiGraph();
-    SpaceGame._sateliteBtn = createSateliteDraggable.call(this, 'satelite');
-    SpaceGame._sateliteFreezeBtn = createSateliteDraggable.call(this, 'satelite_freeze');
-    SpaceGame._wallBtn = createWallDraggable.call(this);
-    SpaceGame._reloadBtn = createReloadBtn.call(this);
-    SpaceGame._reloadBtn.events.onInputDown.add(function () {
+    // Functions events handlers
+    function eventSateliteInputDown(satelite) {
+      SpaceGame._sateliteInitPos = {};
+      SpaceGame._sateliteInitPos.x = satelite.x;
+      SpaceGame._sateliteInitPos.y = satelite.y;
+    }
+    function eventSateliteDragStop(satelite) {
+      if (score >= 25) {
+        score -= 25;
+        updateScoreText();
+        Satelite.prototype.addToPoint(satelite.x, satelite.y, satelite.key == 'satelite_freeze');
+      }
+      satelite.x = SpaceGame._sateliteInitPos.x;
+      satelite.y = SpaceGame._sateliteInitPos.y;
+      SpaceGame._sateliteInitPos = {};
+    }
+    function eventWallInputDown(wall) {
+      SpaceGame._wallInitPos = {};
+      SpaceGame._wallInitPos.x = wall.x;
+      SpaceGame._wallInitPos.y = wall.y;
+    }
+    function eventWallDragStop(wall) {
+      if (towers.children[0].countBricks > 0) {
+        towers.children[0].countBricks--;
+        updateScoreText();
+        new Wall(wall.x, wall.y);
+      }
+      else if (score >= 5) {
+        score -= 5;
+        updateScoreText();
+        new Wall(wall.x, wall.y);
+      }
+
+      wall.x = SpaceGame._wallInitPos.x;
+      wall.y = SpaceGame._wallInitPos.y;
+      SpaceGame._wallInitPos = {};
+    }
+    function eventBombInputDown(bomb) {
+      SpaceGame._bombInitPos = {};
+      SpaceGame._bombInitPos.x = bomb.x;
+      SpaceGame._bombInitPos.y = bomb.y;
+    }
+    function eventBombDragStop(bomb) {
+      if (score >= 15) {
+        score -= 15;
+        updateScoreText();
+        new Bomb(bomb.x, bomb.y);
+      }
+
+      bomb.x = SpaceGame._bombInitPos.x;
+      bomb.y = SpaceGame._bombInitPos.y;
+      SpaceGame._bombInitPos = {};
+    }
+    function reloadPickups() {
       if (game.time.now > SpaceGame.Main.pickupsLastTime + 1000) {
         SpaceGame.Main.pickupsLastTime = game.time.now + 1000;
         SpaceGame.Main.prototype.generateGrowingPickups();
       }
-    }, this);
-
-    SpaceGame._UiGroup = game.add.group();
-    SpaceGame._UiGroup.add(SpaceGame._UiGraph);
-    SpaceGame._UiGroup.add(SpaceGame._sateliteBtn);
-    SpaceGame._UiGroup.add(SpaceGame._sateliteFreezeBtn);
-    SpaceGame._UiGroup.add(SpaceGame._wallBtn);
-    SpaceGame._UiGroup.add(SpaceGame._reloadBtn);
-  },
-  eventSateliteInputDown: function (satelite) {
-    SpaceGame._sateliteInitPos = {};
-    SpaceGame._sateliteInitPos.x = satelite.x;
-    SpaceGame._sateliteInitPos.y = satelite.y;
-  },
-  eventSateliteDragStop: function (satelite) {
-    if (score >= 25) {
-      score -= 25;
-      updateScoreText();
-      Satelite.prototype.addToPoint(satelite.x, satelite.y, satelite.key == 'satelite_freeze');
-    }
-    satelite.x = SpaceGame._sateliteInitPos.x;
-    satelite.y = SpaceGame._sateliteInitPos.y;
-    SpaceGame._sateliteInitPos = {};
-  },
-  eventWallInputDown: function (wall) {
-    SpaceGame._wallInitPos = {};
-    SpaceGame._wallInitPos.x = wall.x;
-    SpaceGame._wallInitPos.y = wall.y;
-  },
-  eventWallDragStop: function (wall) {
-    if (towers.children[0].countBricks > 0) {
-      towers.children[0].countBricks--;
-      updateScoreText();
-      new Wall(wall.x, wall.y);
-    }
-    else if (score >= 5) {
-      score -= 5;
-      updateScoreText();
-      new Wall(wall.x, wall.y);
     }
 
-    wall.x = SpaceGame._wallInitPos.x;
-    wall.y = SpaceGame._wallInitPos.y;
-    SpaceGame._wallInitPos = {};
   },
+
   animateScore: function (moveOut) {
     moveOut = moveOut || false;
 
