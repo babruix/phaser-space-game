@@ -5,7 +5,7 @@ var Tower = function (worldX, worldY, tile) {
   this.tower.health = 10;
   this.tower.wallTime = 100;
   this.tower.fireTime = SpaceGame._playerFireSpeed || 200;
-  this.tower.missles = SpaceGame._playerMissles || 0;
+  this.tower.missles = SpaceGame._playerMissles || 10;
   this.tower.countBricks = SpaceGame._playerBricks || 0;
   this.tower.shieldPower = SpaceGame._playerShield || 0;
   this.tower.fireLastTime = game.time.now + this.tower.fireTime;
@@ -26,7 +26,6 @@ var Tower = function (worldX, worldY, tile) {
   towers.add(this.tower);
   game.camera.follow(this.tower);
 
-
   this.tower.body.onBeginContact.add(function (body1, shapeA, shapeB) {
     if (body1 && body1.sprite != null && body1.sprite.key.indexOf('bullet') >= 0) {
       game.audio.smackSnd.play();
@@ -37,10 +36,9 @@ var Tower = function (worldX, worldY, tile) {
           this.tower.shieldPower -= 10;
         }
         else {
-          body1.sprite.destroy();
-          towers.children[0].fireTime += 1;
           this.tower.damage(2);
         }
+        body1.sprite.destroy();
 
         if (this.tower.health <= 1) {
           this.tower.health = 10;
@@ -60,7 +58,6 @@ var Tower = function (worldX, worldY, tile) {
     SpaceGame._playerShield = that.tower.shieldPower;
     SpaceGame._playerBricks = that.tower.countBricks;
     SpaceGame._playerMissles = that.tower.missles;
-    SpaceGame._playerFireSpeed = that.tower.fireTime;
   });
 
   var _this = this;
@@ -176,7 +173,7 @@ Tower.prototype = {
       game.audio.playerSndFire.play();
       var bullet = new Bullet(tower.x, tower.y - tower.height, false);
       if (bullet != undefined && bullet.body != undefined) {
-        bullet.body.moveUp(500 * level);
+        bullet.body.moveUp(1500);
         bullet = null;
       }
       tower.fireLastTime = game.time.now + tower.fireTime;
@@ -187,10 +184,10 @@ Tower.prototype = {
       game.audio.missleSnd.play();
       tower.missles--;
       updateScoreText();
-      var missle = new Missle(tower.x + tower.width / 2, tower.y - tower.height * 2, false);
+      var missle = new Missle(tower.x + tower.width / 2, tower.y - tower.height * 2, true);
       if (missle != undefined && missle.body != undefined) {
-        missle.body.moveUp(1800);
-        missle = null;
+        missle.body.moveUp(800);
+        missle.activated = true;
         tower.fireLastTime = game.time.now + tower.fireTime;
       }
     }

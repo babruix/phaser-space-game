@@ -1,12 +1,14 @@
-var Missle = function(x, y) {
+var Missle = function(x, y, fired) {
   var x2 = x ? x : game.rnd.integerInRange(0, game.width);
-  SpaceGame._flowerPlants.forEachAlive(function (plant) {
-    if (plant.growingItem.key == 'missle') {
-      x2 = plant.x;
-      Plant.prototype.removeSpawnBar(plant);
-    }
-  });
-  var y2 = game.rnd.integerInRange(0, game.height);
+  if (!fired) {
+    SpaceGame._flowerPlants.forEachAlive(function (plant) {
+      if (plant.growingItem.key == 'missle') {
+        x2 = plant.x;
+        Plant.prototype.removeSpawnBar(plant);
+      }
+    });
+  }
+  var y2 = y ? y : game.rnd.integerInRange(0, game.height);
   SpaceGame._missles.createMultiple(1, 'missle', 0, false);
   this.missle = SpaceGame._missles.getFirstExists(false);
   this.missle.body.setCircle(15);
@@ -14,35 +16,23 @@ var Missle = function(x, y) {
   this.missle.body.damping = 0.01;
   this.missle.towerBullet = true;
   this.missle.enemyBullet = false;
-  this.missle.blendMode=0;
+  this.missle.activated = fired || false;
   this.missle.reset(x2, y2);
 
   this.missle.body.onBeginContact.add(function (body1, shapeA, shapeB) {
     if (body1 != null && body1.sprite != null) {
 
-      if (!this.missle.hitCooldown) {
-        this.missle.hitCooldown = true;
-        game.time.events.add(1000, function () {
-          this.missle.hitCooldown = false;
-        }, this);
-      }
-      else {
-        return;
-      }
-
       if (body1.sprite.key != 'spaceship') {
-        for (var i = 0, x = SpaceGame.enemySprites.length; i < x; i++) {
-          if (SpaceGame.enemySprites[i].name == body1.sprite.key) {
-            this.explode(this.missle);
-            break;
-          }
-        }
+        Missle.prototype.explode(this.missle);
       }
       else {
-        game.audio.laughSnd.play();
-        body1.sprite.missles++;
-        updateScoreText();
-        this.missle.kill();
+        if (!this.missle.activated) {
+          // pickup
+          game.audio.laughSnd.play();
+          body1.sprite.missles++;
+          updateScoreText();
+          this.missle.kill();
+        }
       }
     }
 
@@ -52,6 +42,12 @@ var Missle = function(x, y) {
     SpaceGame._missleTimer = game.time.events.add(nextSpawnTime, Missle.prototype.generateMissle);
     Plant.prototype.updateSpawnBar(nextSpawnTime, 'missle');
   });
+  var missle = this.missle;
+  this.missle.update = function () {
+    if(missle.y < 100) {
+      Missle.prototype.explode(missle);
+    }
+  };
   return this.missle;
 };
 
@@ -64,8 +60,21 @@ Missle.prototype = {
       missle.destroy();
       game.audio.explosionSnd.play();
       var explode = game.add.sprite(missle.x - 100, missle.y - 150, 'explode', 19);
-      var anim = explode.animations.add('explode');
+      explode.animations.add('explode');
       explode.animations.play('explode', 19, false, true);
+
+      // Kill everybody who is close
+      var groupsToCheck = [SpaceGame.enemys, SpaceGame._walls, SpaceGame._bombs, SpaceGame._satelites];
+      for (var i = 0, count = groupsToCheck.length; i < count; i++) {
+        groupsToCheck[i].forEachAlive(function (enemy) {
+          Missle.prototype.killWhenClose(enemy, missle);
+        });
+      }
+    }
+  },
+  killWhenClose: function (sprite, missle) {
+    if (!sprite.ufo_exists && caculatetDistance(missle, sprite) < 200) {
+      sprite.kill();
     }
   }
 };

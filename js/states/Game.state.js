@@ -15,7 +15,6 @@ SpaceGame.Main = function (game) {
   SpaceGame._cursors = null;
 
   SpaceGame._scoreText = null;
-  SpaceGame._fireGraph = null;
 
   SpaceGame._shipTrail = null;
   SpaceGame._hearts = null;
@@ -30,7 +29,6 @@ SpaceGame.Main = function (game) {
   SpaceGame._playerShield = null;
   SpaceGame._playerBricks = null;
   SpaceGame._playerMissles = null;
-  SpaceGame._playerFireSpeed = null;
 
   SpaceGame._enemy_bullets = null;
   SpaceGame._ufos = null;
@@ -221,7 +219,6 @@ SpaceGame.Main.prototype = {
      */
     towers = game.add.group();
     game.physics.enable(towers, Phaser.Physics.P2JS, debug);
-    game.physics.p2.setImpactEvents(true);
     game.world.setBounds(0, 0, getWidth() * 2, 800);
 
     /**
@@ -273,6 +270,11 @@ SpaceGame.Main.prototype = {
      */
     SpaceGame._bombs = game.add.group();
     SpaceGame._bombs.createMultiple(1, 'bomb');
+
+    /**
+     * Satelites
+     */
+    SpaceGame._satelites = game.add.group();
 
     /**
      * Towers Bullets
@@ -332,6 +334,7 @@ SpaceGame.Main.prototype = {
     SpaceGame.enemys.enableBody = true;
     SpaceGame.enemys.physicsBodyType = Phaser.Physics.P2JS;
     game.physics.p2.enableBody(SpaceGame.enemys, debug);
+
     game.physics.p2.setBoundsToWorld(true, true, true, true, false);
   },
   nextLevel: function () {

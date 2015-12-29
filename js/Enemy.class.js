@@ -180,9 +180,7 @@ Enemy.prototype = {
           }
         }
         else {
-          if ((enemy.closestPlant && enemy.closestPlant.alive && enemy.closestPlant.stealing) || SpaceGame.enemys.stealing) {
-            Enemy.prototype.fire(enemy);
-          }
+          Enemy.prototype.fire(enemy);
         }
 
         Enemy.prototype.scale(enemy);
@@ -211,7 +209,7 @@ Enemy.prototype = {
       game.audio.enemySndFire.play();
       var bullet = new Bullet(enemy.x, enemy.y, true);
       bullet.rotation = parseFloat(game.physics.arcade.angleToXY(bullet, towers.children[0].x, towers.children[0].y)) * 180 / Math.PI;
-      game.physics.arcade.moveToObject(bullet, towers.children[0], level * 10);
+      game.physics.arcade.moveToObject(bullet, towers.children[0], 500);
       bullet = null;
       enemy.fireLastTime = game.time.now + enemy.fireTime;
     }

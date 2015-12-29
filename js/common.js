@@ -84,7 +84,6 @@ function levelCompleted() {
         SpaceGame._playerShield = towers.children[0].shieldPower;
         SpaceGame._playerBricks = towers.children[0].countBricks;
         SpaceGame._playerMissles = towers.children[0].missles;
-        SpaceGame._playerFireSpeed = towers.children[0].fireTime;
       }
       SpaceGame.transitionPlugin.to('Main');
       // Init score
@@ -124,18 +123,6 @@ function updateScoreText() {
   }
   else {
     SpaceGame._scoreText.setText(str);
-  }
-
-  // Draw a fireTime rectangle
-  if (SpaceGame._fireGraph == undefined) {
-    SpaceGame._fireGraph = game.add.graphics(0, 0);
-    SpaceGame._fireGraph.beginFill(0x000);
-    SpaceGame._UiGroup.add(SpaceGame._fireGraph);
-  }
-  if (towers && towers.children && towers.children[0] != undefined && towers.children[0].fireTime > 0) {
-    SpaceGame._fireGraph.clear();
-    SpaceGame._fireGraph.drawRect(game.width-140, game.height - 60, 300 - towers.children[0].fireTime, 10);
-    SpaceGame._fireGraph.update();
   }
 
   // Respawn dead player

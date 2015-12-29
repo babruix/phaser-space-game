@@ -14,6 +14,8 @@ var Satelite = function (worldX, worldY, freeze) {
 
   this.satelite.scale.setTo(0.5, 0.5);
 
+  SpaceGame._satelites.add(this.satelite);
+
   // Add health bar.
   var barConfig = {
     x: this.satelite.health,
@@ -30,12 +32,11 @@ var Satelite = function (worldX, worldY, freeze) {
   this.satelite.HealthBar = new HealthBar(game, barConfig);
 
   this.satelite.body.onBeginContact.add(function (body1, shapeA, shapeB) {
-    if (body1 && body1.sprite != null && body1.sprite.key.indexOf('bullet') >= 0 && body1.sprite.alive) {
-
+    if (body1 && body1.sprite != null && body1.sprite.key.indexOf('bullet') >= 0) {
       if (typeof(body1.sprite.enemyBullet) != "undefined" && body1.sprite.enemyBullet == true) {
         game.audio.smackSnd.play();
-        this.satelite.damage(1);
-        if (this.satelite.health <= 1) {
+        this.satelite.damage(2);
+        if (this.satelite.health <= 2) {
           this.satelite.kill();
         }
       }
@@ -119,21 +120,28 @@ Satelite.prototype = {
       }
     }
   },
-  drawAimRect: function (satelite, enemy) {
+  drawAimRect: function (satelite, enemy, minimalReactDistance) {
+    // Satellite aim only when enemy distance less 700.
+    minimalReactDistance = minimalReactDistance || 700;
+
     if (satelite._aimRect != undefined) {
       satelite._aimRect.destroy();
     }
+    if (satelite._dot != undefined) {
+      satelite._dot.destroy();
+    }
+    if (caculatetDistance(satelite, enemy) > minimalReactDistance) {
+      return;
+    }
+
+    var lineColor = satelite.freezing ? 0x13D7D8 : 0xD81E00;
+
     satelite._aimRect = game.add.graphics(0, 0);
     satelite._aimRect.lineWidth =  2;
-    var lineColor = satelite.freezing ? 0x13D7D8 : 0xD81E00;
     satelite._aimRect.lineColor = lineColor;
     satelite._aimRect.alpha = 0.7;
     satelite._aimRect.drawCircle(enemy.x, enemy.y, enemy.width + 10);
 
-    // dot
-    if (satelite._dot != undefined) {
-      satelite._dot.destroy();
-    }
     satelite._dot = game.add.graphics(0, 0);
     satelite._dot.lineWidth =  2;
     satelite._dot.lineColor = lineColor;
