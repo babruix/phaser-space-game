@@ -36,7 +36,7 @@ var Tower = function (worldX, worldY, tile) {
           this.tower.shieldPower -= 10;
         }
         else {
-          this.tower.damage(2);
+          this.tower.damage(1);
         }
         body1.sprite.destroy();
 
@@ -187,7 +187,6 @@ Tower.prototype = {
       var missle = new Missle(tower.x + tower.width / 2, tower.y - tower.height * 2, true);
       if (missle != undefined && missle.body != undefined) {
         missle.body.moveUp(800);
-        missle.activated = true;
         tower.fireLastTime = game.time.now + tower.fireTime;
       }
     }
