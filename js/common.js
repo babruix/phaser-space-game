@@ -118,7 +118,7 @@ function updateScoreText() {
     str += "\n  Fuel: " + towers.children[0].fuel + "";
   }
   if (SpaceGame._scoreText == undefined) {
-    SpaceGame._scoreText = game.add.text(game.width-150, game.height - 300, str, style);
+    SpaceGame._scoreText = game.add.text(game.width-150, game.height - 220, str, style);
     SpaceGame._UiGroup.add(SpaceGame._scoreText);
   }
   else {

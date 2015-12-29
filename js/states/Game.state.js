@@ -405,22 +405,30 @@ SpaceGame.Main.prototype = {
   },
   initUI: function () {
     // Create elements.
-    SpaceGame._UiGraph = createUiGraph();
-    SpaceGame._sateliteBtn = createSateliteDraggable.call(this, 'satelite');
-    SpaceGame._sateliteFreezeBtn = createSateliteDraggable.call(this, 'satelite_freeze');
-    SpaceGame._wallBtn = createWallDraggable.call(this);
-    SpaceGame._bombBtn = createBombDraggable.call(this);
-    SpaceGame._reloadBtn = createReloadBtn.call(this);
-    SpaceGame._reloadBtn.events.onInputDown.add(reloadPickups);
+    function createUiElements() {
+      SpaceGame._UiGraph = createUiGraph();
+      SpaceGame._sateliteBtn = createSateliteDraggable.call(this, 'satelite');
+      SpaceGame._sateliteFreezeBtn = createSateliteDraggable.call(this, 'satelite_freeze');
+      SpaceGame._wallBtn = createWallDraggable.call(this);
+      SpaceGame._bombBtn = createBombDraggable.call(this);
+      SpaceGame._rocketBtn = createRocketDraggable.call(this);
+      SpaceGame._reloadBtn = createReloadBtn.call(this);
+      SpaceGame._reloadBtn.events.onInputDown.add(reloadPickups);
+    }
+    createUiElements.call(this);
 
     // Add elements to UIGroup.
-    SpaceGame._UiGroup = game.add.group();
-    SpaceGame._UiGroup.add(SpaceGame._UiGraph);
-    SpaceGame._UiGroup.add(SpaceGame._sateliteBtn);
-    SpaceGame._UiGroup.add(SpaceGame._sateliteFreezeBtn);
-    SpaceGame._UiGroup.add(SpaceGame._wallBtn);
-    SpaceGame._UiGroup.add(SpaceGame._bombBtn);
-    SpaceGame._UiGroup.add(SpaceGame._reloadBtn);
+    function groupElements() {
+      SpaceGame._UiGroup = game.add.group();
+      SpaceGame._UiGroup.add(SpaceGame._UiGraph);
+      SpaceGame._UiGroup.add(SpaceGame._sateliteBtn);
+      SpaceGame._UiGroup.add(SpaceGame._sateliteFreezeBtn);
+      SpaceGame._UiGroup.add(SpaceGame._wallBtn);
+      SpaceGame._UiGroup.add(SpaceGame._bombBtn);
+      SpaceGame._UiGroup.add(SpaceGame._rocketBtn);
+      SpaceGame._UiGroup.add(SpaceGame._reloadBtn);
+    }
+    groupElements();
 
     // Functions to create elements.
     function createUiGraph() {
@@ -464,11 +472,24 @@ SpaceGame.Main.prototype = {
       // Add drag event handlers.
       bombBtn.events.onInputDown.add(eventBombInputDown);
       bombBtn.events.onDragStop.add(eventBombDragStop);
+      bombBtn.events.onDragUpdate.add(eventBombDragUpdate);
 
       return bombBtn;
     }
+    function createRocketDraggable() {
+      var rocketBtn = game.add.sprite(0, 420, 'missle');
+      rocketBtn.scale.setTo(0.7, 0.7);
+      rocketBtn.inputEnabled = true;
+      rocketBtn.input.enableDrag();
+      // Add drag event handlers.
+      rocketBtn.events.onInputDown.add(eventRocketInputDown);
+      rocketBtn.events.onDragStop.add(eventRocketDragStop);
+      rocketBtn.events.onDragUpdate.add(eventRocketDragUpdate);
+
+      return rocketBtn;
+    }
     function createReloadBtn() {
-      var reloadBtn = game.add.sprite(0, 400, 'reload');
+      var reloadBtn = game.add.sprite(0, 480, 'reload');
       reloadBtn.scale.setTo(0.2, 0.2);
       reloadBtn.inputEnabled = true;
 
@@ -517,6 +538,9 @@ SpaceGame.Main.prototype = {
       SpaceGame._bombInitPos.x = bomb.x;
       SpaceGame._bombInitPos.y = bomb.y;
     }
+    function eventBombDragUpdate(bomb) {
+      bomb.y = 10;
+    }
     function eventBombDragStop(bomb) {
       if (score >= 15) {
         score -= 15;
@@ -527,6 +551,26 @@ SpaceGame.Main.prototype = {
       bomb.x = SpaceGame._bombInitPos.x;
       bomb.y = SpaceGame._bombInitPos.y;
       SpaceGame._bombInitPos = {};
+    }
+    function eventRocketInputDown(rocket) {
+      SpaceGame._rocketInitPos = {};
+      SpaceGame._rocketInitPos.x = rocket.x;
+      SpaceGame._rocketInitPos.y = rocket.y;
+    }
+    function eventRocketDragUpdate(rocket) {
+      rocket.y = game.height - 30;
+    }
+    function eventRocketDragStop(rocket) {
+      if (score >= 15) {
+        score -= 15;
+        updateScoreText();
+        var missle = new Missle(rocket.x, rocket.y, true);
+        missle.body.moveUp(800);
+      }
+
+      rocket.x = SpaceGame._rocketInitPos.x;
+      rocket.y = SpaceGame._rocketInitPos.y;
+      SpaceGame._rocketInitPos = {};
     }
     function reloadPickups() {
       if (game.time.now > SpaceGame.Main.pickupsLastTime + 1000) {
