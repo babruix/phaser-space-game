@@ -1,4 +1,4 @@
-var Missle = function(x, y, fired) {
+var Missle = function (x, y, fired) {
   var x2 = x ? x : game.rnd.integerInRange(0, game.width);
   if (!fired) {
     SpaceGame._flowerPlants.forEachAlive(function (plant) {
@@ -44,18 +44,18 @@ var Missle = function(x, y, fired) {
   });
   var missle = this.missle;
   this.missle.update = function () {
-    if(missle.y < 100) {
+    if (missle.y < 100) {
       Missle.prototype.explode(missle);
     }
   };
-  return this.missle;
+  return this. missle;
 };
 
 Missle.prototype = {
-  generateMissle: function (){
+  generateMissle: function () {
     new Missle();
   },
-  explode: function(missle) {
+  explode: function (missle) {
     if (missle.alive) {
       missle.destroy();
       game.audio.explosionSnd.play();
@@ -73,7 +73,7 @@ Missle.prototype = {
     }
   },
   killWhenClose: function (sprite, missle) {
-    if (!sprite.ufo_exists && caculatetDistance(missle, sprite) < 200) {
+    if (!sprite.ufo_exists && caculatetDistance(missle, sprite) < 100) {
       sprite.kill();
     }
   }

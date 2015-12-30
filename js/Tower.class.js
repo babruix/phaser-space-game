@@ -218,7 +218,7 @@ Tower.prototype = {
       updateScoreText();
       // use last wall time variable
       tower.wallLastTime = game.time.now + tower.wallTime;
-      Satelite.prototype.addToPoint(tower.x, tower.y, true);
+      new Satelite(worldX, worldY);
     }
   }
 };

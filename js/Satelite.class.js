@@ -1,5 +1,8 @@
-var Satelite = function (worldX, worldY, freeze) {
+var Satelite = function (worldX, worldY, freeze, rocket) {
   var texture = freeze ? 'satelite_freeze' : 'satelite';
+  if (rocket) {
+    texture = 'tower';
+  }
   this.satelite = game.add.sprite(worldX, worldY, texture);
   this.satelite.worldX = worldX;
   this.satelite.worldY = worldY;
@@ -8,6 +11,7 @@ var Satelite = function (worldX, worldY, freeze) {
   this.satelite.fireLastTime = game.time.now;
   this.satelite.fireTime = 300;
   this.satelite.freezing = freeze || false;
+  this.satelite.rocket = rocket || false;
 
   this.satelite.body.mass = 50;
   this.satelite.body.damping = 1;
@@ -63,9 +67,6 @@ var Satelite = function (worldX, worldY, freeze) {
 };
 
 Satelite.prototype = {
-  addToPoint: function (worldX, worldY, freezing) {
-    new Satelite(worldX, worldY, freezing);
-  },
   getClosestEnemy: function (satelite, minimalReactDistance) {
     // Satellite fire only when enemy distance less 700.
     minimalReactDistance = minimalReactDistance || 700;
@@ -105,18 +106,28 @@ Satelite.prototype = {
       if (!closestEnemy) {
         return;
       }
-
-      game.audio.enemySndFire.play();
-      var enemyBullet = false;
-      var isFreezing = satelite.freezing;
-      var bullet = new Bullet(satelite.x, satelite.y, enemyBullet, isFreezing);
-      bullet.rotation = parseFloat(game.physics.arcade.angleToXY(bullet, closestEnemy.x, closestEnemy.y)) * 180 / Math.PI;
-      var speed = isFreezing ? level * 10 : level * 30;
-      game.physics.arcade.moveToObject(bullet, closestEnemy, speed);
-      bullet = null;
-      satelite.fireLastTime = game.time.now + satelite.fireTime;
-      if (isFreezing) {
-        satelite.fireLastTime += 200;
+      if (satelite.rocket) {
+        // Missile fire
+        var missle = new Missle(satelite.x + satelite.width / 2, satelite.y - satelite.height * 2, true);
+        missle.anchor.setTo(0.5, 0.5);
+        satelite.fireLastTime = game.time.now + satelite.fireTime + 1000;
+        game.physics.arcade.moveToObject(missle, closestEnemy, 800);
+        missle.body.rotation =game.physics.arcade.angleToPointer(closestEnemy) - Math.PI/2;
+      }
+      else {
+        // Normal or frezing fire
+        game.audio.enemySndFire.play();
+        var enemyBullet = false;
+        var isFreezing = satelite.freezing;
+        var bullet = new Bullet(satelite.x, satelite.y, enemyBullet, isFreezing);
+        bullet.rotation = parseFloat(game.physics.arcade.angleToXY(bullet, closestEnemy.x, closestEnemy.y)) * 180 / Math.PI;
+        var speed = isFreezing ? level * 10 : level * 30;
+        game.physics.arcade.moveToObject(bullet, closestEnemy, speed);
+        bullet = null;
+        satelite.fireLastTime = game.time.now + satelite.fireTime;
+        if (isFreezing) {
+          satelite.fireLastTime += 200;
+        }
       }
     }
   },

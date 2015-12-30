@@ -506,7 +506,9 @@ SpaceGame.Main.prototype = {
       if (score >= 25) {
         score -= 25;
         updateScoreText();
-        Satelite.prototype.addToPoint(satelite.x, satelite.y, satelite.key == 'satelite_freeze');
+        var freezing = satelite.key == 'satelite_freeze';
+        var rocket = satelite.key == 'tower';
+        new Satelite(satelite.x, satelite.y, freezing, rocket);
       }
       satelite.x = SpaceGame._sateliteInitPos.x;
       satelite.y = SpaceGame._sateliteInitPos.y;
