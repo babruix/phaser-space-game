@@ -403,6 +403,7 @@ SpaceGame.Main.prototype = {
       SpaceGame._UiGraph = createUiGraph();
       SpaceGame._sateliteBtn = createSateliteDraggable.call(this, 'satelite');
       SpaceGame._sateliteFreezeBtn = createSateliteDraggable.call(this, 'satelite_freeze');
+      SpaceGame._sateliteRocketBtn = createSateliteDraggable.call(this, 'tower');
       SpaceGame._wallBtn = createWallDraggable.call(this);
       SpaceGame._bombBtn = createBombDraggable.call(this);
       SpaceGame._rocketBtn = createRocketDraggable.call(this);
@@ -417,6 +418,7 @@ SpaceGame.Main.prototype = {
       SpaceGame._UiGroup.add(SpaceGame._UiGraph);
       SpaceGame._UiGroup.add(SpaceGame._sateliteBtn);
       SpaceGame._UiGroup.add(SpaceGame._sateliteFreezeBtn);
+      SpaceGame._UiGroup.add(SpaceGame._sateliteRocketBtn);
       SpaceGame._UiGroup.add(SpaceGame._wallBtn);
       SpaceGame._UiGroup.add(SpaceGame._bombBtn);
       SpaceGame._UiGroup.add(SpaceGame._rocketBtn);
@@ -434,16 +436,20 @@ SpaceGame.Main.prototype = {
       return uiRect;
     }
     function createSateliteDraggable(key) {
-      var yPos = key == 'satelite_freeze' ? 150 : 0;
+      var yPos = key == 'satelite_freeze' ? 100 : 0;
+      if (key == 'tower') {
+        yPos = 180;
+      }
       var satelite = game.add.sprite(0, yPos, key);
       satelite.anchor.setTo(0, 0);
-      satelite.scale.setTo(0.7, 0.7);
+      satelite.scale.setTo(0.5, 0.5);
 
       satelite.inputEnabled = true;
       satelite.input.enableDrag();
       // Add drag event handlers.
       satelite.events.onInputDown.add(eventSateliteInputDown);
       satelite.events.onDragStop.add(eventSateliteDragStop);
+      satelite.events.onDragUpdate.add(eventSateliteDragUpdate);
 
       return satelite;
     }
@@ -505,6 +511,9 @@ SpaceGame.Main.prototype = {
       satelite.x = SpaceGame._sateliteInitPos.x;
       satelite.y = SpaceGame._sateliteInitPos.y;
       SpaceGame._sateliteInitPos = {};
+    }
+    function eventSateliteDragUpdate(tower) {
+      tower.y = game.height - 70;
     }
     function eventWallInputDown(wall) {
       SpaceGame._wallInitPos = {};

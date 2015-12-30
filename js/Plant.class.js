@@ -94,7 +94,6 @@ Plant.prototype = {
       }
       plant.spawnBar.bgSprite.kill();
     }
-    console.log(plant)
   },
   updateSpawnBar: function (nextSpawnTime, sprite) {
     SpaceGame._flowerPlants.forEach(function (plant) {
