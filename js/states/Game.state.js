@@ -718,8 +718,7 @@ SpaceGame.Main.prototype = {
             }
           }
         }
-        SpaceGame.GameOver.prototype._flowerLiving = SpaceGame._flowerPlants.countLiving();
-        if (!SpaceGame.GameOver.prototype._flowerLiving) {
+        if (!SpaceGame._flowerPlants.countLiving()) {
           Enemy.prototype.explode(enemy);
         }
       }

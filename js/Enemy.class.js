@@ -159,11 +159,12 @@ Enemy.prototype = {
         // put plant back
         if (enemy.closestPlant && enemy.closestPlant.alive) {
           enemy.closestPlant.stealing = false;
-          enemy.closestPlant.y = game.height-10;
+          enemy.closestPlant.y = game.height - 50;
           enemy.closestPlant.scale.x = (1);
           enemy.closestPlant.scale.y = (1);
           enemy.closestPlant = null;
           this.hideStealingSign();
+          SpaceGame.Main.prototype.generateGrowingPickups();
         }
       }
     }, this);
