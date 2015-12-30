@@ -47,10 +47,6 @@ SpaceGame.Main.prototype = {
     this.prepareAudio();
     this.setPlayerKeys();
 
-    this.createDayTime();
-    this.generateClouds.call(this);
-    this.shakeFlowers();
-
     /**
      * Init map.
      */
@@ -60,8 +56,17 @@ SpaceGame.Main.prototype = {
     game.physics.p2.applyGravity = true;
     game.physics.p2.gravity.x = 0;
     game.physics.p2.gravity.y = 300;
+    game.physics.p2.setBoundsToWorld(true, true, true, true, false);
+
+    // Background
+    this.createDayTime();
+    this.generateClouds.call(this);
 
     this.setupGameGroups();
+
+    // Add one Flower.
+    new Plant();
+
     this.initStealingSigns();
     this.initUI();
 
@@ -108,6 +113,10 @@ SpaceGame.Main.prototype = {
     SpaceGame.dayLength = 20000;
     this.createSunAndBgTweens();
     SpaceGame.events.onNightOver.add(this.createSunAndBgTweens, this);
+
+    // Clouds and rain groups.
+    SpaceGame._cloudsGroup = game.add.group();
+    SpaceGame._rainGroup = game.add.group();
   },
   createSunAndBgTweens: function () {
     this.createSunTween();
@@ -145,8 +154,6 @@ SpaceGame.Main.prototype = {
     });
   },
   generateClouds: function () {
-    SpaceGame._cloudsGroup = game.add.group();
-    SpaceGame._rainGroup = game.add.group();
     var cloudSises = {
       '0': {x: 124, y: 54, toX: 485, toY: 13},
       '1': {x: 132, y: 82, toX: 120, toY: 93},
@@ -198,20 +205,6 @@ SpaceGame.Main.prototype = {
     });
     game.time.events.add(3000, SpaceGame.Main.prototype.makeRain);
   },
-  shakeFlowers: function () {
-    SpaceGame._flowerPlants = game.add.group();
-    for (var i = 0; i < level + 1; i++) {
-      var plant = Plant.prototype.generatePlant();
-      var tween = game.add.tween(plant);
-      tween.to({
-          angle: 10
-        }, 3000,
-        Phaser.Easing.Linear.NONE,
-        true /*autostart?*/,
-        0 /*delay*/, -1, true);
-    }
-
-  },
   setupGameGroups: function () {
 
     /**
@@ -219,7 +212,7 @@ SpaceGame.Main.prototype = {
      */
     towers = game.add.group();
     game.physics.enable(towers, Phaser.Physics.P2JS, debug);
-    game.world.setBounds(0, 0, getWidth() * 2, 800);
+    game.world.setBounds(0, 0, getWidth()-150, 790);
 
     /**
      * Heart
@@ -335,7 +328,8 @@ SpaceGame.Main.prototype = {
     SpaceGame.enemys.physicsBodyType = Phaser.Physics.P2JS;
     game.physics.p2.enableBody(SpaceGame.enemys, debug);
 
-    game.physics.p2.setBoundsToWorld(true, true, true, true, false);
+    /* Flowers */
+    SpaceGame._flowerPlants = game.add.group();
   },
   nextLevel: function () {
     level++;

@@ -1,27 +1,34 @@
 var Plant = function() {
-  var x2 = game.rnd.integerInRange(0, game.width);
-  var y2 = game.rnd.integerInRange(0, game.height);
-  this.plant = game.add.sprite(76, 174, 'flow');
-  this.plant.x = game.rnd.integerInRange(0, game.width);
-  this.plant.y = game.rnd.integerInRange(game.height-50, game.height - 100);
+  this.plant = game.add.sprite(game.width/2+38, game.height-10, 'flow');
   this.plant.anchor.setTo(0.5, 1);
   this.plant.angle = -10 * game.rnd.integerInRange(0, level);
   SpaceGame._flowerPlants.add(this.plant);
+
+  this.plant.update = function () {
+    SpaceGame._flowerPlants.forEachAlive(function (plant) {
+
+      if (plant.stealing) {
+        Plant.prototype.removeSpawnBar(plant);
+        plant.tween = null;
+      }
+
+      // Add shake effect once.
+      if (!plant.tween) {
+        plant.tween = game.add.tween(plant);
+        plant.tween.to({
+            angle: 10
+          }, 3000,
+          Phaser.Easing.Linear.NONE,
+          true /*autostart?*/,
+          0 /*delay*/, -1, true);
+      }
+    });
+  };
 
   return this.plant;
 };
 
 Plant.prototype = {
-  generatePlant: function () {
-    return new Plant();
-  },
-  update: function () {
-    SpaceGame._flowerPlants.forEachAlive(function (plant) {
-      if (plant.stealing) {
-        Plant.prototype.removeSpawnBar(plant);
-      }
-    });
-  },
   generate_pickup: function (plant) {
     if (plant._spawnTimer) {
       game.time.events.remove(plant._spawnTimer);
@@ -82,8 +89,10 @@ Plant.prototype = {
   },
   removeSpawnBar: function (plant) {
     if (plant.spawnBar && plant.barSprite && plant.spawnBar.bgSprite) {
+      console.log('removing');
       plant.barSprite.kill();
       plant.spawnBar.bgSprite.kill();
+      console.log(plant);
     }
   },
   updateSpawnBar: function (nextSpawnTime, sprite) {

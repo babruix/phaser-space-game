@@ -159,7 +159,7 @@ Enemy.prototype = {
         // put plant back
         if (enemy.closestPlant && enemy.closestPlant.alive) {
           enemy.closestPlant.stealing = false;
-          enemy.closestPlant.y = 720;
+          enemy.closestPlant.y = game.height-10;
           enemy.closestPlant.scale.x = (1);
           enemy.closestPlant.scale.y = (1);
           enemy.closestPlant = null;

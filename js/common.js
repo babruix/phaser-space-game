@@ -94,7 +94,7 @@ function levelCompleted() {
 }
 
 function addWalls() {
-  for (var i = 1; i < game.width; i = i + 50) {
+  for (var i = 1; i < game.width; i = i + 250) {
     new Wall(i, parseInt(game.height / 2 + 250));
   }
 }
