@@ -13,6 +13,7 @@ SpaceGame.Main = function (game) {
   SpaceGame._brickButton = null;
   SpaceGame._missleButton = null;
   SpaceGame._cursors = null;
+  SpaceGame._plantsGenerationEvents = [];
 
   SpaceGame._scoreText = null;
 
@@ -353,10 +354,17 @@ SpaceGame.Main.prototype = {
     if (!SpaceGame.Main.pickupsLastTime ) {
       SpaceGame.Main.pickupsLastTime = game.time.now;
     }
+
+    // Remove old generation events
+    for (var i = 0; i < SpaceGame._plantsGenerationEvents.length; i++) {
+      game.time.events.remove(SpaceGame._plantsGenerationEvents[i]);
+    }
+
+    // Add new events
     for (var i = 0; i < SpaceGame._flowerPlants.children.length; i++) {
       var plant = SpaceGame._flowerPlants.children[i];
       var __ret = Plant.prototype.generate_pickup(plant);
-      plant._spawnTimer = game.time.events.add(__ret.nextSpawnTime, __ret.spawnFunction, this);
+      SpaceGame._plantsGenerationEvents.push(game.time.events.add(__ret.nextSpawnTime, __ret.spawnFunction, this));
     }
   },
   getBarConfig: function (randomSpawnTime, plant) {
@@ -604,7 +612,6 @@ SpaceGame.Main.prototype = {
         SpaceGame.Main.prototype.generateGrowingPickups();
       }
     }
-
   },
 
   animateScore: function (moveOut) {

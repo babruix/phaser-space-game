@@ -30,9 +30,6 @@ var Plant = function() {
 
 Plant.prototype = {
   generate_pickup: function (plant) {
-    if (plant._spawnTimer) {
-      game.time.events.remove(plant._spawnTimer);
-    }
     // Remove old bar
     this.removeSpawnBar(plant);
     if (plant.alive) {
