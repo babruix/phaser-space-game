@@ -416,12 +416,26 @@ SpaceGame.Main.prototype = {
     function groupElements() {
       SpaceGame._UiGroup = game.add.group();
       SpaceGame._UiGroup.add(SpaceGame._UiGraph);
+
       SpaceGame._UiGroup.add(SpaceGame._sateliteBtn);
+      var style = {font: '20px Arial', fill: '#2B9DD6', align: 'right'};
+      SpaceGame._UiGroup.add(game.add.text(game.width, 20, '              25$', style));
+
       SpaceGame._UiGroup.add(SpaceGame._sateliteFreezeBtn);
+      SpaceGame._UiGroup.add(game.add.text(game.width, 125, '              25$', style));
+
       SpaceGame._UiGroup.add(SpaceGame._sateliteRocketBtn);
+      SpaceGame._UiGroup.add(game.add.text(game.width, 200, '              25$', style));
+
       SpaceGame._UiGroup.add(SpaceGame._wallBtn);
+      SpaceGame._UiGroup.add(game.add.text(game.width, 310, '              5$', style));
+
       SpaceGame._UiGroup.add(SpaceGame._bombBtn);
+      SpaceGame._UiGroup.add(game.add.text(game.width, 360, '              25$', style));
+
       SpaceGame._UiGroup.add(SpaceGame._rocketBtn);
+      SpaceGame._UiGroup.add(game.add.text(game.width, 420, '              15$', style));
+
       SpaceGame._UiGroup.add(SpaceGame._reloadBtn);
     }
     groupElements();
@@ -436,10 +450,17 @@ SpaceGame.Main.prototype = {
       return uiRect;
     }
     function createSateliteDraggable(key) {
-      var yPos = key == 'satelite_freeze' ? 100 : 0;
-      if (key == 'tower') {
-        yPos = 180;
+
+      var yPos = 0;
+      switch (key) {
+        case 'satelite_freeze':
+          yPos = 100;
+          break;
+        case 'tower':
+          yPos = 180;
+          break;
       }
+
       var satelite = game.add.sprite(0, yPos, key);
       satelite.anchor.setTo(0, 0);
       satelite.scale.setTo(0.5, 0.5);
