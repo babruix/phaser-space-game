@@ -75,7 +75,7 @@ Plant.prototype = {
       plant.growingItem.blendMode = 4;
 
       // Add spawn bar.
-      var barConfig = SpaceGame.Main.prototype.getBarConfig(nextSpawnTime, plant);
+      var barConfig = this.getBarConfig();
       plant.spawnBar = new HealthBar(game, barConfig);
       plant.randomSpawnTime = game.time.now + nextSpawnTime;
     }
@@ -99,11 +99,25 @@ Plant.prototype = {
         Plant.prototype.removeSpawnBar(plant);
         if (plant.alive) {
           // Add spawn bar.
-          var barConfig = SpaceGame.Main.prototype.getBarConfig(nextSpawnTime, plant);
+          var barConfig = this.getBarConfig();
           plant.spawnBar = new HealthBar(game, barConfig);
           plant.randomSpawnTime = game.time.now + nextSpawnTime;
         }
       }
     });
+  },
+  getBarConfig: function () {
+    return {
+      x: 100,
+      y: -40,
+      height: 5,
+      width: 100,
+      bg: {
+        color: '#0509D8'
+      },
+      bar: {
+        color: '#20E331'
+      }
+    };
   }
 };

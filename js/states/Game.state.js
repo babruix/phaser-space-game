@@ -76,6 +76,7 @@ SpaceGame.Main.prototype = {
     score -= 10;
     updateScore();
   },
+
   prepareAudio: function () {
     game.audio.enemySndFire = game.add.audio('gulp', 2);
     game.audio.playerSndFire = game.add.audio('gunshot', 0.01);
@@ -104,6 +105,7 @@ SpaceGame.Main.prototype = {
     SpaceGame._missleButton = game.input.keyboard.addKey(Phaser.Keyboard.M);
     SpaceGame._cursors = game.input.keyboard.createCursorKeys();
   },
+
   createDayTime: function () {
     SpaceGame.events = {};
     SpaceGame.events.onNightOver = new Phaser.Signal();
@@ -206,6 +208,7 @@ SpaceGame.Main.prototype = {
     });
     game.time.events.add(3000, SpaceGame.Main.prototype.makeRain);
   },
+
   setupGameGroups: function () {
 
     /**
@@ -350,6 +353,7 @@ SpaceGame.Main.prototype = {
 
     this.generateGrowingPickups();
   },
+
   generateGrowingPickups : function() {
     if (!SpaceGame.Main.pickupsLastTime ) {
       SpaceGame.Main.pickupsLastTime = game.time.now;
@@ -366,21 +370,6 @@ SpaceGame.Main.prototype = {
       var __ret = Plant.prototype.generate_pickup(plant);
       SpaceGame._plantsGenerationEvents.push(game.time.events.add(__ret.nextSpawnTime, __ret.spawnFunction, this));
     }
-  },
-  getBarConfig: function (randomSpawnTime, plant) {
-    var barConfig = {
-      x: 100,
-      y: -40,
-      height: 5,
-      width: 100,
-      bg: {
-        color: '#0509D8'
-      },
-      bar: {
-        color: '#20E331'
-      }
-    };
-    return barConfig;
   },
   initStealingSigns: function () {
     function initOneStealSign(direction) {
@@ -405,6 +394,7 @@ SpaceGame.Main.prototype = {
     SpaceGame.enemys.stealSignLeft = initOneStealSign('left');
     SpaceGame.enemys.stealSignRight = initOneStealSign('right');
   },
+
   initUI: function () {
     // Create elements.
     function createUiElements() {
@@ -660,6 +650,7 @@ SpaceGame.Main.prototype = {
       i++;
     });
   },
+
   update: function () {
     SpaceGame._background.tilePosition.set(game.camera.x * -0.5, game.camera.y * -0.5);
     SpaceGame.rewpawnPickupsButton.onDown.add(function () {
