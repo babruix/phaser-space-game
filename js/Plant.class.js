@@ -75,7 +75,7 @@ Plant.prototype = {
       plant.growingItem.blendMode = 4;
 
       // Add spawn bar.
-      var barConfig = this.getBarConfig();
+      var barConfig = Plant.prototype.getBarConfig();
       plant.spawnBar = new HealthBar(game, barConfig);
       plant.randomSpawnTime = game.time.now + nextSpawnTime;
     }
@@ -99,7 +99,7 @@ Plant.prototype = {
         Plant.prototype.removeSpawnBar(plant);
         if (plant.alive) {
           // Add spawn bar.
-          var barConfig = this.getBarConfig();
+          var barConfig = Plant.prototype.getBarConfig();
           plant.spawnBar = new HealthBar(game, barConfig);
           plant.randomSpawnTime = game.time.now + nextSpawnTime;
         }

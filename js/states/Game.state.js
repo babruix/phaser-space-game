@@ -107,11 +107,19 @@ SpaceGame.Main.prototype = {
   },
 
   createDayTime: function () {
+    var createBackground = function () {
+      SpaceGame._background = game.add.tileSprite(0, 0, getWidth() * 4, 800, 'background');
+      SpaceGame._background.alpha = 1;
+    };
+    var createSun = function () {
+      SpaceGame._sun = game.add.sprite(60, 60, 'sun');
+    };
+
     SpaceGame.events = {};
     SpaceGame.events.onNightOver = new Phaser.Signal();
 
-    this.createBackground();
-    this.createSun();
+    createBackground();
+    createSun();
 
     SpaceGame.dayLength = 20000;
     this.createSunAndBgTweens();
@@ -122,39 +130,32 @@ SpaceGame.Main.prototype = {
     SpaceGame._rainGroup = game.add.group();
   },
   createSunAndBgTweens: function () {
-    this.createSunTween();
-    this.createBgTween();
-  },
-  createBgTween: function () {
-    SpaceGame._backgroundTw = game.add.tween(SpaceGame._background)
-      .to({alpha: 0.1}, SpaceGame.dayLength,
-        Phaser.Easing.Quintic.InOut,
-        true, //autostart?,
-        0, //delay,
-        1, //repeat?
-        true //yoyo?
-      );
-  },
-  createBackground: function () {
-    SpaceGame._background = game.add.tileSprite(0, 0, getWidth() * 4, 800, 'background');
-    SpaceGame._background.alpha = 1;
-  },
-  createSun: function () {
-    SpaceGame._sun = game.add.sprite(60, 60, 'sun');
-  },
-  createSunTween: function () {
-    SpaceGame._sun.x = 10;
-    SpaceGame._sun.y = 10;
-    SpaceGame._sun.width = 10;
-    SpaceGame._sun.height = 10;
-    SpaceGame._sunTw = game.add.tween(SpaceGame._sun).to({
-      x: game.width - 70,
-      width: 60,
-      height: 60
-    }, SpaceGame.dayLength, Phaser.Easing.Quintic.InOut, true, 0, true, true);
-    SpaceGame._sunTw.onComplete.add(function () {
-      SpaceGame.events.onNightOver.dispatch(this);
-    });
+    var createBgTween = function () {
+      SpaceGame._backgroundTw = game.add.tween(SpaceGame._background)
+        .to({alpha: 0.1}, SpaceGame.dayLength,
+          Phaser.Easing.Quintic.InOut,
+          true, //autostart?,
+          0, //delay,
+          1, //repeat?
+          true //yoyo?
+        );
+    };
+    var createSunTween = function () {
+      SpaceGame._sun.x = 10;
+      SpaceGame._sun.y = 10;
+      SpaceGame._sun.width = 10;
+      SpaceGame._sun.height = 10;
+      SpaceGame._sunTw = game.add.tween(SpaceGame._sun).to({
+        x: game.width - 70,
+        width: 60,
+        height: 60
+      }, SpaceGame.dayLength, Phaser.Easing.Quintic.InOut, true, 0, true, true);
+      SpaceGame._sunTw.onComplete.add(function () {
+        SpaceGame.events.onNightOver.dispatch(this);
+      });
+    };
+    createBgTween();
+    createSunTween();
   },
   generateClouds: function () {
     var cloudSises = {
@@ -423,7 +424,7 @@ SpaceGame.Main.prototype = {
       SpaceGame._UiGroup.add(game.add.text(game.width, 125, '              25$', style));
 
       SpaceGame._UiGroup.add(SpaceGame._sateliteRocketBtn);
-      SpaceGame._UiGroup.add(game.add.text(game.width, 200, '              25$', style));
+      SpaceGame._UiGroup.add(game.add.text(game.width, 200, '              100$', style));
 
       SpaceGame._UiGroup.add(SpaceGame._wallBtn);
       SpaceGame._UiGroup.add(game.add.text(game.width, 310, '              5$', style));
@@ -522,11 +523,15 @@ SpaceGame.Main.prototype = {
       SpaceGame._sateliteInitPos.y = satelite.y;
     }
     function eventSateliteDragStop(satelite) {
-      if (score >= 25) {
-        score -= 25;
+      var price = 25;
+      var rocket = satelite.key == 'tower';
+      if (rocket) {
+        price = 100;
+      }
+      if (score >= price) {
+        score -= price;
         updateScoreText();
         var freezing = satelite.key == 'satelite_freeze';
-        var rocket = satelite.key == 'tower';
         new Satelite(satelite.x, satelite.y, freezing, rocket);
       }
       satelite.x = SpaceGame._sateliteInitPos.x;
