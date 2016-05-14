@@ -26,12 +26,13 @@ function showLevelTitle() {
   };
   var levelText = game.add.text(0, 0, 'Level ' + level, style);
   levelText.x = game.width / 2 - levelText.width / 2;
-  levelText.y = -levelText.height;
+  levelText.y = game.height / 2 - levelText.height;
   levelText.alpha = 0;
+  levelText.fixedToCamera = true;
 
   // Animate
   game.add.tween(levelText)
-    .to({alpha: 1, y: game.height / 2 - levelText.height / 2},
+    .to({alpha: 1},
       1000 /*duration (in ms)*/,
       Phaser.Easing.Bounce.Out /*easing type*/,
       true /*autostart?*/)
@@ -61,12 +62,13 @@ function levelCompleted() {
   };
   var levelText = game.add.text(0, 0, 'Level Completed!', style);
   levelText.x = game.width / 2 - levelText.width / 2;
-  levelText.y = -levelText.height / 2;
+  levelText.y = game.height / 2 - levelText.height / 2;
   levelText.alpha = 0;
+  levelText.fixedToCamera = true;
 
   // Animate
   game.add.tween(levelText)
-    .to({alpha: 1, y: game.height / 2 - levelText.height / 2},
+    .to({alpha: 1},
       1000 /*duration (in ms)*/,
       Phaser.Easing.Bounce.Out /*easing type*/,
       true /*autostart?*/)

@@ -217,7 +217,7 @@ SpaceGame.Main.prototype = {
      */
     towers = game.add.group();
     game.physics.enable(towers, Phaser.Physics.P2JS, debug);
-    game.world.setBounds(0, 0, getWidth()-150, 790);
+    game.world.setBounds(0, 0, getWidth() * 4, 790);
 
     /**
      * Heart
@@ -414,6 +414,7 @@ SpaceGame.Main.prototype = {
     // Add elements to UIGroup.
     function groupElements() {
       SpaceGame._UiGroup = game.add.group();
+      SpaceGame._UiGroup.fixedToCamera = true;
       SpaceGame._UiGroup.priceList = {
         'satelite': 25,
         'satelite_freeze': 50,
