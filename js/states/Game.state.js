@@ -146,7 +146,7 @@ SpaceGame.Main.prototype = {
       SpaceGame._sun.width = 10;
       SpaceGame._sun.height = 10;
       SpaceGame._sunTw = game.add.tween(SpaceGame._sun).to({
-        x: game.width - 70,
+        x: game.width - 180,
         width: 60,
         height: 60
       }, SpaceGame.dayLength, Phaser.Easing.Quintic.InOut, true, 0, true, true);
@@ -414,26 +414,41 @@ SpaceGame.Main.prototype = {
     // Add elements to UIGroup.
     function groupElements() {
       SpaceGame._UiGroup = game.add.group();
+      SpaceGame._UiGroup.priceList = {
+        'satelite': 25,
+        'satelite_freeze': 50,
+        'tower': 100,
+        'wall': 5,
+        'bomb': 25,
+        'rocket': 15
+      };
       SpaceGame._UiGroup.add(SpaceGame._UiGraph);
 
       SpaceGame._UiGroup.add(SpaceGame._sateliteBtn);
       var style = {font: '20px Arial', fill: '#2B9DD6', align: 'right'};
-      SpaceGame._UiGroup.add(game.add.text(game.width, 20, '              25$', style));
+      var space = '              ';
+      var text = space + SpaceGame._UiGroup.priceList.satelite + '$';
+      SpaceGame._UiGroup.add(game.add.text(game.width, 20, text, style));
 
       SpaceGame._UiGroup.add(SpaceGame._sateliteFreezeBtn);
-      SpaceGame._UiGroup.add(game.add.text(game.width, 125, '              25$', style));
+      text = space + SpaceGame._UiGroup.priceList.satelite_freeze + '$';
+      SpaceGame._UiGroup.add(game.add.text(game.width, 125, text, style));
 
       SpaceGame._UiGroup.add(SpaceGame._sateliteRocketBtn);
-      SpaceGame._UiGroup.add(game.add.text(game.width, 200, '              100$', style));
+      text = space + SpaceGame._UiGroup.priceList.tower + '$';
+      SpaceGame._UiGroup.add(game.add.text(game.width, 200, text, style));
 
       SpaceGame._UiGroup.add(SpaceGame._wallBtn);
-      SpaceGame._UiGroup.add(game.add.text(game.width, 310, '              5$', style));
+      text = space + SpaceGame._UiGroup.priceList.wall + '$';
+      SpaceGame._UiGroup.add(game.add.text(game.width, 310, text, style));
 
       SpaceGame._UiGroup.add(SpaceGame._bombBtn);
-      SpaceGame._UiGroup.add(game.add.text(game.width, 360, '              25$', style));
+      text = space + SpaceGame._UiGroup.priceList.bomb + '$';
+      SpaceGame._UiGroup.add(game.add.text(game.width, 360, text, style));
 
       SpaceGame._UiGroup.add(SpaceGame._rocketBtn);
-      SpaceGame._UiGroup.add(game.add.text(game.width, 420, '              15$', style));
+      text = space + SpaceGame._UiGroup.priceList.rocket + '$';
+      SpaceGame._UiGroup.add(game.add.text(game.width, 420, text, style));
 
       SpaceGame._UiGroup.add(SpaceGame._reloadBtn);
     }
@@ -523,16 +538,13 @@ SpaceGame.Main.prototype = {
       SpaceGame._sateliteInitPos.y = satelite.y;
     }
     function eventSateliteDragStop(satelite) {
-      var price = 25;
-      var rocket = satelite.key == 'tower';
-      if (rocket) {
-        price = 100;
-      }
+      var price = SpaceGame._UiGroup.priceList[satelite.key];
       if (score >= price) {
         score -= price;
         updateScoreText();
-        var freezing = satelite.key == 'satelite_freeze';
-        new Satelite(satelite.x, satelite.y, freezing, rocket);
+        var isFreezing = satelite.key == 'satelite_freeze';
+        var isRocket = satelite.key == 'tower';
+        new Satelite(satelite.x, satelite.y, isFreezing, isRocket);
       }
       satelite.x = SpaceGame._sateliteInitPos.x;
       satelite.y = SpaceGame._sateliteInitPos.y;
@@ -547,13 +559,14 @@ SpaceGame.Main.prototype = {
       SpaceGame._wallInitPos.y = wall.y;
     }
     function eventWallDragStop(wall) {
+      var price = SpaceGame._UiGroup.priceList.wall;
       if (towers.children[0].countBricks > 0) {
         towers.children[0].countBricks--;
         updateScoreText();
         new Wall(wall.x, wall.y);
       }
-      else if (score >= 5) {
-        score -= 5;
+      else if (score >= price) {
+        score -= price;
         updateScoreText();
         new Wall(wall.x, wall.y);
       }
@@ -571,8 +584,9 @@ SpaceGame.Main.prototype = {
       bomb.y = 10;
     }
     function eventBombDragStop(bomb) {
-      if (score >= 15) {
-        score -= 15;
+      var price = SpaceGame._UiGroup.priceList.bomb;
+      if (score >= price) {
+        score -= price;
         updateScoreText();
         new Bomb(bomb.x, bomb.y);
       }
@@ -590,8 +604,9 @@ SpaceGame.Main.prototype = {
       rocket.y = game.height - 30;
     }
     function eventRocketDragStop(rocket) {
-      if (score >= 15) {
-        score -= 15;
+      var price = SpaceGame._UiGroup.priceList.rocket;
+      if (score >= price) {
+        score -= price;
         updateScoreText();
         var missle = new Missle(rocket.x, rocket.y, true);
         missle.body.moveUp(800);
