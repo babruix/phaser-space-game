@@ -20,7 +20,7 @@ game.state.start('Boot');
 
 function showLevelTitle() {
   var style = {
-    font: "60px Tahoma",
+    font: "60px eater",
     fill: "#FFFFFF",
     align: "center"
   };
@@ -54,7 +54,7 @@ function levelCompleted() {
   game.audio.completedSnd.play();
 
   var style = {
-    font: "60px Tahoma",
+    font: "60px eater",
     fill: "#FFFFFF",
     stroke: "#CCCCCC",
     align: "center",
@@ -108,7 +108,7 @@ function addRndBricks() {
 }
 
 function updateScoreText() {
-  var style = {font: '17px Arial', fill: '#0048D8', align: 'left'};
+  var style = {font: '17px eater', fill: '#0048D8', align: 'left'};
   var str = "  Lives: " + lives
     + " \n  Flowers: " + SpaceGame._flowerPlants.countLiving()
     + " \n  Level: " + level
@@ -119,8 +119,8 @@ function updateScoreText() {
     str += "\n  Bullets: " + towers.children[0].bullets + "";
     str += "\n  Fuel: " + towers.children[0].fuel + "";
   }
-  if (SpaceGame._scoreText == undefined) {
-    SpaceGame._scoreText = game.add.text(game.width-150, game.height - 220, str, style);
+  if (!SpaceGame._scoreText) {
+    SpaceGame._scoreText = game.add.text(game.width-150, game.height - 260, str, style);
     SpaceGame._UiGroup.add(SpaceGame._scoreText);
   }
   else {

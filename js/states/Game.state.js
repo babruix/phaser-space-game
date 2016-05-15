@@ -380,8 +380,8 @@ SpaceGame.Main.prototype = {
       stealingSignSprite.scale.y = 0.3;
       stealingSignSprite.anchor.setTo(0.5, 0.5);
       var text_l = game.add.text(0, -170,
-        'Stealing detected!', {
-          font: "50px Tahoma",
+        'Stealing!', {
+          font: "50px eater",
           fill: "#D81E00",
           align: "center"
         });
@@ -398,8 +398,7 @@ SpaceGame.Main.prototype = {
   },
 
   initUI: function () {
-    // Create elements.
-      SpaceGame.priceStyle = {font: '50px Arial', fill: '#2B9DD6'};
+    SpaceGame.priceStyle = {font: '50px eater', fill: '#2B9DD6'};
     SpaceGame.priceList = {
       'satelite': 30,
       'satelite_freeze': 20,
@@ -409,6 +408,8 @@ SpaceGame.Main.prototype = {
       'bomb': 25,
       'rocket': 15
     };
+
+    // Create elements.
     function createUiElements() {
       SpaceGame._UiGraph = createUiGraph();
       SpaceGame._sateliteBtn = createSateliteDraggable.call(this, 'satelite');

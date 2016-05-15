@@ -16,7 +16,7 @@ SpaceGame.Menu.prototype = {
 
     // place the assets and elements in their initial positions, create the state
     this._fontStyle = {
-      font: "40px Arial",
+      font: "70px eater",
       fill: "#FFCC00",
       stroke: "#333",
       strokeThickness: 5,
@@ -30,7 +30,7 @@ SpaceGame.Menu.prototype = {
 
     // to start immediately...
     //level=5;
-    game.state.start('Main');
+    //game.state.start('Main');
 
     var particleSystem1 = SpaceGame.epsyPlugin.loadSystem(SpaceGame.epsyPluginConfig.circles, game.width / 2, 50);
     // let Phaser add the particle system to world group or choose to add it to a specific group

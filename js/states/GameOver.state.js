@@ -15,7 +15,7 @@ SpaceGame.GameOver.prototype = {
       message = "all flowers are stolen \n" + message;
     }
     // place the assets and elements in their initial positions, create the state
-    this._fontStyle = { font: "40px Arial", fill: "#FFCC00", stroke: "#333", strokeThickness: 5, align: "center" };
+    this._fontStyle = { font: "40px eater", fill: "#FFCC00", stroke: "#333", strokeThickness: 5, align: "center" };
 
     SpaceGame._restartText = this.add.text(game.width/2, -100, message, this._fontStyle);
     SpaceGame._restartText.anchor.setTo(0.5,0.5);

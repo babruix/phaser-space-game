@@ -128,7 +128,7 @@ Enemy.prototype = {
             game.audio.smackSnd.play();
             enemy.damage(1);
             var style = {
-              font: "20px Tahoma",
+              font: "20px eater",
               fontWeight: 500,
               fill: "#FFF",
               align: "center"

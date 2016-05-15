@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'eater';
+  src: url('Eater-Regular.ttf') format('truetype');
+}
+body {
+  font-family: 'eater';
+}
 
 .css-effect {
   position: fixed;
