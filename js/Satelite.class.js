@@ -1,8 +1,12 @@
-var Satelite = function (worldX, worldY, freeze, rocket) {
+var Satelite = function (worldX, worldY, freeze, rocket, laser) {
   var texture = freeze ? 'satelite_freeze' : 'satelite';
   if (rocket) {
     texture = 'tower';
   }
+  if (laser) {
+    texture = 'laser_tower';
+  }
+
   this.satelite = game.add.sprite(worldX, worldY, texture);
   this.satelite.worldX = worldX;
   this.satelite.worldY = worldY;
