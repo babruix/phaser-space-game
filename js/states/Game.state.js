@@ -14,6 +14,7 @@ SpaceGame.Main = function (game) {
   SpaceGame._missleButton = null;
   SpaceGame._cursors = null;
   SpaceGame._plantsGenerationEvents = [];
+  SpaceGame._numberButtons = [];
 
   SpaceGame._scoreText = null;
 
@@ -104,6 +105,11 @@ SpaceGame.Main.prototype = {
     SpaceGame._brickButton = game.input.keyboard.addKey(Phaser.Keyboard.B);
     SpaceGame._missleButton = game.input.keyboard.addKey(Phaser.Keyboard.M);
     SpaceGame._cursors = game.input.keyboard.createCursorKeys();
+    var keysNumbers = ['ONE', 'TWO', 'THREE', 'FOUR'];
+    for (var i = 0; i < 4; i++) {
+      SpaceGame._numberButtons.push(game.input.keyboard.addKey(Phaser.Keyboard[keysNumbers[i]]));
+    }
+
   },
 
   createDayTime: function () {
@@ -478,6 +484,25 @@ SpaceGame.Main.prototype = {
 
       var textObj = game.add.text(150, 50, SpaceGame.priceList[key] + '$', SpaceGame.priceStyle);
       satelite.addChild(textObj);
+
+      var cRect = game.add.graphics(0, 50).beginFill(0xff5a00, 1).drawCircle(0, 0, 55);
+      var text = '1';
+      switch (key) {
+        case 'satelite_freeze':
+          text = 2;
+          break;
+        case 'tower':
+          text = 3;
+          break;
+        case 'laser_tower':
+          text = 4;
+          break;
+      }
+      var number = game.add.text(0, 5, text, {font: '40px Arial', fill: '#2B9DD6'});
+      number.anchor.setTo(0.5);
+      cRect.scale.setTo(1);
+      cRect.addChild(number);
+      satelite.addChild(cRect);
 
       return satelite;
     }

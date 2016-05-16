@@ -71,12 +71,32 @@ var Tower = function (worldX, worldY, tile) {
       Tower.prototype.fire(_this.tower);
     }
 
-    // Wall
+    // Add basic Satelite
+    SpaceGame._numberButtons[0].onDown.add(function () {
+      Tower.prototype.addSatelite(_this.tower);
+    }, _this);
+
+    // Add Freeze Satelite
+    SpaceGame._numberButtons[1].onDown.add(function () {
+      Tower.prototype.addSatelite(_this.tower, 'freeze');
+    }, _this);
+
+    // Add Rocket Satelite
+    SpaceGame._numberButtons[2].onDown.add(function () {
+      Tower.prototype.addSatelite(_this.tower, 'rocket');
+    }, _this);
+
+    // Add Laser Satelite
+    SpaceGame._numberButtons[3].onDown.add(function () {
+      Tower.prototype.addSatelite(_this.tower, 'laser');
+    }, _this);
+
+    // Add Wall
     SpaceGame._brickButton.onDown.add(function () {
       Tower.prototype.addWall(_this.tower);
     }, _this);
 
-    // Missle
+    // Add Missle
     SpaceGame._missleButton.onDown.add(function () {
       Tower.prototype.fireMissle(_this.tower);
     }, _this);
@@ -212,13 +232,27 @@ Tower.prototype = {
       tower._protectRect.drawCircle(towers.children[0].x, towers.children[0].y, towers.children[0].width + towers.children[0].shieldPower / 10);
     }
   },
-  addSatelite: function (tower) {
-    if (score >= 25 && game.time.now > tower.wallLastTime) {
-      score -= 25;
+  addSatelite: function (tower, type) {
+    var freeze = type == 'freeze';
+    var rocket = type == 'rocket';
+    var laser = type == 'laser';
+    var key = 'satelite';
+    if (freeze) {
+      key = 'satelite_freeze';
+    }
+    if (rocket) {
+      key = 'tower';
+    }
+    if (laser) {
+      key = 'laser_tower';
+    }
+    var price = SpaceGame.priceList[key];
+    if (score >= price && game.time.now > tower.wallLastTime) {
+      score -= price;
       updateScoreText();
       // use last wall time variable
       tower.wallLastTime = game.time.now + tower.wallTime;
-      new Satelite(worldX, worldY);
+      new Satelite(tower.x, tower.y - tower.height, freeze, rocket, laser);
     }
   }
 };
