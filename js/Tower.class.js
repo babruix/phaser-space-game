@@ -3,13 +3,13 @@ var Tower = function (worldX, worldY, tile) {
   this.tower.worldX = worldX;
   this.tower.worldY = worldY;
   this.tower.health = 10;
-  this.tower.wallTime = 100;
+  this.tower.actionTime = 100;
   this.tower.fireTime = 200;
   this.tower.missles = SpaceGame._playerMissles || 10;
   this.tower.countBricks = SpaceGame._playerBricks || 0;
   this.tower.shieldPower = SpaceGame._playerShield || 0;
   this.tower.fireLastTime = game.time.now + this.tower.fireTime;
-  this.tower.wallLastTime = game.time.now + this.tower.wallTime;
+  this.tower.actionLastTime = game.time.now + this.tower.actionTime;
   game.physics.p2.enable(this.tower, debug);
   this.tower.bullets = 50;
   this.tower.fuel = 200;
@@ -89,6 +89,21 @@ var Tower = function (worldX, worldY, tile) {
     // Add Laser Satelite
     SpaceGame._numberButtons[3].onDown.add(function () {
       Tower.prototype.addSatelite(_this.tower, 'laser');
+    }, _this);
+
+    // Add Wall
+    SpaceGame._numberButtons[4].onDown.add(function () {
+      Tower.prototype.addWall(_this.tower);
+    }, _this);
+
+    // Add bomb
+    SpaceGame._numberButtons[5].onDown.add(function () {
+      Tower.prototype.addBomb(_this.tower);
+    }, _this);
+
+    // Fire missle
+    SpaceGame._numberButtons[6].onDown.add(function () {
+      Tower.prototype.fireMissle(_this.tower);
     }, _this);
 
     // Add Wall
@@ -200,25 +215,47 @@ Tower.prototype = {
     }
   },
   fireMissle: function (tower) {
-    if (tower.alive && tower.missles > 0 && game.time.now > tower.fireLastTime) {
-      game.audio.missleSnd.play();
+    if (!tower.alive || game.time.now <= tower.fireLastTime) {
+      return;
+    }
+    if (tower.missles <= 0 && score < SpaceGame.priceList.rocket) {
+      return;
+    }
+    
+    game.audio.missleSnd.play();
+    if (tower.missles > 0){
       tower.missles--;
-      updateScoreText();
-      var missle = new Missle(tower.x + tower.width / 2, tower.y - tower.height * 2, true);
-      if (missle != undefined && missle.body != undefined) {
-        missle.body.moveUp(800);
-        tower.fireLastTime = game.time.now + tower.fireTime;
-      }
+    }
+    else {
+      score -= SpaceGame.priceList.rocket;
+    }
+    updateScoreText();
+    
+    var missle = new Missle(tower.x + tower.width / 2, tower.y - tower.height * 2, true);
+    if (missle != undefined && missle.body != undefined) {
+      missle.body.moveUp(800);
+      tower.fireLastTime = game.time.now + tower.fireTime;
     }
   },
   addWall: function (tower) {
-    if (tower.countBricks > 0 && game.time.now > tower.wallLastTime) {
-      game.audio.laughSnd.play();
-      tower.countBricks--;
-      updateScoreText();
-      new Wall(tower.x, tower.y);
-      tower.wallLastTime = game.time.now + tower.wallTime;
+    if (!tower.alive || game.time.now <= tower.actionLastTime) {
+      return;
     }
+    if (tower.countBricks <= 0 && score < SpaceGame.priceList.wall) {
+      return;
+    }
+    
+    game.audio.laughSnd.play();
+    if (tower.countBricks > 0){
+      tower.countBricks--;
+    }
+    else {
+      score -= SpaceGame.priceList.wall;
+    }
+    updateScoreText();
+    
+    new Wall(tower.x, tower.y);
+    tower.actionLastTime = game.time.now + tower.actionTime;
   },
   redrawProtectRect: function (tower) {
     if (tower.shieldPower > 0) {
@@ -247,12 +284,21 @@ Tower.prototype = {
       key = 'laser_tower';
     }
     var price = SpaceGame.priceList[key];
-    if (score >= price && game.time.now > tower.wallLastTime) {
+    if (score >= price && game.time.now > tower.actionLastTime) {
       score -= price;
       updateScoreText();
       // use last wall time variable
-      tower.wallLastTime = game.time.now + tower.wallTime;
+      tower.actionLastTime = game.time.now + tower.actionTime;
       new Satelite(tower.x, tower.y - tower.height, freeze, rocket, laser);
     }
+  },
+  addBomb: function (tower) {
+    if (score < SpaceGame.priceList.bomb || game.time.now < tower.actionLastTime) {
+      return;
+    }
+    
+    new Bomb(tower.x, 0);
+    score -= SpaceGame.priceList.bomb;
+    tower.actionLastTime = game.time.now + tower.actionTime;
   }
 };

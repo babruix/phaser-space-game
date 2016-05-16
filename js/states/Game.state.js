@@ -105,11 +105,10 @@ SpaceGame.Main.prototype = {
     SpaceGame._brickButton = game.input.keyboard.addKey(Phaser.Keyboard.B);
     SpaceGame._missleButton = game.input.keyboard.addKey(Phaser.Keyboard.M);
     SpaceGame._cursors = game.input.keyboard.createCursorKeys();
-    var keysNumbers = ['ONE', 'TWO', 'THREE', 'FOUR'];
-    for (var i = 0; i < 4; i++) {
+    var keysNumbers = ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN'];
+    for (var i = 0; i <= 7; i++) {
       SpaceGame._numberButtons.push(game.input.keyboard.addKey(Phaser.Keyboard[keysNumbers[i]]));
     }
-
   },
 
   createDayTime: function () {
@@ -485,7 +484,6 @@ SpaceGame.Main.prototype = {
       var textObj = game.add.text(150, 50, SpaceGame.priceList[key] + '$', SpaceGame.priceStyle);
       satelite.addChild(textObj);
 
-      var cRect = game.add.graphics(0, 50).beginFill(0xff5a00, 1).drawCircle(0, 0, 55);
       var text = '1';
       switch (key) {
         case 'satelite_freeze':
@@ -498,10 +496,8 @@ SpaceGame.Main.prototype = {
           text = 4;
           break;
       }
-      var number = game.add.text(0, 5, text, {font: '40px Arial', fill: '#2B9DD6'});
-      number.anchor.setTo(0.5);
-      cRect.scale.setTo(1);
-      cRect.addChild(number);
+
+      var cRect = drawPriceCircle(text);
       satelite.addChild(cRect);
 
       return satelite;
@@ -518,6 +514,9 @@ SpaceGame.Main.prototype = {
       var textObj = game.add.text(150, 15, SpaceGame.priceList.wall + '$', SpaceGame.priceStyle);
       textObj.scale.setTo(1.3, 1.3);
       wallBtn.addChild(textObj);
+      var cRect = drawPriceCircle('5');
+      cRect.scale.set(1.2);
+      wallBtn.addChild(cRect);
 
       return wallBtn;
     }
@@ -535,6 +534,10 @@ SpaceGame.Main.prototype = {
       textObj.scale.setTo(0.7, 0.7);
       bombBtn.addChild(textObj);
 
+      var cRect = drawPriceCircle('6');
+      cRect.scale.set(0.7);
+      bombBtn.addChild(cRect);
+
       return bombBtn;
     }
     function createRocketDraggable() {
@@ -551,6 +554,10 @@ SpaceGame.Main.prototype = {
       textObj.scale.setTo(0.7, 0.7);
       rocketBtn.addChild(textObj);
 
+      var cRect = drawPriceCircle('7');
+      cRect.scale.set(0.7);
+      rocketBtn.addChild(cRect);
+
       return rocketBtn;
     }
     function createReloadBtn() {
@@ -559,6 +566,17 @@ SpaceGame.Main.prototype = {
       reloadBtn.inputEnabled = true;
 
       return reloadBtn;
+    }
+    function drawPriceCircle (text) {
+      var cRect = game.add.graphics(0, 50).beginFill(0xff5a00, 1).drawCircle(0, 0, 55);
+      var number = game.add.text(0, 5, text, {
+        font: '40px Arial',
+        fill: '#FFFFFF'
+      });
+      number.anchor.setTo(0.5);
+      cRect.scale.setTo(1);
+      cRect.addChild(number);
+      return cRect;
     }
 
     // Functions events handlers
