@@ -16,6 +16,7 @@ var Satelite = function (worldX, worldY, freeze, rocket, laser) {
   this.satelite.fireTime = 300;
   this.satelite.freezing = freeze || false;
   this.satelite.rocket = rocket || false;
+  this.satelite.laser = laser || false;
 
   this.satelite.body.mass = 50;
   this.satelite.body.damping = 1;
@@ -110,6 +111,7 @@ Satelite.prototype = {
       if (!closestEnemy) {
         return;
       }
+      
       if (satelite.rocket) {
         // Missile fire
         var missle = new Missle(satelite.x + satelite.width / 2, satelite.y - satelite.height * 2, true);
@@ -117,22 +119,39 @@ Satelite.prototype = {
         satelite.fireLastTime = game.time.now + satelite.fireTime + 1000;
         game.physics.arcade.moveToObject(missle, closestEnemy, 800);
         missle.body.rotation =game.physics.arcade.angleToPointer(closestEnemy) - Math.PI/2;
+        return;
       }
-      else {
-        // Normal or frezing fire
-        game.audio.enemySndFire.play();
-        var enemyBullet = false;
-        var isFreezing = satelite.freezing;
-        var bullet = new Bullet(satelite.x, satelite.y, enemyBullet, isFreezing);
-        bullet.rotation = parseFloat(game.physics.arcade.angleToXY(bullet, closestEnemy.x, closestEnemy.y)) * 180 / Math.PI;
-        var speed = isFreezing ? level * 10 : level * 30;
-        game.physics.arcade.moveToObject(bullet, closestEnemy, speed);
-        bullet = null;
-        satelite.fireLastTime = game.time.now + satelite.fireTime;
-        if (isFreezing) {
-          satelite.fireLastTime += 200;
+
+      var enemyBullet, bullet, speed;
+
+      if (satelite.laser) {
+        if (satelite.laserLine) {
+          satelite.laserLine.kill();
         }
+        // @todo: collision detection? speed?
+        satelite.laserLine = game.add.graphics(0, 0);
+        satelite.laserLine.lineStyle(20, 0xffffff, 0.6);
+        // draw a shape
+        satelite.laserLine.moveTo(satelite.x, satelite.y);
+        satelite.laserLine.lineTo(closestEnemy.x, closestEnemy.y);
+        satelite.laserLine.endFill();
+
+        satelite.fireLastTime = game.time.now + satelite.fireTime;
+        return;
       }
+      
+      // Normal or frezing fire
+      game.audio.enemySndFire.play();
+      enemyBullet = false;
+      var isFreezing = satelite.freezing;
+      bullet = new Bullet(satelite.x, satelite.y, enemyBullet, isFreezing);
+      bullet.rotation = parseFloat(game.physics.arcade.angleToXY(bullet, closestEnemy.x, closestEnemy.y)) * 180 / Math.PI;
+      speed = isFreezing ? level * 10 : level * 30;
+      game.physics.arcade.moveToObject(bullet, closestEnemy, speed);
+      if (isFreezing) {
+        satelite.fireLastTime += 200;
+      }
+      satelite.fireLastTime = game.time.now + satelite.fireTime;
     }
   },
   drawAimRect: function (satelite, enemy, minimalReactDistance) {
