@@ -88,6 +88,7 @@ SpaceGame.Main.prototype = {
     game.audio.kissSnd = game.add.audio('kiss', 0.2);
     game.audio.explosionSnd = game.add.audio('explosion', 0.05);
     game.audio.missleSnd = game.add.audio('missle', 0.1);
+    game.audio.laserSnd = game.add.audio('laser', 0.1);
     game.audio.ufoSnd = [
       game.add.audio('scifi1', 0.2),
       game.add.audio('scifi2', 0.2),

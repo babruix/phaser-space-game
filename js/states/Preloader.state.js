@@ -28,6 +28,7 @@ SpaceGame.Preloader.prototype = {
     game.load.audio('kiss', ['assets/audio/kiss.wav']);
     game.load.audio('explosion', ['assets/audio/explosion.wav']);
     game.load.audio('missle', ['assets/audio/miss.wav']);
+    game.load.audio('laser', ['assets/audio/laser.mp3']);
     game.load.audio('scifi1', ['assets/audio/scifi1.wav']);
     game.load.audio('scifi2', ['assets/audio/scifi2.wav']);
     game.load.audio('scifi3', ['assets/audio/scifi3.wav']);

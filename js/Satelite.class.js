@@ -125,6 +125,7 @@ Satelite.prototype = {
       var enemyBullet, bullet, speed;
 
       if (satelite.laser) {
+        game.audio.laserSnd.play();
         if (satelite.laserLine) {
           satelite.laserLine.kill();
         }
