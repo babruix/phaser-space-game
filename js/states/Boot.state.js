@@ -6,9 +6,19 @@ var towers;
 SpaceGame.Boot = function (game) {
 };
 SpaceGame.Boot.prototype = {
+  init: function () {
+    // Set scale options
+    game.input.maxPointers = 1; // No multi-touch
+    game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+    game.scale.pageAlignHorizontally = true;
+    game.scale.pageAlignVertically = true;
+    //game.scale.setScreenSize(true);
+  },
   preload: function () {
     // Load preloader image
     game.load.image('preloaderBar', 'assets/sprites/preload-bar.png');
+    // load background
+    game.load.image('background', 'assets/sprites/bg0.png');
 
 
     // transition plugin
@@ -34,12 +44,6 @@ SpaceGame.Boot.prototype = {
     SpaceGame.epsyPlugin = game.plugins.add(Phaser.Plugin.EPSY);
   },
   create: function () {
-    // Set scale options
-    game.input.maxPointers = 1; // No multi-touch
-    game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-    game.scale.pageAlignHorizontally = true;
-    game.scale.pageAlignVertically = true;
-    //game.scale.setScreenSize(true);
     SpaceGame.transitionPlugin.to('Preloader');
   }
 };
