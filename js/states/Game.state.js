@@ -40,13 +40,13 @@ SpaceGame.GameOverTransition = function () {
 };
 SpaceGame.priceStyle = {font: '50px eater', fill: '#2B9DD6'};
 SpaceGame.priceList = {
-  'satelite': 30,
-  'satelite_freeze': 20,
+  'satelite': 40,
+  'satelite_freeze': 30,
   'laser_tower': 150,
   'tower': 100,
   'wall': 5,
-  'bomb': 25,
-  'rocket': 15
+  'bomb': 20,
+  'rocket': 10
 };
 SpaceGame.Main.prototype = {
   create: function () {
