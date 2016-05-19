@@ -75,6 +75,9 @@ Satelite.prototype = {
   getClosestEnemy: function (satelite, minimalReactDistance) {
     // Satellite fire only when enemy distance less 700.
     minimalReactDistance = minimalReactDistance || 700;
+    if (satelite.laser) {
+      minimalReactDistance = 300;
+    }
 
     var closestEnemy = SpaceGame.enemys.getFirstAlive();
 
@@ -136,6 +139,10 @@ Satelite.prototype = {
         satelite.laserLine.moveTo(satelite.x, satelite.y);
         satelite.laserLine.lineTo(closestEnemy.x, closestEnemy.y);
         satelite.laserLine.endFill();
+        game.time.events.add(Phaser.Timer.SECOND/10, function() {
+          satelite.laserLine.kill();
+          closestEnemy.kill();
+        }, this);
 
         satelite.fireLastTime = game.time.now + satelite.fireTime;
         return;

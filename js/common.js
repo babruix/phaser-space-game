@@ -21,7 +21,7 @@ game.state.start('Boot');
 function showLevelTitle() {
   var style = {
     font: "60px eater",
-    fill: "#FFFFFF",
+    fill: "#F36200",
     align: "center"
   };
   var levelText = game.add.text(0, 0, 'Level ' + level, style);
@@ -55,7 +55,7 @@ function levelCompleted() {
 
   var style = {
     font: "60px eater",
-    fill: "#FFFFFF",
+    fill: "#F36200",
     stroke: "#CCCCCC",
     align: "center",
     strokeThickness: 1
