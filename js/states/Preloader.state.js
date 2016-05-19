@@ -4,6 +4,8 @@ SpaceGame.Preloader.prototype = {
   preload: function () {
     // show background
     game.add.tileSprite(0, 0, getWidth(), 800, 'background');
+    var text = game.add.text(getWidth()/2, getHeight()/2, 'Loading...', {font: '57px eater', fill: '#F36200'});
+    text.anchor.set(0.5);
 
     // Nice practicles :)
     var particleSystem1 = SpaceGame.epsyPlugin.loadSystem(SpaceGame.epsyPluginConfig.galaxy, game.width / 2, 50);
