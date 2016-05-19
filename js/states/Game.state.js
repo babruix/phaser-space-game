@@ -38,6 +38,16 @@ SpaceGame.Main = function (game) {
 SpaceGame.GameOverTransition = function () {
   SpaceGame.transitionPlugin.to('GameOver');
 };
+SpaceGame.priceStyle = {font: '50px eater', fill: '#2B9DD6'};
+SpaceGame.priceList = {
+  'satelite': 30,
+  'satelite_freeze': 20,
+  'laser_tower': 150,
+  'tower': 100,
+  'wall': 5,
+  'bomb': 25,
+  'rocket': 15
+};
 SpaceGame.Main.prototype = {
   create: function () {
     // Hide CSS element.
@@ -404,16 +414,6 @@ SpaceGame.Main.prototype = {
   },
 
   initUI: function () {
-    SpaceGame.priceStyle = {font: '50px eater', fill: '#2B9DD6'};
-    SpaceGame.priceList = {
-      'satelite': 30,
-      'satelite_freeze': 20,
-      'laser_tower': 50,
-      'tower': 100,
-      'wall': 5,
-      'bomb': 25,
-      'rocket': 15
-    };
 
     // Create elements.
     function createUiElements() {
