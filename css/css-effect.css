@@ -3,7 +3,11 @@
   src: url('Eater-Regular.ttf') format('truetype');
 }
 body {
-  font-family: 'eater';
+  font-family: 'eater', fantasy;
+  background-color: #000000;
+}
+* {
+  margin: 0;
 }
 
 .css-effect {
