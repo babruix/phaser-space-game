@@ -10,6 +10,8 @@ var Wall = function (x, y) {
   SpaceGame._walls.add(this.wall);
 
   this.wall.body.onBeginContact.add(function (body1, shapeA, shapeB) {
+    if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {return}
+
     if (towers.children[0].actionLastTime + 1000 > game.time.now) {
       return;
     }

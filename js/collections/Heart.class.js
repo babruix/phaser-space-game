@@ -18,7 +18,9 @@ var Heart = function() {
   SpaceGame._hearts.add(this.heart);
 
   this.heart.body.onBeginContact.add(function (body1, shapeA, shapeB) {
-    if (body1 && body1.sprite != null && body1.sprite.key=='spaceship') {
+    if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {return}
+
+    if (body1.sprite.key=='spaceship') {
 
       if (!this.heart.hitCooldown) {
         this.heart.hitCooldown = true;

@@ -20,19 +20,18 @@ var Missle = function (x, y, fired) {
   this.missle.reset(x2, y2);
 
   this.missle.body.onBeginContact.add(function (body1, shapeA, shapeB) {
-    if (body1 != null && body1.sprite != null) {
+    if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {return}
 
-      if (body1.sprite.key != 'spaceship') {
-        Missle.prototype.explode(this.missle);
-      }
-      else {
-        if (!this.missle.activated) {
-          // pickup
-          game.audio.laughSnd.play();
-          body1.sprite.missles++;
-          updateScoreText();
-          this.missle.kill();
-        }
+    if (body1.sprite.key != 'spaceship') {
+      Missle.prototype.explode(this.missle);
+    }
+    else {
+      if (!this.missle.activated) {
+        // pickup
+        game.audio.laughSnd.play();
+        body1.sprite.missles++;
+        updateScoreText();
+        this.missle.kill();
       }
     }
 

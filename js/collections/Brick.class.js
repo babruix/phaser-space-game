@@ -12,7 +12,9 @@ var Brick = function () {
   SpaceGame._bricks.add(this.brick);
 
   this.brick.body.onBeginContact.add(function (body1, shapeA, shapeB) {
-    if (body1 && body1.sprite != null && body1.sprite.key == 'spaceship') {
+    if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {return}
+
+    if (body1.sprite.key == 'spaceship') {
 
       if (!this.brick.hitCooldown) {
         this.brick.hitCooldown = true;

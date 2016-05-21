@@ -27,7 +27,9 @@ var Tower = function (worldX, worldY, tile) {
   game.camera.follow(this.tower);
 
   this.tower.body.onBeginContact.add(function (body1, shapeA, shapeB) {
-    if (body1 && body1.sprite != null && body1.sprite.key.indexOf('bullet') >= 0) {
+    if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {return}
+
+    if (body1 && body1.sprite.key.indexOf('bullet') >= 0) {
       game.audio.smackSnd.play();
       if (typeof(body1.sprite.enemyBullet) != "undefined"
         && body1.sprite.alive
@@ -180,7 +182,7 @@ Tower.prototype = {
     towers.children[0].anchor.setTo(0.5, 0.5);
     game.add.tween(towers.children[0])
       .to({alpha: 1}, 500, Phaser.Easing.Linear.In,
-        true, 1000, true, false)
+        true, 1000)
       .onComplete.add(function () {
       SpaceGame._shipTrail.alpha = 1;
     });

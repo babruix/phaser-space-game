@@ -41,7 +41,9 @@ var Satelite = function (worldX, worldY, freeze, rocket, laser) {
   this.satelite.HealthBar = new HealthBar(game, barConfig);
 
   this.satelite.body.onBeginContact.add(function (body1, shapeA, shapeB) {
-    if (body1 && body1.sprite != null && body1.sprite.key.indexOf('bullet') >= 0) {
+    if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {return}
+
+    if (body1.sprite.key.indexOf('bullet') >= 0) {
       if (typeof(body1.sprite.enemyBullet) != "undefined" && body1.sprite.enemyBullet == true) {
         game.audio.smackSnd.play();
         this.satelite.damage(2);

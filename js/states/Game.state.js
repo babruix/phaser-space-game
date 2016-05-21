@@ -49,6 +49,15 @@ SpaceGame.priceList = {
   'rocket': 10
 };
 SpaceGame.Main.prototype = {
+  render: function() {
+    // game.debug.spriteBounds(SpaceGame.topBound);
+    // game.debug.spriteBounds(SpaceGame.rightBound);
+    // game.debug.spriteBounds(SpaceGame.leftBound);
+    // game.debug.spriteBounds(SpaceGame.bottomBound);
+  // game.debug.text(towers.children[0].x, 20, 20, 'yellow', 'Segoe UI');
+  // game.debug.text(towers.children[0].y, 20, 40, 'yellow', 'Segoe UI');
+
+},
   create: function () {
     // Hide CSS element.
     SpaceGame._anim_elem.style.display = 'none';
@@ -226,6 +235,24 @@ SpaceGame.Main.prototype = {
     game.time.events.add(3000, SpaceGame.Main.prototype.makeRain);
   },
 
+  setupWorldBounds: function () {
+    SpaceGame.worldBounds = game.add.group();
+    // Define a block using bitmap data rather than an image sprite
+    var verticalShape = game.add.bitmapData(getWidth() * 8, 20);
+    var horizontalShape = game.add.bitmapData(30, getHeight() * 2);
+    // Create a new sprite using the bitmap data
+    SpaceGame.bottomBound = game.add.sprite(0, 800, verticalShape);
+    SpaceGame.worldBounds.add(SpaceGame.bottomBound);
+    SpaceGame.topBound = game.add.sprite(0, 0, verticalShape);
+    SpaceGame.worldBounds.add(SpaceGame.topBound);
+    SpaceGame.leftBound = game.add.sprite(0, 0, horizontalShape);
+    SpaceGame.worldBounds.add(SpaceGame.leftBound);
+    SpaceGame.rightBound = game.add.sprite(getWidth() * 4, 0, horizontalShape);
+    SpaceGame.worldBounds.add(SpaceGame.rightBound);
+    // Enable P2 Physics and set the block not to move
+    game.physics.p2.enable(SpaceGame.worldBounds);
+    SpaceGame.worldBounds.setAll('body.static', true);
+  }, 
   setupGameGroups: function () {
 
     /**
@@ -234,6 +261,7 @@ SpaceGame.Main.prototype = {
     towers = game.add.group();
     game.physics.enable(towers, Phaser.Physics.P2JS, debug);
     game.world.setBounds(0, 0, getWidth() * 4, 790);
+    this.setupWorldBounds();
 
     /**
      * Heart
@@ -356,7 +384,7 @@ SpaceGame.Main.prototype = {
   nextLevel: function () {
     level++;
     score += level * 20;
-    Tower.prototype.addToPoint(game.width / 2, game.height - 50);
+    Tower.prototype.addToPoint(400, 400);
     showLevelTitle();
     updateScoreText();
     addRndBricks();

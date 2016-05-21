@@ -42,11 +42,9 @@ var Enemy = function (x, y, anim, animLength) {
             height: 0
           }, 3000 /*duration of the tween (in ms)*/,
           Phaser.Easing.Bounce.Out /*easing type*/,
-          true /*autostart?*/,
-          1000 /*delay*/,
-          false /*yoyo?*/, false);
+          true /*autostart?*/);
 
-        ufo_tween.onLoop.add(function () {
+        ufo_tween.onComplete.add(function () {
           if (_this.enemy.ufo.alive) {
             Enemy.prototype.initEnemy(_this.enemy);
           }
@@ -112,7 +110,8 @@ Enemy.prototype = {
     enemy.ufo = null;
 
     enemy.body.onBeginContact.add(function (body1) {
-      if (!body1 || !body1.sprite) return;
+      if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {return}
+
       if (body1.sprite.key.indexOf('bullet') >= 0 && !body1.sprite.enemyBullet) {
         if (!enemy.lastDamage) {
           enemy.lastDamage = game.time.now;
