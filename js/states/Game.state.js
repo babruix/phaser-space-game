@@ -241,9 +241,9 @@ SpaceGame.Main.prototype = {
     var verticalShape = game.add.bitmapData(getWidth() * 8, 20);
     var horizontalShape = game.add.bitmapData(30, getHeight() * 2);
     // Create a new sprite using the bitmap data
-    SpaceGame.bottomBound = game.add.sprite(0, 800, verticalShape);
+    SpaceGame.bottomBound = game.add.sprite(0, 790, verticalShape);
     SpaceGame.worldBounds.add(SpaceGame.bottomBound);
-    SpaceGame.topBound = game.add.sprite(0, 0, verticalShape);
+    SpaceGame.topBound = game.add.sprite(0, 10, verticalShape);
     SpaceGame.worldBounds.add(SpaceGame.topBound);
     SpaceGame.leftBound = game.add.sprite(0, 0, horizontalShape);
     SpaceGame.worldBounds.add(SpaceGame.leftBound);
