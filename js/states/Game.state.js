@@ -918,8 +918,5 @@ SpaceGame.Main.prototype = {
         }
       }
     });
-
-    // Follow camera.
-    SpaceGame._UiGroup.x = game.camera.x + 20;
   }
 };
