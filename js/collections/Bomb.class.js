@@ -35,6 +35,6 @@ var Bomb = function(x, y) {
 
 Bomb.prototype = {
   generateBomb: function () {
-    new Bomb();
+    new Bomb(0, 100);
   }
 };

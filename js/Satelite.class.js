@@ -13,7 +13,7 @@ var Satelite = function (worldX, worldY, freeze, rocket, laser) {
   this.satelite.health = 10;
   game.physics.p2.enable(this.satelite, debug);
   this.satelite.fireLastTime = game.time.now;
-  this.satelite.fireTime = 300;
+  this.satelite.fireTime = laser ? 600 : 300;
   this.satelite.freezing = freeze || false;
   this.satelite.rocket = rocket || false;
   this.satelite.laser = laser || false;

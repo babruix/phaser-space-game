@@ -6,7 +6,7 @@ SpaceGame.priceList = {
   'satelite_freeze': 30,
   'satelite': 40,
   'tower': 70,
-  'laser_tower': 150,
+  'laser_tower': 200,
   'wall': 5,
   'bomb': 5,
   'rocket': 10
