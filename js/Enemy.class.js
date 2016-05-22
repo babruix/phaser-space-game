@@ -46,10 +46,16 @@ var Enemy = function (x, y, anim, animLength) {
         _this.enemy.body.velocity.y = 20;
 
         _this.enemy.ufo_beam.x = _this.enemy.ufo.x;
-        _this.enemy.ufo_beam.alpha = 0.1;
+        game.add.tween(_this.enemy.ufo_beam)
+          .to({alpha: 0.2}, 200, null, true);
 
         game.time.events.add(Phaser.Timer.SECOND * 3, function () {
-          _this.enemy.ufo_beam.destroy();
+          var beamTween = game.add.tween(_this.enemy.ufo_beam)
+            .to({alpha: 0}, 200, null, true);
+          beamTween.onComplete.add(function () {
+            _this.enemy.ufo_beam.destroy();
+          }, this);
+
           if (_this.enemy.ufo.alive) {
             Enemy.prototype.initEnemy(_this.enemy);
             _this.enemy.ufo.alive = false;
