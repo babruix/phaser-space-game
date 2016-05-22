@@ -204,16 +204,22 @@ Tower.prototype = {
   },
   fire: function (tower) {
     //SpaceGame.enemys.stealing &&
-    if (tower.alive && game.time.now > tower.fireLastTime && tower.bullets > 0) {
-      tower.bullets--;
-      updateScoreText();
-      game.audio.playerSndFire.play();
-      var bullet = new Bullet(tower.x, tower.y - tower.height, false);
-      if (bullet != undefined && bullet.body != undefined) {
-        bullet.body.moveUp(1500);
-        bullet = null;
+    if (tower.alive && game.time.now > tower.fireLastTime) {
+      if (tower.bullets > 0) {
+        tower.bullets--;
+        updateScoreText();
+        game.audio.playerSndFire.play();
+        var bullet = new Bullet(tower.x, tower.y - tower.height, false);
+        if (bullet != undefined && bullet.body != undefined) {
+          bullet.body.moveUp(1500);
+          bullet = null;
+        }
+        tower.fireLastTime = game.time.now + tower.fireTime;
       }
-      tower.fireLastTime = game.time.now + tower.fireTime;
+      else {
+       // Fire missles when there are no bullets
+        this.fireMissle(tower);
+      }
     }
   },
   fireMissle: function (tower) {
@@ -299,7 +305,7 @@ Tower.prototype = {
       return;
     }
     
-    new Bomb(tower.x, 0);
+    new Bomb(tower.x, 100);
     score -= SpaceGame.priceList.bomb;
     tower.actionLastTime = game.time.now + tower.actionTime;
   }

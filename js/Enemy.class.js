@@ -79,7 +79,18 @@ var Enemy = function (x, y, anim, animLength) {
 };
 
 Enemy.prototype = {
-  initEnemy: function (enemy) {
+  putPlantBack: function (enemy) {
+    if (enemy.closestPlant && enemy.closestPlant.alive) {
+      enemy.closestPlant.stealing = false;
+      enemy.steals = false;
+      enemy.closestPlant.y = game.height - 50;
+      enemy.closestPlant.scale.x = (1);
+      enemy.closestPlant.scale.y = (1);
+      enemy.closestPlant = null;
+      this.hideStealingSign();
+      SpaceGame.Main.prototype.generateGrowingPickups();
+    }
+  }, initEnemy: function (enemy) {
     enemy.ufo_sound.stop();
     enemy.ufo.animations.stop('walk');
     game.audio.toilSnd.play();
@@ -174,17 +185,7 @@ Enemy.prototype = {
           this.explode(enemy);
           this.hideStealingSign();
         }
-
-        // put plant back
-        if (enemy.closestPlant && enemy.closestPlant.alive) {
-          enemy.closestPlant.stealing = false;
-          enemy.closestPlant.y = game.height - 50;
-          enemy.closestPlant.scale.x = (1);
-          enemy.closestPlant.scale.y = (1);
-          enemy.closestPlant = null;
-          this.hideStealingSign();
-          SpaceGame.Main.prototype.generateGrowingPickups();
-        }
+        this.putPlantBack(enemy);
       }
     }, this);
 
@@ -216,11 +217,12 @@ Enemy.prototype = {
       }
     };
     enemy.events.onKilled.add(function (enemy) {
+      this.putPlantBack(enemy);
       enemy.enemyHealthBar.barSprite.kill();
       enemy.enemyHealthBar.bgSprite.kill();
       score += level * 3;
       updateScoreText();
-    });
+    }, this);
 
     SpaceGame.enemys.add(enemy);
   },

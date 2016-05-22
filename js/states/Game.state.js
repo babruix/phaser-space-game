@@ -580,7 +580,9 @@ SpaceGame.Main.prototype = {
       var reloadBtn = game.add.sprite(0, 480, 'reload');
       reloadBtn.scale.setTo(0.2, 0.2);
       reloadBtn.inputEnabled = true;
-
+      var cRect = drawPriceCircle('R');
+      cRect.scale.setTo(2.4);
+      reloadBtn.addChild(cRect);
       return reloadBtn;
     }
     function drawPriceCircle (text) {
@@ -780,7 +782,8 @@ SpaceGame.Main.prototype = {
           }
 
           // protect with wall
-          if (enemy.y < 200 && towers.children[0].countBricks > 0 && game.time.now > enemy.blockedLastTime) {
+          if (enemy.y < 200 && towers.children[0].countBricks > 0
+            && game.time.now > enemy.blockedLastTime) {
             towers.children[0].countBricks--;
 
             new Wall(enemy.x, enemy.y - enemy.height);
@@ -800,6 +803,7 @@ SpaceGame.Main.prototype = {
         if (enemy.y < 100 && enemy.closestPlant && !SpaceGame.enemys.stealing) {
           enemy.closestPlant.stealing = false;
           enemy.closestPlant = false;
+          enemy.steals = false;
         }
 
         if (enemy.y > 600) {
@@ -830,6 +834,11 @@ SpaceGame.Main.prototype = {
               enemy.body.velocity.y = -100;
               enemy.closestPlant.x = enemy.x;
               enemy.closestPlant.y = enemy.y;
+              enemy.steals = true;
+            }
+
+            if (!enemy.steals) {
+              enemy.closestPlant = null;
             }
           }
         }

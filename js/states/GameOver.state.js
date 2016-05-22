@@ -10,7 +10,7 @@ SpaceGame.GameOver.prototype = {
     game.cache.addImage('image-data', SpaceGame.canvasDataURI, data);
     var image = game.add.image(0, 0, 'image-data');
 
-    var message  = "GAME OVER! \n try again?";
+    var message  = "GAME OVER! \n press any key to restart";
     if (!SpaceGame._flowerPlants.countLiving() && lives > 0) {
       message = "all flowers are stolen \n" + message;
     }
@@ -25,14 +25,22 @@ SpaceGame.GameOver.prototype = {
 
     // Init score
     SpaceGame._scoreText = undefined;
+    game.time.events.add(2000, function () {
+      game.input.keyboard.onDownCallback = function(e) {
+        SpaceGame.GameOver.prototype.startNewGame();
+        game.input.keyboard.onDownCallback = null;
+      };
+    }, this);
+  },
+  startNewGame: function () {
+    lives = 3;
+    level = 0;
+    score = 0;
+    SpaceGame.transitionPlugin.to('Main');
   },
   update : function() {
-    // game loop goes here
     if (game.input.activePointer.isDown) {
-      lives = 3;
-      level = 0;
-      score = 0;
-      SpaceGame.transitionPlugin.to('Main');
+      this.startNewGame();
     }
   }
 };

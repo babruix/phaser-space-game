@@ -101,7 +101,7 @@ Satelite.prototype = {
     var closestDistance = caculatetDistance(satelite, closestEnemy);
 
     // Highlight closest enemy.
-    Satelite.prototype.drawAimRect(satelite, closestEnemy);
+    this.drawAimRect(satelite, closestEnemy);
     this._aimRect = satelite._aimRect;
     this._dot = satelite._dot;
     game.time.events.add(Phaser.Timer.SECOND * 1, Satelite.prototype.removeAimRect, this);
@@ -119,11 +119,17 @@ Satelite.prototype = {
       
       if (satelite.rocket) {
         // Missile fire
-        var missle = new Missle(satelite.x + satelite.width / 2, satelite.y - satelite.height * 2, true);
+        var x = closestEnemy.x > satelite.x
+          ? satelite.x + satelite.width * 2
+          : satelite.x - satelite.width * 2;
+        var y = closestEnemy.y > satelite.y
+          ? satelite.y + satelite.height * 2
+          : satelite.y - satelite.height * 2;
+        var missle = new Missle(x, y, true);
         missle.anchor.setTo(0.5, 0.5);
         satelite.fireLastTime = game.time.now + satelite.fireTime + 1000;
         game.physics.arcade.moveToObject(missle, closestEnemy, 800);
-        missle.body.rotation =game.physics.arcade.angleToPointer(closestEnemy) - Math.PI/2;
+        missle.body.rotation = game.physics.arcade.angleToPointer(closestEnemy) - Math.PI/2;
         return;
       }
 
@@ -191,6 +197,10 @@ Satelite.prototype = {
     satelite._dot.lineColor = lineColor;
     satelite._dot.alpha = 0.7;
     satelite._dot.drawCircle(enemy.x, enemy.y, 5);
+
+    game.time.events.add(2000, function () {
+      this.removeAimRect();
+    }, this);
   },
   removeAimRect: function () {
     // Hilight remove from enemy.

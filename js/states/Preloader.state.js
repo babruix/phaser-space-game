@@ -3,12 +3,12 @@ SpaceGame.GameOverTransition = function () {
 };
 SpaceGame.priceStyle = {font: '50px eater', fill: '#2B9DD6'};
 SpaceGame.priceList = {
-  'satelite': 40,
   'satelite_freeze': 30,
+  'satelite': 40,
+  'tower': 70,
   'laser_tower': 150,
-  'tower': 100,
   'wall': 5,
-  'bomb': 20,
+  'bomb': 5,
   'rocket': 10
 };
 

@@ -30,7 +30,7 @@ SpaceGame.Menu.prototype = {
 
     // to start immediately...
     // level=5;
-    game.state.start('Main');
+    // game.state.start('Main');
 
     var particleSystem1 = SpaceGame.epsyPlugin.loadSystem(SpaceGame.epsyPluginConfig.circles, game.width / 2, 50);
     // let Phaser add the particle system to world group or choose to add it to a specific group
