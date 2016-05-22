@@ -2,7 +2,7 @@ var Enemy = function (x, y, anim, animLength) {
   var xDestination = game.rnd.integerInRange(100, game.world.width / 2);
   var rndInt = game.rnd.integerInRange(0, game.audio.ufoSnd.length - 1);
   game.audio.ufoSnd[rndInt].play();
-  var ufo = game.add.sprite(0, 0, 'ufo');
+  var ufo = game.add.sprite(xDestination - game.rnd.integerInRange(0, xDestination), 0, 'ufo');
   ufo.animations.add('walk');
   ufo.animations.play('walk', 10, true);
   ufo.anchor.setTo(0.5, 0);
@@ -11,11 +11,17 @@ var Enemy = function (x, y, anim, animLength) {
   ufo.body.mass = 10;
   SpaceGame._ufos.add(ufo);
 
-  this.enemy = game.add.sprite(x, 0, anim);
+  this.enemy = game.add.sprite(x, 50, anim);
+  this.enemy.anchor.setTo(.5);
+  this.enemy.alpha = 0;
   this.enemy.animations.add('walk');
   this.enemy.animations.play('walk', animLength, true);
 
-  game.physics.enable(this.enemy, Phaser.arcade);
+  this.enemy.ufo_beam = game.add.sprite(0, 50, 'ufo_beam');
+  this.enemy.ufo_beam.alpha = 0;
+  this.enemy.ufo_beam.anchor.setTo(0.5, 0);
+
+  game.physics.enable(this.enemy);
   this.enemy.body.velocity.x = 100;
   this.enemy.ufo_exists = true;
   this.enemy.ufo = ufo;
@@ -33,23 +39,31 @@ var Enemy = function (x, y, anim, animLength) {
       _this.enemy.ufo.scale.x = ufoScale;
       _this.enemy.ufo.scale.y = ufoScale;
       if (_this.enemy.ufo.x > _this.enemy.drop_enemy_at_x) {
+        _this.enemy.alpha = 1;
+        _this.enemy.x = _this.enemy.drop_enemy_at_x;
         _this.enemy.ufo.body.velocity.x = 0;
         _this.enemy.body.velocity.x = 0;
         _this.enemy.body.velocity.y = 20;
-        var ufo_tween = game.add.tween(_this.enemy.ufo);
-        ufo_tween.to({
-            width: 0,
-            height: 0
-          }, 3000 /*duration of the tween (in ms)*/,
-          Phaser.Easing.Bounce.Out /*easing type*/,
-          true /*autostart?*/);
 
-        ufo_tween.onComplete.add(function () {
+        _this.enemy.ufo_beam.x = _this.enemy.ufo.x;
+        _this.enemy.ufo_beam.alpha = 0.1;
+
+        game.time.events.add(Phaser.Timer.SECOND * 3, function () {
+          _this.enemy.ufo_beam.destroy();
           if (_this.enemy.ufo.alive) {
             Enemy.prototype.initEnemy(_this.enemy);
+            _this.enemy.ufo.alive = false;
           }
-          _this.enemy.ufo.destroy();
-        });
+
+          var ufo_tween = game.add.tween(_this.enemy.ufo);
+          ufo_tween.to({
+            x: _this.enemy.ufo.x - 200
+          }, 1000, Phaser.Easing.Exponential.Out, true);
+          ufo_tween.onComplete.add(function () {
+            _this.enemy.ufo.destroy();
+          }, this);
+
+        }, this);
 
       }
     }

@@ -1,3 +1,17 @@
+SpaceGame.GameOverTransition = function () {
+  SpaceGame.transitionPlugin.to('GameOver');
+};
+SpaceGame.priceStyle = {font: '50px eater', fill: '#2B9DD6'};
+SpaceGame.priceList = {
+  'satelite': 40,
+  'satelite_freeze': 30,
+  'laser_tower': 150,
+  'tower': 100,
+  'wall': 5,
+  'bomb': 20,
+  'rocket': 10
+};
+
 SpaceGame.Preloader = function (game) {
 };
 SpaceGame.Preloader.prototype = {
@@ -74,6 +88,7 @@ SpaceGame.Preloader.prototype = {
     game.load.spritesheet('ufo', 'assets/sprites/tarelka.png', 108, 64, 10);
     game.load.spritesheet('cat', 'assets/sprites/cat.png', 64, 104, 1);
     game.load.spritesheet('nog', 'assets/sprites/nog50.png', 89, 119, 50);
+    game.load.image('ufo_beam', 'assets/sprites/ufo-beam.png');
 
     /**
      * Physics

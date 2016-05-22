@@ -35,19 +35,6 @@ SpaceGame.Main = function (game) {
   SpaceGame._enemy_bullets = null;
   SpaceGame._ufos = null;
 };
-SpaceGame.GameOverTransition = function () {
-  SpaceGame.transitionPlugin.to('GameOver');
-};
-SpaceGame.priceStyle = {font: '50px eater', fill: '#2B9DD6'};
-SpaceGame.priceList = {
-  'satelite': 40,
-  'satelite_freeze': 30,
-  'laser_tower': 150,
-  'tower': 100,
-  'wall': 5,
-  'bomb': 20,
-  'rocket': 10
-};
 SpaceGame.Main.prototype = {
   render: function() {
     // game.debug.spriteBounds(SpaceGame.topBound);
@@ -228,18 +215,18 @@ SpaceGame.Main.prototype = {
   removeRain: function () {
     SpaceGame._rainGroup.forEachAlive(function (element) {
       element.destroy();
-    });
+    }, this);
     SpaceGame._cloudsGroup.forEachAlive(function (cloud) {
       cloud.raining = false;
-    });
-    game.time.events.add(3000, SpaceGame.Main.prototype.makeRain);
+    }, this);
+    game.time.events.add(3000, SpaceGame.Main.prototype.makeRain, this);
   },
 
   setupWorldBounds: function () {
     SpaceGame.worldBounds = game.add.group();
     // Define a block using bitmap data rather than an image sprite
-    var verticalShape = game.add.bitmapData(getWidth() * 8, 20);
-    var horizontalShape = game.add.bitmapData(30, getHeight() * 2);
+    var verticalShape = game.add.bitmapData(getWidth() * 8, 100);
+    var horizontalShape = game.add.bitmapData(100, getHeight() * 2);
     // Create a new sprite using the bitmap data
     SpaceGame.bottomBound = game.add.sprite(0, 790, verticalShape);
     SpaceGame.worldBounds.add(SpaceGame.bottomBound);
@@ -384,7 +371,7 @@ SpaceGame.Main.prototype = {
   nextLevel: function () {
     level++;
     score += level * 20;
-    Tower.prototype.addToPoint(400, 400);
+    Tower.prototype.addToPoint(getWidth() / 2, getHeight() - 300);
     showLevelTitle();
     updateScoreText();
     addRndBricks();
