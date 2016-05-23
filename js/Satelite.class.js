@@ -13,7 +13,7 @@ var Satelite = function (worldX, worldY, freeze, rocket, laser) {
   this.satelite.health = 10;
   game.physics.p2.enable(this.satelite, debug);
   this.satelite.fireLastTime = game.time.now;
-  this.satelite.fireTime = laser ? 600 : 300;
+  this.satelite.fireTime = laser ? 1600 : 300;
   this.satelite.freezing = freeze || false;
   this.satelite.rocket = rocket || false;
   this.satelite.laser = laser || false;
@@ -78,7 +78,7 @@ Satelite.prototype = {
     // Satellite fire only when enemy distance less 700.
     minimalReactDistance = minimalReactDistance || 700;
     if (satelite.laser) {
-      minimalReactDistance = 300;
+      minimalReactDistance = 200;
     }
 
     var closestEnemy = SpaceGame.enemys.getFirstAlive();
@@ -99,6 +99,9 @@ Satelite.prototype = {
       return false;
     }
     var closestDistance = caculatetDistance(satelite, closestEnemy);
+    if (closestDistance > minimalReactDistance) {
+      return false;
+    }
 
     // Highlight closest enemy.
     this.drawAimRect(satelite, closestEnemy);
