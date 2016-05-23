@@ -10,16 +10,17 @@ var Bomb = function(x, y) {
   this.bomb.body.damping = 1;
 
   this.bomb.body.onBeginContact.add(function (body1, shapeA, shapeB) {
-    if (body1 != null && body1.sprite != null) {
-      if (body1.sprite.key != 'spaceship') {
-        Missle.prototype.explode(this.bomb);
-      }
-      else {
-        this.bomb.kill();
-        game.audio.explosionSnd.play();
-        updateScore(true);
-      }
+    if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {return}
+
+    if (body1.sprite.key != 'spaceship') {
+      Missle.prototype.explode(this.bomb);
     }
+    else {
+      this.bomb.kill();
+      game.audio.explosionSnd.play();
+      updateScore(true);
+    }
+
   }, this);
 
   var bomb = this.bomb;
@@ -34,6 +35,6 @@ var Bomb = function(x, y) {
 
 Bomb.prototype = {
   generateBomb: function () {
-    new Bomb();
+    new Bomb(0, 100);
   }
 };

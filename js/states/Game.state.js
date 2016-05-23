@@ -35,20 +35,11 @@ SpaceGame.Main = function (game) {
   SpaceGame._enemy_bullets = null;
   SpaceGame._ufos = null;
 };
-SpaceGame.GameOverTransition = function () {
-  SpaceGame.transitionPlugin.to('GameOver');
-};
-SpaceGame.priceStyle = {font: '50px eater', fill: '#2B9DD6'};
-SpaceGame.priceList = {
-  'satelite': 40,
-  'satelite_freeze': 30,
-  'laser_tower': 150,
-  'tower': 100,
-  'wall': 5,
-  'bomb': 20,
-  'rocket': 10
-};
 SpaceGame.Main.prototype = {
+  render: function() {
+    // this.game.debug.start(20, 20, 'yellow');
+    // this.game.debug.line();
+},
   create: function () {
     // Hide CSS element.
     SpaceGame._anim_elem.style.display = 'none';
@@ -214,18 +205,36 @@ SpaceGame.Main.prototype = {
     // let Phaser add the particle system to world group or choose to add it to a specific group
     SpaceGame._rainGroup.add(particleSystem1);
     SpaceGame._rainGroup.children[0].x = cloud.x + 150;
-    game.time.events.add(5000, SpaceGame.Main.prototype.removeRain, this);
+    game.time.events.add(5000, this.removeRain, this);
   },
   removeRain: function () {
     SpaceGame._rainGroup.forEachAlive(function (element) {
       element.destroy();
-    });
+    }, this);
     SpaceGame._cloudsGroup.forEachAlive(function (cloud) {
       cloud.raining = false;
-    });
-    game.time.events.add(3000, SpaceGame.Main.prototype.makeRain);
+    }, this);
+    game.time.events.add(3000, this.makeRain, this);
   },
 
+  setupWorldBounds: function () {
+    SpaceGame.worldBounds = game.add.group();
+    // Define a block using bitmap data rather than an image sprite
+    var verticalShape = game.add.bitmapData(getWidth() * 8, 100);
+    var horizontalShape = game.add.bitmapData(100, getHeight() * 2);
+    // Create a new sprite using the bitmap data
+    SpaceGame.bottomBound = game.add.sprite(0, 790, verticalShape);
+    SpaceGame.worldBounds.add(SpaceGame.bottomBound);
+    SpaceGame.topBound = game.add.sprite(0, 10, verticalShape);
+    SpaceGame.worldBounds.add(SpaceGame.topBound);
+    SpaceGame.leftBound = game.add.sprite(0, 0, horizontalShape);
+    SpaceGame.worldBounds.add(SpaceGame.leftBound);
+    SpaceGame.rightBound = game.add.sprite(getWidth() * 4, 0, horizontalShape);
+    SpaceGame.worldBounds.add(SpaceGame.rightBound);
+    // Enable P2 Physics and set the block not to move
+    game.physics.p2.enable(SpaceGame.worldBounds);
+    SpaceGame.worldBounds.setAll('body.static', true);
+  }, 
   setupGameGroups: function () {
 
     /**
@@ -234,6 +243,7 @@ SpaceGame.Main.prototype = {
     towers = game.add.group();
     game.physics.enable(towers, Phaser.Physics.P2JS, debug);
     game.world.setBounds(0, 0, getWidth() * 4, 790);
+    this.setupWorldBounds();
 
     /**
      * Heart
@@ -356,7 +366,7 @@ SpaceGame.Main.prototype = {
   nextLevel: function () {
     level++;
     score += level * 20;
-    Tower.prototype.addToPoint(game.width / 2, game.height - 50);
+    Tower.prototype.addToPoint(getWidth() / 2, getHeight() - 300);
     showLevelTitle();
     updateScoreText();
     addRndBricks();
@@ -565,7 +575,9 @@ SpaceGame.Main.prototype = {
       var reloadBtn = game.add.sprite(0, 480, 'reload');
       reloadBtn.scale.setTo(0.2, 0.2);
       reloadBtn.inputEnabled = true;
-
+      var cRect = drawPriceCircle('R');
+      cRect.scale.setTo(2.4);
+      reloadBtn.addChild(cRect);
       return reloadBtn;
     }
     function drawPriceCircle (text) {
@@ -721,6 +733,13 @@ SpaceGame.Main.prototype = {
     });
   },
 
+  checkIntersectsWithRain: function (tower) {
+    var intersectsWithRain = false;
+    SpaceGame._rainGroup.forEachAlive(function (element) {
+      intersectsWithRain = Phaser.Rectangle.intersects(element.getBounds(), tower.getBounds());
+    }, this);
+    return intersectsWithRain;
+  },
   update: function () {
     SpaceGame._background.tilePosition.set(game.camera.x * -0.5, game.camera.y * -0.5);
     SpaceGame.rewpawnPickupsButton.onDown.add(function () {
@@ -751,80 +770,87 @@ SpaceGame.Main.prototype = {
      */
     SpaceGame.enemys.stealing = false;
     game.physics.arcade.collide(SpaceGame.enemys);
-    SpaceGame.enemys.forEach(function (enemy) {
+    SpaceGame.enemys.forEachAlive(function (enemy) {
+      // Slow down under the rain
+      enemy.body.damping = SpaceGame.Main.prototype.checkIntersectsWithRain(enemy)
+        ? 1
+        : 0.1;
 
-      if (enemy && enemy.alive) {
+      // Steal a plant
+      if (enemy.closestPlant && enemy.closestPlant.alive) {
+        if (enemy.closestPlant.stealing) {
+          SpaceGame.enemys.stealing = true;
+          enemy.body.velocity.y = -100;
+          enemy.closestPlant.x = enemy.x;
+          enemy.closestPlant.y = enemy.y;
+        }
 
-        // steal a plant
+        // protect with wall
+        if (enemy.y < 200 && towers.children[0].countBricks > 0
+          && game.time.now > enemy.blockedLastTime) {
+          towers.children[0].countBricks--;
+
+          new Wall(enemy.x, enemy.y - enemy.height);
+          enemy.blockedLastTime = game.time.now + 300;
+          updateScoreText();
+        }
+
+        // use/steal plant
+        if (enemy.closestPlant.y < 100 && enemy.closestPlant) {
+          game.audio.springSnd.play();
+          enemy.closestPlant.destroy();
+          updateScore(true);
+        }
+      }
+
+      // Plant is too far, forget
+      if (enemy.y < 100 && enemy.closestPlant && !SpaceGame.enemys.stealing) {
+        enemy.closestPlant.stealing = false;
+        enemy.closestPlant = false;
+        enemy.steals = false;
+      }
+
+      if (enemy.y > 600) {
+        // find closest  plant
+        enemy.closestPlant = SpaceGame._flowerPlants.getFirstAlive();
+        SpaceGame._flowerPlants.forEachAlive(function (plant) {
+          if (!plant.stealing && enemy.closestPlant.x - enemy.x < plant.x - enemy.x) {
+            enemy.closestPlant = plant;
+          }
+        });
+
         if (enemy.closestPlant && enemy.closestPlant.alive) {
-          if (enemy.closestPlant.stealing) {
+
+          if (Math.abs(enemy.x - enemy.closestPlant.x) > 100) {
+            // come close
+            enemy.body.velocity.x = 700;
+            if (enemy.x > enemy.closestPlant.x) {
+              enemy.body.velocity.x *= -1;
+            }
+          }
+          else {
+            // plant stealing in progress...
             SpaceGame.enemys.stealing = true;
+            Enemy.prototype.showStealingSign(enemy);
+            enemy.closestPlant.stealing = true;
+            enemy.closestPlant.scale.x = (0.5);
+            enemy.closestPlant.scale.y = (0.5);
             enemy.body.velocity.y = -100;
             enemy.closestPlant.x = enemy.x;
             enemy.closestPlant.y = enemy.y;
+            enemy.steals = true;
           }
 
-          // protect with wall
-          if (enemy.y < 200 && towers.children[0].countBricks > 0 && game.time.now > enemy.blockedLastTime) {
-            towers.children[0].countBricks--;
-
-            new Wall(enemy.x, enemy.y - enemy.height);
-            enemy.blockedLastTime = game.time.now + 300;
-            updateScoreText();
+          if (!enemy.steals) {
+            enemy.closestPlant = null;
           }
-
-          // use/steal plant
-          if (enemy.closestPlant.y < 100 && enemy.closestPlant) {
-            game.audio.springSnd.play();
-            enemy.closestPlant.destroy();
-            updateScore(true);
-          }
-        }
-
-        // plant is too far, forget
-        if (enemy.y < 100 && enemy.closestPlant && !SpaceGame.enemys.stealing) {
-          enemy.closestPlant.stealing = false;
-          enemy.closestPlant = false;
-        }
-
-        if (enemy.y > 600) {
-          // find closest  plant
-          enemy.closestPlant = SpaceGame._flowerPlants.getFirstAlive();
-          SpaceGame._flowerPlants.forEachAlive(function (plant) {
-            if (!plant.stealing && enemy.closestPlant.x - enemy.x < plant.x - enemy.x) {
-              enemy.closestPlant = plant;
-            }
-          });
-
-          if (enemy.closestPlant && enemy.closestPlant.alive) {
-
-            if (Math.abs(enemy.x - enemy.closestPlant.x) > 100) {
-              // come close
-              enemy.body.velocity.x = 700;
-              if (enemy.x > enemy.closestPlant.x) {
-                enemy.body.velocity.x *= -1;
-              }
-            }
-            else {
-              // plant stealing in progress...
-              SpaceGame.enemys.stealing = true;
-              Enemy.prototype.showStealingSign(enemy);
-              enemy.closestPlant.stealing = true;
-              enemy.closestPlant.scale.x = (0.5);
-              enemy.closestPlant.scale.y = (0.5);
-              enemy.body.velocity.y = -100;
-              enemy.closestPlant.x = enemy.x;
-              enemy.closestPlant.y = enemy.y;
-            }
-          }
-        }
-        if (!SpaceGame._flowerPlants.countLiving()) {
-          Enemy.prototype.explode(enemy);
         }
       }
+      if (!SpaceGame._flowerPlants.countLiving()) {
+        Enemy.prototype.explode(enemy);
+      }
     });
-
-
+    
     towers.forEachAlive(function (tower) {
       if (tower.alpha < 1) {
         return;
@@ -833,6 +859,11 @@ SpaceGame.Main.prototype = {
       // Move tower
       tower.body.setZeroVelocity();
       var speed = game.height / 1.3 + game.height - tower.body.y / 1.3;
+
+      // Slow down under the rain
+      if (SpaceGame.Main.prototype.checkIntersectsWithRain(tower)) {
+        speed -= tower.body.y;
+      }
 
       if (SpaceGame._cursors.left.isDown) {
         tower.angle = -30;
@@ -918,8 +949,5 @@ SpaceGame.Main.prototype = {
         }
       }
     });
-
-    // Follow camera.
-    SpaceGame._UiGroup.x = game.camera.x + 20;
   }
 };

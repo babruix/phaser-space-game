@@ -27,7 +27,9 @@ var Tower = function (worldX, worldY, tile) {
   game.camera.follow(this.tower);
 
   this.tower.body.onBeginContact.add(function (body1, shapeA, shapeB) {
-    if (body1 && body1.sprite != null && body1.sprite.key.indexOf('bullet') >= 0) {
+    if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {return}
+
+    if (body1 && body1.sprite.key.indexOf('bullet') >= 0) {
       game.audio.smackSnd.play();
       if (typeof(body1.sprite.enemyBullet) != "undefined"
         && body1.sprite.alive
@@ -180,7 +182,7 @@ Tower.prototype = {
     towers.children[0].anchor.setTo(0.5, 0.5);
     game.add.tween(towers.children[0])
       .to({alpha: 1}, 500, Phaser.Easing.Linear.In,
-        true, 1000, true, false)
+        true, 1000)
       .onComplete.add(function () {
       SpaceGame._shipTrail.alpha = 1;
     });
@@ -202,16 +204,22 @@ Tower.prototype = {
   },
   fire: function (tower) {
     //SpaceGame.enemys.stealing &&
-    if (tower.alive && game.time.now > tower.fireLastTime && tower.bullets > 0) {
-      tower.bullets--;
-      updateScoreText();
-      game.audio.playerSndFire.play();
-      var bullet = new Bullet(tower.x, tower.y - tower.height, false);
-      if (bullet != undefined && bullet.body != undefined) {
-        bullet.body.moveUp(1500);
-        bullet = null;
+    if (tower.alive && game.time.now > tower.fireLastTime) {
+      if (tower.bullets > 0) {
+        tower.bullets--;
+        updateScoreText();
+        game.audio.playerSndFire.play();
+        var bullet = new Bullet(tower.x, tower.y - tower.height, false);
+        if (bullet != undefined && bullet.body != undefined) {
+          bullet.body.moveUp(1500);
+          bullet = null;
+        }
+        tower.fireLastTime = game.time.now + tower.fireTime;
       }
-      tower.fireLastTime = game.time.now + tower.fireTime;
+      else {
+       // Fire missles when there are no bullets
+        this.fireMissle(tower);
+      }
     }
   },
   fireMissle: function (tower) {
@@ -297,7 +305,7 @@ Tower.prototype = {
       return;
     }
     
-    new Bomb(tower.x, 0);
+    new Bomb(tower.x, 100);
     score -= SpaceGame.priceList.bomb;
     tower.actionLastTime = game.time.now + tower.actionTime;
   }

@@ -14,7 +14,9 @@ var Fuel = function () {
   SpaceGame._fuels.add(this.fuel);
 
   this.fuel.body.onBeginContact.add(function (body1, shapeA, shapeB) {
-    if (body1 && body1.sprite != null && body1.sprite.key == 'spaceship') {
+    if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {return}
+
+    if (body1.sprite.key == 'spaceship') {
 
       if (!this.fuel.hitCooldown) {
         this.fuel.hitCooldown = true;

@@ -2,7 +2,7 @@ var Enemy = function (x, y, anim, animLength) {
   var xDestination = game.rnd.integerInRange(100, game.world.width / 2);
   var rndInt = game.rnd.integerInRange(0, game.audio.ufoSnd.length - 1);
   game.audio.ufoSnd[rndInt].play();
-  var ufo = game.add.sprite(0, 0, 'ufo');
+  var ufo = game.add.sprite(xDestination - game.rnd.integerInRange(0, xDestination), 0, 'ufo');
   ufo.animations.add('walk');
   ufo.animations.play('walk', 10, true);
   ufo.anchor.setTo(0.5, 0);
@@ -11,11 +11,17 @@ var Enemy = function (x, y, anim, animLength) {
   ufo.body.mass = 10;
   SpaceGame._ufos.add(ufo);
 
-  this.enemy = game.add.sprite(x, 0, anim);
+  this.enemy = game.add.sprite(x, 50, anim);
+  this.enemy.anchor.setTo(.5);
+  this.enemy.alpha = 0;
   this.enemy.animations.add('walk');
   this.enemy.animations.play('walk', animLength, true);
 
-  game.physics.enable(this.enemy, Phaser.arcade);
+  this.enemy.ufo_beam = game.add.sprite(0, 50, 'ufo_beam');
+  this.enemy.ufo_beam.alpha = 0;
+  this.enemy.ufo_beam.anchor.setTo(0.5, 0);
+
+  game.physics.enable(this.enemy);
   this.enemy.body.velocity.x = 100;
   this.enemy.ufo_exists = true;
   this.enemy.ufo = ufo;
@@ -33,25 +39,37 @@ var Enemy = function (x, y, anim, animLength) {
       _this.enemy.ufo.scale.x = ufoScale;
       _this.enemy.ufo.scale.y = ufoScale;
       if (_this.enemy.ufo.x > _this.enemy.drop_enemy_at_x) {
+        _this.enemy.alpha = 1;
+        _this.enemy.x = _this.enemy.drop_enemy_at_x;
         _this.enemy.ufo.body.velocity.x = 0;
         _this.enemy.body.velocity.x = 0;
         _this.enemy.body.velocity.y = 20;
-        var ufo_tween = game.add.tween(_this.enemy.ufo);
-        ufo_tween.to({
-            width: 0,
-            height: 0
-          }, 3000 /*duration of the tween (in ms)*/,
-          Phaser.Easing.Bounce.Out /*easing type*/,
-          true /*autostart?*/,
-          1000 /*delay*/,
-          false /*yoyo?*/, false);
 
-        ufo_tween.onLoop.add(function () {
+        _this.enemy.ufo_beam.x = _this.enemy.ufo.x;
+        game.add.tween(_this.enemy.ufo_beam)
+          .to({alpha: 0.2}, 200, null, true);
+
+        game.time.events.add(Phaser.Timer.SECOND * 3, function () {
+          var beamTween = game.add.tween(_this.enemy.ufo_beam)
+            .to({alpha: 0}, 200, null, true);
+          beamTween.onComplete.add(function () {
+            _this.enemy.ufo_beam.destroy();
+          }, this);
+
           if (_this.enemy.ufo.alive) {
             Enemy.prototype.initEnemy(_this.enemy);
+            _this.enemy.ufo.alive = false;
           }
-          _this.enemy.ufo.destroy();
-        });
+
+          var ufo_tween = game.add.tween(_this.enemy.ufo);
+          ufo_tween.to({
+            x: _this.enemy.ufo.x - 200
+          }, 1000, Phaser.Easing.Exponential.Out, true);
+          ufo_tween.onComplete.add(function () {
+            _this.enemy.ufo.destroy();
+          }, this);
+
+        }, this);
 
       }
     }
@@ -61,7 +79,18 @@ var Enemy = function (x, y, anim, animLength) {
 };
 
 Enemy.prototype = {
-  initEnemy: function (enemy) {
+  putPlantBack: function (enemy) {
+    if (enemy.closestPlant && enemy.closestPlant.alive) {
+      enemy.closestPlant.stealing = false;
+      enemy.steals = false;
+      enemy.closestPlant.y = game.height - 50;
+      enemy.closestPlant.scale.x = (1);
+      enemy.closestPlant.scale.y = (1);
+      enemy.closestPlant = null;
+      this.hideStealingSign();
+      SpaceGame.Main.prototype.generateGrowingPickups();
+    }
+  }, initEnemy: function (enemy) {
     enemy.ufo_sound.stop();
     enemy.ufo.animations.stop('walk');
     game.audio.toilSnd.play();
@@ -112,7 +141,8 @@ Enemy.prototype = {
     enemy.ufo = null;
 
     enemy.body.onBeginContact.add(function (body1) {
-      if (!body1 || !body1.sprite) return;
+      if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {return}
+
       if (body1.sprite.key.indexOf('bullet') >= 0 && !body1.sprite.enemyBullet) {
         if (!enemy.lastDamage) {
           enemy.lastDamage = game.time.now;
@@ -155,17 +185,7 @@ Enemy.prototype = {
           this.explode(enemy);
           this.hideStealingSign();
         }
-
-        // put plant back
-        if (enemy.closestPlant && enemy.closestPlant.alive) {
-          enemy.closestPlant.stealing = false;
-          enemy.closestPlant.y = game.height - 50;
-          enemy.closestPlant.scale.x = (1);
-          enemy.closestPlant.scale.y = (1);
-          enemy.closestPlant = null;
-          this.hideStealingSign();
-          SpaceGame.Main.prototype.generateGrowingPickups();
-        }
+        this.putPlantBack(enemy);
       }
     }, this);
 
@@ -197,11 +217,12 @@ Enemy.prototype = {
       }
     };
     enemy.events.onKilled.add(function (enemy) {
+      this.putPlantBack(enemy);
       enemy.enemyHealthBar.barSprite.kill();
       enemy.enemyHealthBar.bgSprite.kill();
       score += level * 3;
       updateScoreText();
-    });
+    }, this);
 
     SpaceGame.enemys.add(enemy);
   },

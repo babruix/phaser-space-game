@@ -10,12 +10,13 @@ var Ammo = function() {
   this.ammo = game.add.sprite(x2, y2, 'ammo');
   this.ammo.anchor.setTo(0.5, 0.5);
   game.physics.p2.enable(this.ammo, debug);
-  //this.ammo.scale.setTo(.3,.3);
 
   SpaceGame._ammos.add(this.ammo);
 
   this.ammo.body.onBeginContact.add(function (body1, shapeA, shapeB) {
-    if (body1 && body1.sprite != null && body1.sprite.key=='spaceship') {
+    if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {return}
+
+    if (body1.sprite.key=='spaceship') {
 
       if (!this.ammo.hitCooldown) {
         this.ammo.hitCooldown = true;

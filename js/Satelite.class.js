@@ -13,7 +13,7 @@ var Satelite = function (worldX, worldY, freeze, rocket, laser) {
   this.satelite.health = 10;
   game.physics.p2.enable(this.satelite, debug);
   this.satelite.fireLastTime = game.time.now;
-  this.satelite.fireTime = 300;
+  this.satelite.fireTime = laser ? 1600 : 300;
   this.satelite.freezing = freeze || false;
   this.satelite.rocket = rocket || false;
   this.satelite.laser = laser || false;
@@ -41,7 +41,9 @@ var Satelite = function (worldX, worldY, freeze, rocket, laser) {
   this.satelite.HealthBar = new HealthBar(game, barConfig);
 
   this.satelite.body.onBeginContact.add(function (body1, shapeA, shapeB) {
-    if (body1 && body1.sprite != null && body1.sprite.key.indexOf('bullet') >= 0) {
+    if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {return}
+
+    if (body1.sprite.key.indexOf('bullet') >= 0) {
       if (typeof(body1.sprite.enemyBullet) != "undefined" && body1.sprite.enemyBullet == true) {
         game.audio.smackSnd.play();
         this.satelite.damage(2);
@@ -76,7 +78,7 @@ Satelite.prototype = {
     // Satellite fire only when enemy distance less 700.
     minimalReactDistance = minimalReactDistance || 700;
     if (satelite.laser) {
-      minimalReactDistance = 300;
+      minimalReactDistance = 200;
     }
 
     var closestEnemy = SpaceGame.enemys.getFirstAlive();
@@ -97,9 +99,12 @@ Satelite.prototype = {
       return false;
     }
     var closestDistance = caculatetDistance(satelite, closestEnemy);
+    if (closestDistance > minimalReactDistance) {
+      return false;
+    }
 
     // Highlight closest enemy.
-    Satelite.prototype.drawAimRect(satelite, closestEnemy);
+    this.drawAimRect(satelite, closestEnemy);
     this._aimRect = satelite._aimRect;
     this._dot = satelite._dot;
     game.time.events.add(Phaser.Timer.SECOND * 1, Satelite.prototype.removeAimRect, this);
@@ -117,11 +122,17 @@ Satelite.prototype = {
       
       if (satelite.rocket) {
         // Missile fire
-        var missle = new Missle(satelite.x + satelite.width / 2, satelite.y - satelite.height * 2, true);
+        var x = closestEnemy.x > satelite.x
+          ? satelite.x + satelite.width * 2
+          : satelite.x - satelite.width * 2;
+        var y = closestEnemy.y > satelite.y
+          ? satelite.y + satelite.height * 2
+          : satelite.y - satelite.height * 2;
+        var missle = new Missle(x, y, true);
         missle.anchor.setTo(0.5, 0.5);
         satelite.fireLastTime = game.time.now + satelite.fireTime + 1000;
         game.physics.arcade.moveToObject(missle, closestEnemy, 800);
-        missle.body.rotation =game.physics.arcade.angleToPointer(closestEnemy) - Math.PI/2;
+        missle.body.rotation = game.physics.arcade.angleToPointer(closestEnemy) - Math.PI/2;
         return;
       }
 
@@ -189,6 +200,10 @@ Satelite.prototype = {
     satelite._dot.lineColor = lineColor;
     satelite._dot.alpha = 0.7;
     satelite._dot.drawCircle(enemy.x, enemy.y, 5);
+
+    game.time.events.add(2000, function () {
+      this.removeAimRect();
+    }, this);
   },
   removeAimRect: function () {
     // Hilight remove from enemy.

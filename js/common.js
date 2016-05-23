@@ -103,7 +103,9 @@ function addWalls() {
 
 function addRndBricks() {
   for (var i = 1; i < level * 3; i++) {
-    new Wall(game.rnd.integerInRange(0, game.width), game.rnd.integerInRange(0, game.height));
+    var x = game.rnd.integerInRange(0, game.width);
+    var y = game.rnd.integerInRange(0, game.height / 1.5);
+    new Wall(x, y);
   }
 }
 
