@@ -39,6 +39,7 @@ SpaceGame.Main.prototype = {
   render: function() {
     // this.game.debug.start(20, 20, 'yellow');
     // this.game.debug.line();
+    // this.game.debug.spriteInfo(towers.children[0], 32, 32);
 },
   create: function () {
     // Hide CSS element.
@@ -366,7 +367,7 @@ SpaceGame.Main.prototype = {
   nextLevel: function () {
     level++;
     score += level * 20;
-    Tower.prototype.addToPoint(getWidth() / 2, getHeight() - 50);
+    Tower.prototype.addToPoint(getWidth() / 2, getHeight() - 250);
     showLevelTitle();
     updateScoreText();
     addRndBricks();
@@ -432,7 +433,8 @@ SpaceGame.Main.prototype = {
       liveSprite.fixedToCamera = true;
       SpaceGame._livesGraph.add(liveSprite);
     }
-  }, initUI: function () {
+  },
+  initUI: function () {
 
     // Create elements.
     function createUiElements() {
