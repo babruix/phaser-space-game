@@ -360,6 +360,8 @@ SpaceGame.Main.prototype = {
     SpaceGame.enemys.enableBody = true;
     SpaceGame.enemys.physicsBodyType = Phaser.Physics.P2JS;
     game.physics.p2.enableBody(SpaceGame.enemys, debug);
+    SpaceGame.enemys.setAll('checkWorldBounds', true);
+    SpaceGame.enemys.setAll('outOfBoundsKill', true);
 
     /* Flowers */
     SpaceGame._flowerPlants = game.add.group();
@@ -367,7 +369,7 @@ SpaceGame.Main.prototype = {
   nextLevel: function () {
     level++;
     score += level * 20;
-    Tower.prototype.addToPoint(getWidth() / 2, getHeight() - 250);
+    Tower.prototype.addToPoint(400, 400);
     showLevelTitle();
     updateScoreText();
     addRndBricks();

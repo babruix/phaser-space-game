@@ -132,15 +132,15 @@ function updateScoreText() {
   // Respawn dead player
   if (towers && towers.children && !towers.children[0].alive) {
     towers.children[0].destroy();
-    Tower.prototype.addToPoint(400, getHeight()-50);
+    Tower.prototype.addToPoint(400, 400);
   }
 }
 
 function updateScore(losingLife) {
   if (losingLife == true) {
     game.camera.shake();
-    SpaceGame.Main.prototype.drawLivesSprites();
     lives--;
+    SpaceGame.Main.prototype.drawLivesSprites();
     score -= 10;
   }
   else {

@@ -116,6 +116,7 @@ Enemy.prototype = {
     enemy.animations.play('walk', animLength, true);
     game.physics.p2.enable(enemy, debug);
     enemy.body.mass = 1;
+    enemy.body.fixedRotation = true;
     enemy.body.velocity.x = 150;
 
     // Add  PhysicsEditor bounding shape.
@@ -261,7 +262,7 @@ Enemy.prototype = {
     // Scale depending on enemy.y
     var scale = parseInt(enemy.y / 2.5) / 100;
     scale = scale > 1.5 ? 1.5 : scale;
-    scale = scale < 0.2 ? 0.2 : scale;
+    scale = scale < 0.3 ? 0.4 : scale;
     enemy.scale.x = scale;
     enemy.scale.y = scale;
   },
