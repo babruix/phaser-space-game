@@ -154,7 +154,8 @@ Satelite.prototype = {
           satelite.laserLine.kill();
           closestEnemy.kill();
         }, this);
-
+        
+        game.camera.flash(0xffffff, 100);
         satelite.fireLastTime = game.time.now + satelite.fireTime;
         return;
       }

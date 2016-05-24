@@ -366,7 +366,7 @@ SpaceGame.Main.prototype = {
   nextLevel: function () {
     level++;
     score += level * 20;
-    Tower.prototype.addToPoint(getWidth() / 2, getHeight() - 300);
+    Tower.prototype.addToPoint(getWidth() / 2, getHeight() - 50);
     showLevelTitle();
     updateScoreText();
     addRndBricks();
@@ -423,10 +423,21 @@ SpaceGame.Main.prototype = {
     SpaceGame.enemys.stealSignRight = initOneStealSign('right');
   },
 
-  initUI: function () {
+  drawLivesSprites: function () {
+    SpaceGame._livesGraph.removeAll(true);
+    for (var i = 0; i < lives; i++) {
+      var liveSprite = game.add.sprite(50 * i, 0, 'spaceship');
+      liveSprite.scale.setTo(0.2);
+      liveSprite.tint = 0x0BA4FF;
+      liveSprite.fixedToCamera = true;
+      SpaceGame._livesGraph.add(liveSprite);
+    }
+  }, initUI: function () {
 
     // Create elements.
     function createUiElements() {
+      SpaceGame._livesGraph = game.add.group();
+      this.drawLivesSprites();
       SpaceGame._UiGraph = createUiGraph();
       SpaceGame._sateliteBtn = createSateliteDraggable.call(this, 'satelite');
       SpaceGame._sateliteFreezeBtn = createSateliteDraggable.call(this, 'satelite_freeze');
@@ -752,6 +763,7 @@ SpaceGame.Main.prototype = {
     if (!SpaceGame._flowerPlants.countLiving()) {
       // save game screenshot.
       SpaceGame.canvasDataURI = game.canvas.toDataURL();
+      game.camera.flash(0xFF0010, 2000, true);
       game.time.events.add(0, SpaceGame.GameOverTransition, this).autoDestroy = true;
       return;
     }

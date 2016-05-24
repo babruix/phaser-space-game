@@ -104,7 +104,7 @@ function addWalls() {
 function addRndBricks() {
   for (var i = 1; i < level * 3; i++) {
     var x = game.rnd.integerInRange(0, game.width);
-    var y = game.rnd.integerInRange(0, game.height / 1.5);
+    var y = game.rnd.integerInRange(300, game.height / 1.5);
     new Wall(x, y);
   }
 }
@@ -132,12 +132,14 @@ function updateScoreText() {
   // Respawn dead player
   if (towers && towers.children && !towers.children[0].alive) {
     towers.children[0].destroy();
-    Tower.prototype.addToPoint(400, 400);
+    Tower.prototype.addToPoint(400, getHeight()-50);
   }
 }
 
 function updateScore(losingLife) {
   if (losingLife == true) {
+    game.camera.shake();
+    SpaceGame.Main.prototype.drawLivesSprites();
     lives--;
     score -= 10;
   }
@@ -146,6 +148,7 @@ function updateScore(losingLife) {
   }
   updateScoreText();
   if (lives < 0) {
+    game.camera.shake();
     // save game screenshot.
     SpaceGame.canvasDataURI = game.canvas.toDataURL();
     game.time.events.add(Phaser.Timer.SECOND * 2, SpaceGame.GameOverTransition, this).autoDestroy = true;

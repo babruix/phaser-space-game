@@ -39,6 +39,11 @@ var Tower = function (worldX, worldY, tile) {
         }
         else {
           this.tower.damage(1);
+          // flash in red
+          this.tower.tint = 0xFF0010;
+          game.time.events.add(100, function() {
+            this.tower.tint = 0xFFFFFF;
+          }, this);
         }
         body1.sprite.destroy();
 

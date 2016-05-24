@@ -180,6 +180,11 @@ Enemy.prototype = {
           }
         }
 
+        // flash in red
+        enemy.tint = 0xFF0010;
+        game.time.events.add(300, function() {
+          enemy.tint = 0xFFFFFF;
+        }, this);
 
         if (enemy.health == 1) {
           this.explode(enemy);
