@@ -12,7 +12,7 @@ SpaceGame.GameOver.prototype = {
 
     var message  = "GAME OVER! \n press any key to restart";
     if (!SpaceGame._flowerPlants.countLiving() && lives > 0) {
-      message = "all flowers are stolen \n" + message;
+      message = "all flowers have been stolen \n" + message;
     }
     // place the assets and elements in their initial positions, create the state
     this._fontStyle = { font: "40px eater", fill: "#FFCC00", stroke: "#333", strokeThickness: 5, align: "center" };
