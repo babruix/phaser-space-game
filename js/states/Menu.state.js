@@ -22,7 +22,7 @@ SpaceGame.Menu.prototype = {
       strokeThickness: 5,
       align: "center"
     };
-    this._startText = this.add.text(game.width / 2, game.height, "-[ SPACE ANIMALS ]-", this._fontStyle);
+    this._startText = this.add.text(game.width / 2, game.height, "-[ FARTING ALIENS ]-", this._fontStyle);
     this._startText.anchor.setTo(0.5, 0.5);
     this.add.tween(this._startText).to({
       y: (game.height - 250) / 2

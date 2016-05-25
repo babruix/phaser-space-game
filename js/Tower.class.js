@@ -157,12 +157,6 @@ Tower.prototype = {
   addToPoint: function (worldX, worldY) {
     new Tower(worldX, worldY, 'spaceship');
 
-    var particleSystem1 = SpaceGame.epsyPlugin.loadSystem(SpaceGame.epsyPluginConfig.circles, worldX, worldY);
-    // let Phaser add the particle system to world group or choose to add it to a specific group
-    this._circlesGroup = game.add.group();
-    this._circlesGroup.add(particleSystem1);
-    game.time.events.add(2000, Tower.prototype.destroyCirclesGroup, this).autoDestroy = true;
-
     // Add health bar.
     var barConfig = {
       x: towers.children[0].health,
@@ -190,7 +184,14 @@ Tower.prototype = {
         true, 1000)
       .onComplete.add(function () {
       SpaceGame._shipTrail.alpha = 1;
-    });
+
+      // let Phaser add the particle system to world group or choose to add it to a specific group
+      var particleSystem1 = SpaceGame.epsyPlugin.loadSystem(SpaceGame.epsyPluginConfig.circles, towers.children[0].x, towers.children[0].y);
+      this._circlesGroup = game.add.group();
+      this._circlesGroup.add(particleSystem1);
+      game.time.events.add(2000, Tower.prototype.destroyCirclesGroup, this).autoDestroy = true;
+
+    }, this);
 
     // Add an emitter for the ship's trail
     SpaceGame._shipTrail = game.add.emitter(game, towers.children[0].x, towers.children[0].y + 10, 400);

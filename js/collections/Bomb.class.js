@@ -16,9 +16,12 @@ var Bomb = function(x, y) {
       Missle.prototype.explode(this.bomb);
     }
     else {
-      this.bomb.kill();
-      game.audio.explosionSnd.play();
-      updateScore(true);
+      if (this.bomb.alive) {
+        console.log('bomb!');
+        this.bomb.destroy();
+        game.audio.explosionSnd.play();
+        updateScore(true);
+      }
     }
 
   }, this);

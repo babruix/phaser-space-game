@@ -84,13 +84,15 @@ Enemy.prototype = {
       enemy.closestPlant.stealing = false;
       enemy.steals = false;
       enemy.closestPlant.y = game.height - 50;
+      enemy.closestPlant.angle = 0;
       enemy.closestPlant.scale.x = (1);
       enemy.closestPlant.scale.y = (1);
       enemy.closestPlant = null;
       this.hideStealingSign();
       SpaceGame.Main.prototype.generateGrowingPickups();
     }
-  }, initEnemy: function (enemy) {
+  }, 
+  initEnemy: function (enemy) {
     enemy.ufo_sound.stop();
     enemy.ufo.animations.stop('walk');
     game.audio.toilSnd.play();
@@ -111,6 +113,7 @@ Enemy.prototype = {
     enemy.fireTime = 1000;
     enemy.fireLastTime = game.time.now + enemy.fireTime;
     enemy.blockedLastTime = game.time.now + 300;
+    enemy.checkWorldBounds = true;
 
     enemy.animations.add('walk');
     enemy.animations.play('walk', animLength, true);
@@ -195,11 +198,15 @@ Enemy.prototype = {
       }
     }, this);
 
+    enemy.events.onOutOfBounds.add(function (enemy) {
+      enemy.destroy();
+    }, this);
+
     enemy.update = function () {
       if (enemy) {
         if (enemy.freezed == true) {
-          enemy.body.velocity.x=0;
-          enemy.body.velocity.y=0;
+          enemy.body.velocity.x = 0;
+          enemy.body.velocity.y = 0;
           // Unfreeze after 4s.
           if (enemy.lastFreezed + Phaser.Timer.SECOND * 4 < game.time.now) {
             enemy.freezed = false;
