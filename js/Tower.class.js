@@ -11,8 +11,8 @@ var Tower = function (worldX, worldY, tile) {
   this.tower.fireLastTime = game.time.now + this.tower.fireTime;
   this.tower.actionLastTime = game.time.now + this.tower.actionTime;
   game.physics.p2.enable(this.tower, debug);
-  this.tower.bullets = 50;
-  this.tower.fuel = 200;
+  this.tower.bullets = 50 * level;
+  this.tower.fuel = 100 * level;
 
   this.tower.width = 100;
   this.tower.height = 42;
@@ -179,18 +179,20 @@ Tower.prototype = {
     towers.children[0].alpha = 0;
     towers.children[0].fireTime = 200;
     towers.children[0].anchor.setTo(0.5, 0.5);
-    game.add.tween(towers.children[0])
-      .to({alpha: 1}, 500, Phaser.Easing.Linear.In,
-        true, 1000)
-      .onComplete.add(function () {
-      SpaceGame._shipTrail.alpha = 1;
 
+    game.time.events.add(500, function() {
       // let Phaser add the particle system to world group or choose to add it to a specific group
       var particleSystem1 = SpaceGame.epsyPlugin.loadSystem(SpaceGame.epsyPluginConfig.circles, towers.children[0].x, towers.children[0].y);
       this._circlesGroup = game.add.group();
       this._circlesGroup.add(particleSystem1);
-      game.time.events.add(2000, Tower.prototype.destroyCirclesGroup, this).autoDestroy = true;
+      game.time.events.add(1000, Tower.prototype.destroyCirclesGroup, this).autoDestroy = true;
 
+      game.add.tween(towers.children[0])
+        .to({alpha: 1}, 1000, Phaser.Easing.Linear.In,
+          true, 500)
+        .onComplete.add(function () {
+        SpaceGame._shipTrail.alpha = 1;
+      }, this);
     }, this);
 
     // Add an emitter for the ship's trail

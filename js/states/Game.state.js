@@ -392,7 +392,7 @@ SpaceGame.Main.prototype = {
 
     // Remove old generation events
     for (var i = 0; i < SpaceGame._plantsGenerationEvents.length; i++) {
-      game.time.events.stop(SpaceGame._plantsGenerationEvents[i]);
+      game.time.events.remove(SpaceGame._plantsGenerationEvents[i]);
     }
 
     // Add new events
@@ -798,8 +798,7 @@ SpaceGame.Main.prototype = {
           SpaceGame.enemys.stealing = true;
           enemy.body.velocity.y = -100;
           enemy.closestPlant.x = enemy.x;
-          enemy.closestPlant.y = enemy.y + enemy.height/2;
-          enemy.closestPlant.angle = 180;
+          enemy.closestPlant.y = enemy.y;
         }
 
         // protect with wall
@@ -825,7 +824,6 @@ SpaceGame.Main.prototype = {
         enemy.closestPlant.stealing = false;
         enemy.closestPlant = false;
         enemy.steals = false;
-        enemy.closestPlant.angle = 0;
       }
 
       if (enemy.y > 600) {
@@ -860,7 +858,6 @@ SpaceGame.Main.prototype = {
           }
 
           if (!enemy.steals) {
-            enemy.closestPlant.angle = 0;
             enemy.closestPlant = null;
           }
         }

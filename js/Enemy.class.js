@@ -113,7 +113,6 @@ Enemy.prototype = {
     enemy.fireTime = 1000;
     enemy.fireLastTime = game.time.now + enemy.fireTime;
     enemy.blockedLastTime = game.time.now + 300;
-    enemy.checkWorldBounds = true;
 
     enemy.animations.add('walk');
     enemy.animations.play('walk', animLength, true);
