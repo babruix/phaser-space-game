@@ -95,12 +95,6 @@ function levelCompleted() {
   }, this);
 }
 
-function addWalls() {
-  for (var i = 1; i < game.width; i = i + 250) {
-    new Wall(i, parseInt(game.height / 2 + 250));
-  }
-}
-
 function addRndBricks() {
   for (var i = 1; i < level * 3; i++) {
     var x = game.rnd.integerInRange(0, game.width);
@@ -110,19 +104,19 @@ function addRndBricks() {
 }
 
 function updateScoreText() {
-  var style = {font: '17px eater', fill: '#0048D8', align: 'left'};
-  var str = "  Lives: " + lives
-    + " \n  Flowers: " + SpaceGame._flowerPlants.countLiving()
-    + " \n  Level: " + level
-    + " \n  $: " + score;
+  var style = {font: '20px eater', fill: '#E39B00', align: 'left'};
+  var str = "   Lives: " + lives
+    // + " \n  Flowers: " + SpaceGame._flowerPlants.countLiving()
+    + "    Level: " + level
+    + "   $: " + score;
   if (towers && towers.children && typeof towers.children[0] != "undefined") {
-    str += "\n  Bricks: " + towers.children[0].countBricks;
-    str += "\n  Missles: " + towers.children[0].missles + "";
-    str += "\n  Bullets: " + towers.children[0].bullets + "";
-    str += "\n  Fuel: " + towers.children[0].fuel + "";
+    str += "   Bricks: " + towers.children[0].countBricks;
+    str += "   Missles: " + towers.children[0].missles + "";
+    str += "   Bullets: " + towers.children[0].bullets + "";
+    str += "   Fuel: " + towers.children[0].fuel + "";
   }
   if (!SpaceGame._scoreText) {
-    SpaceGame._scoreText = game.add.text(game.width-150, game.height - 260, str, style);
+    SpaceGame._scoreText = game.add.text(0, game.height, str, style);
     SpaceGame._UiGroup.add(SpaceGame._scoreText);
   }
   else {

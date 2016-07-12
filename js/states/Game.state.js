@@ -474,11 +474,11 @@ SpaceGame.Main.prototype = {
 
     // Functions to create elements.
     function createUiGraph() {
-      var uiRect = game.add.graphics(0, 0);
+      var uiRect = game.add.graphics(0, game.height-30);
       uiRect.beginFill(0xFFFFFF);
       uiRect.clear();
-      uiRect.drawRect(game.width - 150, 0, 150, game.height);
-      uiRect.alpha = .8;
+      uiRect.drawRect(0, 0, game.width, 30);
+      uiRect.alpha = .7;
       return uiRect;
     }
     function createSateliteDraggable(key) {
@@ -712,7 +712,7 @@ SpaceGame.Main.prototype = {
 
     SpaceGame._UiGroup.forEach(function (item) {
 
-      // Graphics does not work to animate here :(
+      // Graphics animation doesn't work here.
       if (item.type == 0) {
         item.x = moveOut ? item.x : game.width + item.width;
         item.alpha = moveOut ? 1 : 0;
@@ -722,6 +722,13 @@ SpaceGame.Main.prototype = {
 
         game.add.tween(item).to({alpha: moveOut ? 0 : 1, x: toX},
           700, Phaser.Easing.Linear.None, true, delay);
+        if (SpaceGame._scoreText == item) {
+           toY = moveOut ? game.height - item.height : game.height - 30;
+           toX = 5;
+        game.add.tween(item).to({alpha: moveOut ? 0 : 1, x: toX, y: toY},
+          700, Phaser.Easing.Linear.None, true, delay);
+        }
+
       }
     });
   },

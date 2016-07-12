@@ -1,7 +1,7 @@
 SpaceGame.GameOverTransition = function () {
   SpaceGame.transitionPlugin.to('GameOver');
 };
-SpaceGame.priceStyle = {font: '50px eater', fill: '#2B9DD6'};
+SpaceGame.priceStyle = {font: '50px eater', fill: '#FFF'};
 SpaceGame.priceList = {
   'satelite_freeze': 30,
   'satelite': 20,
