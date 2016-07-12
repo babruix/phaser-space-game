@@ -268,7 +268,7 @@ Enemy.prototype = {
     // Scale depending on enemy.y
     var scale = parseInt(enemy.y / 2.5) / 100;
     scale = scale > 1.5 ? 1.5 : scale;
-    scale = scale < 0.3 ? 0.4 : scale;
+    scale = scale < 0.3 ? 0.3 : scale;
     enemy.scale.x = scale;
     enemy.scale.y = scale;
   },
