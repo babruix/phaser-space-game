@@ -437,7 +437,7 @@ SpaceGame.Main.prototype = {
     }
   },
   initUI: function () {
-
+    var item_width = 70;
     // Create elements.
     function createUiElements() {
       SpaceGame._livesGraph = game.add.group();
@@ -483,22 +483,23 @@ SpaceGame.Main.prototype = {
     }
     function createSateliteDraggable(key) {
 
-      var yPos = 0;
+      var xPos = 0;
       switch (key) {
         case 'satelite_freeze':
-          yPos = 128 * 0.5;
+          xPos = item_width;
           break;
         case 'tower':
-          yPos = 2 * 128 * 0.5;
+          xPos = item_width*2;
           break;
         case 'laser_tower':
-          yPos = 3 * 128 * 0.5;
+          xPos = item_width * 3;
           break;
       }
 
-      var satelite = game.add.sprite(0, yPos, key);
+      var satelite = game.add.sprite(0, 0, key);
+      satelite.xPosition = xPos;
       satelite.anchor.setTo(0, 0);
-      satelite.scale.setTo(0.5, 0.5);
+      satelite.scale.setTo(0.4, 0.4);
 
       satelite.inputEnabled = true;
       satelite.input.enableDrag();
@@ -507,7 +508,7 @@ SpaceGame.Main.prototype = {
       satelite.events.onDragStop.add(eventSateliteDragStop);
       satelite.events.onDragUpdate.add(eventSateliteDragUpdate);
 
-      var textObj = game.add.text(150, 50, SpaceGame.priceList[key] + '$', SpaceGame.priceStyle);
+      var textObj = game.add.text(0, 100, SpaceGame.priceList[key] + '$', SpaceGame.priceStyle);
       satelite.addChild(textObj);
 
       var text = '1';
@@ -529,7 +530,8 @@ SpaceGame.Main.prototype = {
       return satelite;
     }
     function createWallDraggable() {
-      var wallBtn = game.add.sprite(0, 300, 'wall-a');
+      var wallBtn = game.add.sprite(0, 0, 'wall-a');
+      wallBtn.xPosition = item_width*4;
       wallBtn.scale.setTo(0.4, 0.4);
       wallBtn.inputEnabled = true;
       wallBtn.input.enableDrag();
@@ -537,17 +539,18 @@ SpaceGame.Main.prototype = {
       wallBtn.events.onInputDown.add(eventWallInputDown);
       wallBtn.events.onDragStop.add(eventWallDragStop);
 
-      var textObj = game.add.text(150, 15, SpaceGame.priceList.wall + '$', SpaceGame.priceStyle);
+      var textObj = game.add.text(0, 100, SpaceGame.priceList.wall + '$', SpaceGame.priceStyle);
       textObj.scale.setTo(1.3, 1.3);
       wallBtn.addChild(textObj);
       var cRect = drawPriceCircle('5');
-      cRect.scale.set(1.2);
+      cRect.scale.set(1.0);
       wallBtn.addChild(cRect);
 
       return wallBtn;
     }
     function createBombDraggable() {
       var bombBtn = game.add.sprite(0, 350, 'bomb');
+      bombBtn.xPosition = item_width*5
       bombBtn.scale.setTo(0.7, 0.7);
       bombBtn.inputEnabled = true;
       bombBtn.input.enableDrag();
@@ -556,18 +559,19 @@ SpaceGame.Main.prototype = {
       bombBtn.events.onDragStop.add(eventBombDragStop);
       bombBtn.events.onDragUpdate.add(eventBombDragUpdate);
 
-      var textObj = game.add.text(75, 15, SpaceGame.priceList.bomb + '$', SpaceGame.priceStyle);
+      var textObj = game.add.text(0, 50, SpaceGame.priceList.bomb + '$', SpaceGame.priceStyle);
       textObj.scale.setTo(0.7, 0.7);
       bombBtn.addChild(textObj);
 
       var cRect = drawPriceCircle('6');
-      cRect.scale.set(0.7);
+      cRect.scale.set(0.6);
       bombBtn.addChild(cRect);
 
       return bombBtn;
     }
     function createRocketDraggable() {
       var rocketBtn = game.add.sprite(0, 420, 'missle');
+      rocketBtn.xPosition = item_width*6;
       rocketBtn.scale.setTo(0.7, 0.7);
       rocketBtn.inputEnabled = true;
       rocketBtn.input.enableDrag();
@@ -576,22 +580,23 @@ SpaceGame.Main.prototype = {
       rocketBtn.events.onDragStop.add(eventRocketDragStop);
       rocketBtn.events.onDragUpdate.add(eventRocketDragUpdate);
 
-      var textObj = game.add.text(50, 0, SpaceGame.priceList.rocket + '$', SpaceGame.priceStyle);
+      var textObj = game.add.text(0, 50, SpaceGame.priceList.rocket + '$', SpaceGame.priceStyle);
       textObj.scale.setTo(0.7, 0.7);
       rocketBtn.addChild(textObj);
 
       var cRect = drawPriceCircle('7');
-      cRect.scale.set(0.7);
+      cRect.scale.set(0.6);
       rocketBtn.addChild(cRect);
 
       return rocketBtn;
     }
     function createReloadBtn() {
       var reloadBtn = game.add.sprite(0, 480, 'reload');
+      reloadBtn.xPosition = item_width*7;
       reloadBtn.scale.setTo(0.2, 0.2);
       reloadBtn.inputEnabled = true;
       var cRect = drawPriceCircle('R');
-      cRect.scale.setTo(2.4);
+      cRect.scale.setTo(2.0);
       reloadBtn.addChild(cRect);
       return reloadBtn;
     }
@@ -714,19 +719,20 @@ SpaceGame.Main.prototype = {
 
       // Graphics animation doesn't work here.
       if (item.type == 0) {
-        item.x = moveOut ? item.x : game.width + item.width;
+        item.y = moveOut ? item.y : game.height + item.height;
         item.alpha = moveOut ? 1 : 0;
 
-        var toX = moveOut ? game.width + item.width : game.width - 150;
+        var toY = moveOut ? game.height + item.height : game.height - 70;
         var delay = moveOut ? 700 : 500;
 
-        game.add.tween(item).to({alpha: moveOut ? 0 : 1, x: toX},
-          700, Phaser.Easing.Linear.None, true, delay);
         if (SpaceGame._scoreText == item) {
-           toY = moveOut ? game.height - item.height : game.height - 30;
-           toX = 5;
-        game.add.tween(item).to({alpha: moveOut ? 0 : 1, x: toX, y: toY},
-          700, Phaser.Easing.Linear.None, true, delay);
+          toY = moveOut ? game.height - item.height : game.height - 30;
+          game.add.tween(item).to({alpha: moveOut ? 0 : 1, x: 0, y: toY},
+            700, Phaser.Easing.Linear.None, true, delay);
+        }
+        else {
+          game.add.tween(item).to({alpha: moveOut ? 0 : 1, x:game.width/2+100+item.xPosition, y: toY},
+            700, Phaser.Easing.Linear.None, true, delay);
         }
 
       }

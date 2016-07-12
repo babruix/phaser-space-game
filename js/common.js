@@ -105,7 +105,8 @@ function addRndBricks() {
 
 function updateScoreText() {
   var style = {font: '20px eater', fill: '#E39B00', align: 'left'};
-  var str = "   Lives: " + lives
+  var str = ''
+    // "   Lives: " + lives
     // + " \n  Flowers: " + SpaceGame._flowerPlants.countLiving()
     + "    Level: " + level
     + "   $: " + score;
