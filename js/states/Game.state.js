@@ -474,10 +474,10 @@ SpaceGame.Main.prototype = {
 
     // Functions to create elements.
     function createUiGraph() {
-      var uiRect = game.add.graphics(0, game.height-30);
+      var uiRect = game.add.graphics(0, game.height-45);
       uiRect.beginFill(0xFFFFFF);
       uiRect.clear();
-      uiRect.drawRect(0, 0, game.width, 30);
+      uiRect.drawRect(0, 0, game.width, 45);
       uiRect.alpha = .7;
       return uiRect;
     }
