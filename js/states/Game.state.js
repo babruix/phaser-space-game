@@ -41,7 +41,8 @@ SpaceGame.Main.prototype = {
     // this.game.debug.line();
     // this.game.debug.spriteInfo(towers.children[0], 32, 32);
 },
-  create: function () {
+  create: function (tutorial) {
+    SpaceGame.isTutorial = tutorial || false;
     // Hide CSS element.
     SpaceGame._anim_elem.style.display = 'none';
     SpaceGame._anim_elem.className += ' gameCreated';
@@ -370,19 +371,18 @@ SpaceGame.Main.prototype = {
     level++;
     score += level * 20;
     Tower.prototype.addToPoint(400, 400);
-    showLevelTitle();
+    this.generateGrowingPickups();
     updateScoreText();
-    addRndBricks();
-    //addWalls();
     this.animateScore();
+    if (SpaceGame.isTutorial) {return}
+    showLevelTitle();
     this.addEnemys();
+    addRndBricks();
 
     Brick.prototype.generateBrick();
     for (var i = 0; i < parseInt(level / 2); i++) {
       Bomb.prototype.generateBomb();
     }
-
-    this.generateGrowingPickups();
   },
 
   generateGrowingPickups : function() {
@@ -478,7 +478,7 @@ SpaceGame.Main.prototype = {
       uiRect.beginFill(0xFFFFFF);
       uiRect.clear();
       uiRect.drawRect(0, 0, game.width, 45);
-      uiRect.alpha = .7;
+      uiRect.alpha = .4;
       return uiRect;
     }
     function createSateliteDraggable(key) {
@@ -777,8 +777,8 @@ SpaceGame.Main.prototype = {
       }
     }, this);
     // Game over if no alive flowers.
-    if (!SpaceGame._flowerPlants.countLiving()) {
-      // save game screenshot.
+    if (!SpaceGame.isTutorial && !SpaceGame._flowerPlants.countLiving()) {
+      // Save game canvas "screenshot".
       SpaceGame.canvasDataURI = game.canvas.toDataURL();
       game.camera.flash(0xFF0010, 2000, true);
       game.time.events.add(0, SpaceGame.GameOverTransition, this).autoDestroy = true;
@@ -788,7 +788,7 @@ SpaceGame.Main.prototype = {
     // Level completed.
     if (SpaceGame.enemys.countLiving() == 0
       && SpaceGame._allEnemysAdded
-      && !SpaceGame._newLevelStarted) {
+      && !SpaceGame._newLevelStarted && !SpaceGame.isTutorial) {
       SpaceGame._newLevelStarted = true;
       updateScore();
       levelCompleted();

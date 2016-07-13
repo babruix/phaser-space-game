@@ -10,6 +10,7 @@ game.audio = {};
 game.state.add('Boot', SpaceGame.Boot);
 game.state.add('Preloader', SpaceGame.Preloader);
 game.state.add('Menu', SpaceGame.Menu);
+game.state.add('Tutorial', SpaceGame.Tutorial);
 game.state.add('Main', SpaceGame.Main);
 game.state.add('GameOver', SpaceGame.GameOver);
 game.state.start('Boot');
