@@ -44,7 +44,7 @@ SpaceGame.Menu.prototype = {
     this._buttonStart.inputEnabled = true;
     this._buttonStart.input.useHandCursor = true;
     this.add.tween(this._buttonStart).to({
-      y: game.height / 2 + 70
+      y: game.height / 2
     }, 1000, Phaser.Easing.Bounce.Out, true, 500, 0);
     this._buttonStart.events.onInputOver.add(function (item) {
       item.fill = "#ffff44";
@@ -60,7 +60,7 @@ SpaceGame.Menu.prototype = {
     this._textStartTutorial = this.add.text(game.width / 2, -100, "Tutorial", this._fontStyle);
     this._textStartTutorial.anchor.setTo(0.5, 0.5);
     this.add.tween(this._textStartTutorial).to({
-      y: ((game.height - 250) / 2) + 300
+      y: ((game.height - 250) / 2) + 200
     }, 1000, Phaser.Easing.Bounce.Out, true, 1000, 0);
     this._textStartTutorial.inputEnabled = true;
     this._textStartTutorial.input.useHandCursor = true;
