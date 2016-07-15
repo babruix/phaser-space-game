@@ -1,5 +1,48 @@
 SpaceGame.Tutorial = function (game) {
   SpaceGame.Tutorial.tooltipDelay = 8000;
+
+  SpaceGame.TutorialTexts = [
+    '\nGreeting on the Tutorial level!\n\nHere you will get study about game features.\n ',
+    '\nYou have to Save The World!\n\n\nAgain!!!\n\n',
+    '\nYou can drive UFO (Unbelievably Fun Object) \nwith arrow keys ← → ↑ ↓.\n ',
+    '\nWhen you flying up ↑ , UFO consumes fuel resource \n',
+    '\nIf you do not have any fuel left,\n you can not fly up.\n ',
+    '\nThe bottom pannel shows your resources:\n\nmissiles, bullets, fuel, shield.\n',
+    '\nYour main weapon loaded with bullets.\nYou can shoot using [SPACEBAR]\n',
+    '\nIf you are out of bullets, main weapon will be switched to missiles.\n',
+    '\nYour additional weapon is missiles.\nYou can shoot using key [M] or [7]\n ',
+    '\nNote: if you are out of missiles,\nthey will be purchased.\n ',
+    '\nFlower can generate useful pick-ups:\narmor, fuel, bullets, missiles... \n',
+    '\nCurrently generating item showed at the bottom of the Flower.\n ',
+    '\nYou can change generating item by pressing [R].\n ',
+    '\nSome sneaky alien race "Farting Aliens"\n got aware about this Flower\n and decided to steal it\n',
+    '\nYour goal is to protect The Last Flower on the Planet\n and kill all h̶u̶m̶a̶n̶s̶ aliens.\n ',
+    '\nBe careful:\nenemies also can shoot you\n',
+    '\nYou can build different towers\nto get some help with defence\n ',
+    '\nNormal Tower [1], \nFreezing Tower [2], \nRocket Launcher [3] \nLaser [4]\n',
+    '\nYou can build asteroids [5], \nthey are cheep and can be destroyed\n',
+    '\nYou can request orbital mine [6], \nbe careful, it also can explode near you!\n',
+    '\nIt rains quite often here, and in the rain nobody can fly really fast.\n',
+    '\nYou can move rain by dragging cloud and dropping it to the new place. \n'
+  ];
+
+  SpaceGame.Tutorial._TipOptions = {
+    strokeColor: 0x82C1C4,
+    width: 800,
+    padding: 100,
+    strokeWeight: 4,
+    position: 'top',
+    positionOffset: 300,
+    animation: 'grow',
+    fixedToCamera: true,
+    textStyle: {
+      fontSize: 23,
+      fill: "#F18B0B",
+      wordWrap: true,
+      align: "center",
+      wordWrapWidth: 500
+    }
+  };
 };
 
 SpaceGame.Tutorial.prototype = {
@@ -13,7 +56,8 @@ SpaceGame.Tutorial.prototype = {
         // Show tool tips with delay.
         game.time.events.add(i * SpaceGame.Tutorial.tooltipDelay, function () {
           SpaceGame.Tutorial.prototype.showGameObjects(i);
-          SpaceGame.Tutorial.prototype.showTooltipWithText(i + ' = ' + text);
+          var textWithId = /*i + ':' +*/ text;
+          SpaceGame.Tutorial.prototype.showTooltipWithText(textWithId);
         }, this);
 
         // Remove last tooltip.
@@ -41,6 +85,7 @@ SpaceGame.Tutorial.prototype = {
     SpaceGame._flowerPlants.setAll('visible', false);
     SpaceGame._UiGroup.setAll('visible', false);
     SpaceGame._livesGraph.setAll('visible', false);
+    SpaceGame._shipTrail.visible = false;
   },
 
   blinkSprite: function (sprite) {
@@ -56,7 +101,19 @@ SpaceGame.Tutorial.prototype = {
         SpaceGame._livesGraph.setAll('visible', true);
         towers.setAll('visible', true);
         towers.setAll('fuel', 50);
+        SpaceGame._shipTrail.visible = true;
         this.blinkSprite(towers.children[0]);
+
+        // Show new sprite
+        SpaceGame.tutorialSptite =  game.add.sprite(200, 200, 'spaceship');
+        SpaceGame.Tutorial._TipOptions.context = SpaceGame.tutorialSptite;
+        // SpaceGame.Tutorial._TipOptions.targetObject = SpaceGame.tutorialSptite;
+        if (SpaceGame.newTooltip){
+          SpaceGame.newTooltip.destroy();
+        }
+        SpaceGame.newTooltip = new Phasetips(game, SpaceGame.Tutorial._TipOptions);
+        SpaceGame.newTooltip.showTooltip();
+        console.log(SpaceGame.newTooltip);
         break;
 
       case 5:
@@ -153,46 +210,5 @@ SpaceGame.Tutorial.prototype = {
 
   init: function () {
     score = 300;
-    SpaceGame.TutorialTexts = [
-      '\nGreeting on the Tutorial level!\n\nHere you will get study about game features.\n ',
-      '\nYou have to Save The World!\n\n\nAgain!!!\n\n',
-      '\nYou can drive UFO (Unbelievably Fun Object) \nwith arrow keys ← → ↑ ↓.\n ',
-      '\nWhen you flying up ↑ , UFO consumes fuel resource \n',
-      '\nIf you do not have any fuel left,\n you can not fly up.\n ',
-      '\nThe bottom pannel shows your resources:\n\nmissiles, bullets, fuel, shield.\n',
-      '\nYour main weapon loaded with bullets.\nYou can shoot using [SPACEBAR]\n',
-      '\nIf you are out of bullets, main weapon will be switched to missiles.\n',
-      '\nYour additional weapon is missiles.\nYou can shoot using key [M] or [7]\n ',
-      '\nNote: if you are out of missiles,\nthey will be purchased.\n ',
-      '\nFlower can generate useful pick-ups:\narmor, fuel, bullets, missiles... \n',
-      '\nCurrently generating item showed at the bottom of the Flower.\n ',
-      '\nYou can change generating item by pressing [R].\n ',
-      '\nSome sneaky alien race "Farting Aliens"\n got aware about this Flower\n and decided to steal it\n',
-      '\nYour goal is to protect The Last Flower at the Planet\n and kill all h̶u̶m̶a̶n̶s̶ aliens.\n ',
-      '\nBe careful:\nenemies also can shoot you\n',
-      '\nYou can build different towers\nto get some help with defence\n ',
-      '\nNormal Tower [1], \nFreezing Tower [2], \nRocket Launcher [3] \nLazer [4]\n',
-      '\nYou can build asteroids [5], \nthey are cheep and can be destroyed\n',
-      '\nYou can request orbital mine [6], \nbe careful, it also can explode near you!\n',
-      '\nIt rains quite often here, and in the rain nobody can fly really fast.\n',
-      '\nYou can move rain by dragging cloud and dropping it to the new place. \n'
-    ];
-
-    SpaceGame.Tutorial._TipOptions = {
-      strokeColor: 0x82C1C4,
-      width: 800,
-      padding: 100,
-      strokeWeight: 4,
-      position: 'top',
-      positionOffset: 300,
-      animation: 'grow',
-      fixedToCamera: true,
-      textStyle: {
-        fontSize: 23,
-        fill: "#F18B0B",
-        wordWrap: true,
-        wordWrapWidth: 500
-      }
-    };
-  },
+  }
 };
