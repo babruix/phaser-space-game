@@ -1,13 +1,13 @@
 SpaceGame.Tutorial = function (game) {
-  SpaceGame.Tutorial.tooltipDelay = 8000;
+  SpaceGame.Tutorial.tooltipDelay = 2000;
 
   SpaceGame.TutorialTexts = [
     '\nGreeting on the Tutorial level!\n\nHere you will get study about game features.\n ',
     '\nYou have to Save The World!\n\n\nAgain!!!\n\n',
-    '\nYou can drive UFO (Unbelievably Fun Object) \nwith arrow keys ← → ↑ ↓.\n ',
+    '\nYou can drive UFO \n(Unbelievably Fun Object) \nwith arrow keys:\n ← → ↑ ↓\n ',
     '\nWhen you flying up ↑ , UFO consumes fuel resource \n',
     '\nIf you do not have any fuel left,\n you can not fly up.\n ',
-    '\nThe bottom pannel shows your resources:\n\nmissiles, bullets, fuel, shield.\n',
+    '\nThe bottom pannel shows your resources:\n\nmoney, missiles, bullets, fuel.\n',
     '\nYour main weapon loaded with bullets.\nYou can shoot using [SPACEBAR]\n',
     '\nIf you are out of bullets, main weapon will be switched to missiles.\n',
     '\nYour additional weapon is missiles.\nYou can shoot using key [M] or [7]\n ',
@@ -79,19 +79,42 @@ SpaceGame.Tutorial.prototype = {
     SpaceGame.myTooltip.showTooltip();
   },
 
-
   hideGameObjects: function () {
     towers.setAll('visible', false);
-    SpaceGame._flowerPlants.setAll('visible', false);
+    towers.children[0].HealthBar.bgSprite.alpha = 0;
+    towers.children[0].HealthBar.barSprite.alpha = 0;
+
+    game.time.events.add(510, function() {
+      Tower.prototype.destroyCirclesGroup();
+    });
+    SpaceGame._shipTrail.visible = false;
+
     SpaceGame._UiGroup.setAll('visible', false);
     SpaceGame._livesGraph.setAll('visible', false);
-    SpaceGame._shipTrail.visible = false;
   },
 
   blinkSprite: function (sprite) {
     game.add.tween(sprite)
       .to({alpha: 0},
-        150, Phaser.Easing.Exponential.In, true, 0, 7, true);
+        150, Phaser.Easing.Exponential.In, true, 0, 10, true);
+  },
+
+  hideTutorialSprite: function () {
+    if (!SpaceGame.newTooltip) {
+      return;
+    }
+    SpaceGame.newTooltip.destroy();
+  },
+
+  showTutorialSprite: function (key) {
+    this.hideTutorialSprite();
+    SpaceGame.tutorialSptite = game.add.sprite(0, 0, key);
+    var options = SpaceGame.Tutorial._TipOptions;
+    options.context = SpaceGame.tutorialSptite;
+    options.positionOffset = 200;
+    options.position = 'bottom';
+    SpaceGame.newTooltip = new Phasetips(game, options);
+    SpaceGame.newTooltip.showTooltip();
   },
 
   showGameObjects: function (i) {
@@ -100,54 +123,73 @@ SpaceGame.Tutorial.prototype = {
       case 2:
         SpaceGame._livesGraph.setAll('visible', true);
         towers.setAll('visible', true);
-        towers.setAll('fuel', 50);
+        towers.setAll('fuel', 250);
         SpaceGame._shipTrail.visible = true;
         this.blinkSprite(towers.children[0]);
 
         // Show new sprite
-        SpaceGame.tutorialSptite =  game.add.sprite(200, 200, 'spaceship');
-        SpaceGame.Tutorial._TipOptions.context = SpaceGame.tutorialSptite;
-        // SpaceGame.Tutorial._TipOptions.targetObject = SpaceGame.tutorialSptite;
-        if (SpaceGame.newTooltip){
-          SpaceGame.newTooltip.destroy();
-        }
-        SpaceGame.newTooltip = new Phasetips(game, SpaceGame.Tutorial._TipOptions);
-        SpaceGame.newTooltip.showTooltip();
-        console.log(SpaceGame.newTooltip);
+        this.showTutorialSprite('spaceship');
         break;
 
       case 5:
+        SpaceGame.tutorialSptite.kill();
+        if (SpaceGame.newTooltip){
+          SpaceGame.newTooltip.destroy();
+        }
         this.blinkSprite(SpaceGame._UiGroup.children[0]);
         SpaceGame._UiGroup.setAll('visible', true);
+        SpaceGame._sateliteBtn.visible = false;
+        SpaceGame._sateliteFreezeBtn.visible = false;
+        SpaceGame._sateliteRocketBtn.visible = false;
+        SpaceGame._satelitelasertBtn.visible = false;
         break;
 
       case 6:
+        this.showTutorialSprite('green_bullet');
         towers.setAll('bullets', 50);
         break;
 
       case 7:
         towers.setAll('bullets', 0);
+        this.showTutorialSprite('missle');
         break;
 
       case 9:
+        this.hideTutorialSprite();
         towers.setAll('missles', 0);
         break;
 
       case 10:
+        this.showTutorialSprite('flow');
+        SpaceGame.tutorialSptite.scale.setTo(0.3);
+        SpaceGame.newTooltip.y = SpaceGame.newTooltip.y - SpaceGame.newTooltip.height;
+        SpaceGame._flowerPlants.children[0].alive = true;
+        SpaceGame.Main.prototype.generateGrowingPickups();
         SpaceGame._flowerPlants.setAll('visible', true);
         this.blinkSprite(SpaceGame._flowerPlants);
         break;
 
       case 11:
+        this.hideTutorialSprite();
         this.blinkSprite(SpaceGame._flowerPlants.children[0].growingItem);
         break;
 
       case 12:
+        this.showTutorialSprite('reload');
+        SpaceGame.tutorialSptite.scale.setTo(0.3);
         this.blinkSprite(SpaceGame._reloadBtn);
         break;
 
+      case 13:
+        this.hideTutorialSprite();
+        break;
+
       case 16:
-      case 17:
+        this.showTutorialSprite('satelite');
+        SpaceGame._sateliteBtn.visible = true;
+        SpaceGame._sateliteFreezeBtn.visible = true;
+        SpaceGame._sateliteRocketBtn.visible = true;
+        SpaceGame._satelitelasertBtn.visible = true;
         this.blinkSprite(SpaceGame._sateliteBtn);
         this.blinkSprite(SpaceGame._sateliteFreezeBtn);
         this.blinkSprite(SpaceGame._sateliteRocketBtn);
@@ -162,11 +204,7 @@ SpaceGame.Tutorial.prototype = {
         this.blinkSprite(SpaceGame._bombBtn);
         break;
 
-      case 20:
-        this.blinkSprite(SpaceGame._rocketBtn);
-        break;
-
-      case 22:
+      case 21:
         this.blinkSprite(SpaceGame._cloudsGroup);
         break;
     }
@@ -178,7 +216,6 @@ SpaceGame.Tutorial.prototype = {
     this.hideGameObjects();
     this.showLevelAnimation();
   },
-
 
   showLevelAnimation: function () {
     var style = {
@@ -199,8 +236,8 @@ SpaceGame.Tutorial.prototype = {
         Phaser.Easing.Bounce.Out /*easing type*/,
         true /*autostart?*/)
       .onComplete.add(function () {
-      levelText.destroy();
-      SpaceGame.Tutorial.prototype.showAllToolTips();
+        levelText.destroy();
+        SpaceGame.Tutorial.prototype.showAllToolTips();
     });
   },
 

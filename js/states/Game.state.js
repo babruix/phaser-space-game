@@ -371,10 +371,14 @@ SpaceGame.Main.prototype = {
     level++;
     score += level * 20;
     Tower.prototype.addToPoint(400, 400);
-    this.generateGrowingPickups();
+    if (!SpaceGame.isTutorial) {
+      this.generateGrowingPickups();
+    }
     updateScoreText();
     this.animateScore();
-    if (SpaceGame.isTutorial) {return}
+    if (SpaceGame.isTutorial) {
+      return;
+    }
     showLevelTitle();
     this.addEnemys();
     addRndBricks();

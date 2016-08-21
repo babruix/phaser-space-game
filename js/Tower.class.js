@@ -262,7 +262,7 @@ Tower.prototype = {
     }
     
     game.audio.laughSnd.play();
-    if (tower.countBricks > 0){
+    if (tower.countBricks > 0) {
       tower.countBricks--;
     }
     else {

@@ -23,6 +23,7 @@ SpaceGame.Menu.prototype = {
     // uncomment to start immediately...
     // level=15;
     // game.state.start('Main');
+    // game.state.start('Tutorial');
 
     var particleSystem1 = SpaceGame.epsyPlugin.loadSystem(SpaceGame.epsyPluginConfig.circles, game.width / 2, 50);
     // Add the particle system to _circlesGroup group

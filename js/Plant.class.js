@@ -1,5 +1,5 @@
-var Plant = function() {
-  this.plant = game.add.sprite(game.width/2+38, game.height-50, 'flow');
+var Plant = function () {
+  this.plant = game.add.sprite(game.width / 2 + 38, game.height - 50, 'flow');
   this.plant.anchor.setTo(0.5, 1);
   this.plant.angle = -10 * game.rnd.integerInRange(0, level);
   SpaceGame._flowerPlants.add(this.plant);
@@ -84,6 +84,7 @@ Plant.prototype = {
       nextSpawnTime: nextSpawnTime
     };
   },
+
   removeSpawnBar: function (plant) {
     if (plant.spawnBar) {
       if (plant.spawnBar.barSprite) {
@@ -92,9 +93,10 @@ Plant.prototype = {
       plant.spawnBar.bgSprite.kill();
     }
   },
+
   updateSpawnBar: function (nextSpawnTime, sprite) {
     SpaceGame._flowerPlants.forEach(function (plant) {
-      if (plant.growingItem.key == sprite) {
+      if (plant.growingItem && plant.growingItem.key == sprite) {
         // Remove old bar
         Plant.prototype.removeSpawnBar(plant);
         if (plant.alive) {
@@ -106,6 +108,7 @@ Plant.prototype = {
       }
     });
   },
+
   getBarConfig: function () {
     return {
       x: 100,
