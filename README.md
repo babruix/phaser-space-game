@@ -3,7 +3,7 @@ Farting Aliens
 
 2D defense / arcade based on Phaser.js and P2 physics.
 
-<a href="babruix.github.io/phaser-space-game/">Click here to Play</a>
+<a href="http://babruix.github.io/phaser-space-game/">Click here to Play</a>
 
 
 
