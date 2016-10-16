@@ -1,5 +1,5 @@
 SpaceGame.Tutorial = function (game) {
-  SpaceGame.Tutorial.tooltipDelay = 2000;
+  SpaceGame.Tutorial.tooltipDelay = 5000;
 
   SpaceGame.TutorialTexts = [
     '\nGreeting on the Tutorial level!\n\nHere you will get study about game features.\n ',

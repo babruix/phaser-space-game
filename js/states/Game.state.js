@@ -221,22 +221,31 @@ SpaceGame.Main.prototype = {
 
   setupWorldBounds: function () {
     SpaceGame.worldBounds = game.add.group();
+    var fillRect = function (bitmap, width, height) {
+      bitmap.ctx.beginPath();
+      bitmap.ctx.rect(0, 0, width, height);
+      bitmap.ctx.fillStyle = '#ffffff';
+      bitmap.ctx.fill();
+    };
     // Define a block using bitmap data rather than an image sprite
     var horizontalShape = game.add.bitmapData(getWidth() * 8, 150);
-    var verticalShape = game.add.bitmapData(100, getHeight() * 2);
+    fillRect(horizontalShape, getWidth() * 8, 150);
+    var verticalShape = game.add.bitmapData(0, getHeight() * 2);
+    fillRect(verticalShape, 100, getHeight() * 2);
+
     // Create a new sprite using the bitmap data
-    SpaceGame.bottomBound = game.add.sprite(-100, 800, horizontalShape);
-    SpaceGame.worldBounds.add(SpaceGame.bottomBound);
+    SpaceGame.bottomBound = game.add.sprite(-100, 800, horizontalShape, null, SpaceGame.worldBounds);
     SpaceGame.topBound = game.add.sprite(-100, 0, horizontalShape);
     SpaceGame.worldBounds.add(SpaceGame.topBound);
-    SpaceGame.leftBound = game.add.sprite(-50, -200, verticalShape);
+    SpaceGame.leftBound = game.add.sprite(-100, 250, verticalShape);
     SpaceGame.worldBounds.add(SpaceGame.leftBound);
-    SpaceGame.rightBound = game.add.sprite(getWidth() * 4, -100, verticalShape);
+    SpaceGame.rightBound = game.add.sprite(getWidth() * 4+100, 250, verticalShape);
     SpaceGame.worldBounds.add(SpaceGame.rightBound);
     // Enable P2 Physics and set the block not to move
     game.physics.p2.enable(SpaceGame.worldBounds);
     SpaceGame.worldBounds.setAll('body.static', true);
-  }, 
+    SpaceGame.worldBounds.setAll('alpha', 0);
+  },
   setupGameGroups: function () {
 
     /**
