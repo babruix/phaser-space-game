@@ -219,33 +219,6 @@ SpaceGame.Main.prototype = {
     game.time.events.add(3000, this.makeRain, this);
   },
 
-  setupWorldBounds: function () {
-    SpaceGame.worldBounds = game.add.group();
-    var fillRect = function (bitmap, width, height) {
-      bitmap.ctx.beginPath();
-      bitmap.ctx.rect(0, 0, width, height);
-      bitmap.ctx.fillStyle = '#ffffff';
-      bitmap.ctx.fill();
-    };
-    // Define a block using bitmap data rather than an image sprite
-    var horizontalShape = game.add.bitmapData(getWidth() * 8, 150);
-    fillRect(horizontalShape, getWidth() * 8, 150);
-    var verticalShape = game.add.bitmapData(0, getHeight() * 2);
-    fillRect(verticalShape, 100, getHeight() * 2);
-
-    // Create a new sprite using the bitmap data
-    SpaceGame.bottomBound = game.add.sprite(-100, 800, horizontalShape, null, SpaceGame.worldBounds);
-    SpaceGame.topBound = game.add.sprite(-100, 0, horizontalShape);
-    SpaceGame.worldBounds.add(SpaceGame.topBound);
-    SpaceGame.leftBound = game.add.sprite(-100, 250, verticalShape);
-    SpaceGame.worldBounds.add(SpaceGame.leftBound);
-    SpaceGame.rightBound = game.add.sprite(getWidth() * 4+100, 250, verticalShape);
-    SpaceGame.worldBounds.add(SpaceGame.rightBound);
-    // Enable P2 Physics and set the block not to move
-    game.physics.p2.enable(SpaceGame.worldBounds);
-    SpaceGame.worldBounds.setAll('body.static', true);
-    SpaceGame.worldBounds.setAll('alpha', 0);
-  },
   setupGameGroups: function () {
 
     /**
@@ -254,7 +227,6 @@ SpaceGame.Main.prototype = {
     towers = game.add.group();
     game.physics.enable(towers, Phaser.Physics.P2JS, debug);
     game.world.setBounds(0, 0, getWidth() * 4, 790);
-    this.setupWorldBounds();
 
     /**
      * Heart
@@ -490,8 +462,10 @@ SpaceGame.Main.prototype = {
       var uiRect = game.add.graphics(0, game.height-45);
       uiRect.beginFill(0xFFFFFF);
       uiRect.clear();
-      uiRect.drawRect(0, 0, game.width, 45);
+      uiRect.drawRect(0, 0, game.width * 8, 45);
       uiRect.alpha = .4;
+      game.physics.p2.enable(uiRect);
+      uiRect.body.static = true;
       return uiRect;
     }
     function createSateliteDraggable(key) {
@@ -799,7 +773,7 @@ SpaceGame.Main.prototype = {
     }
 
     // Level completed.
-    if (SpaceGame.enemys.countLiving() == 0
+    if (SpaceGame.enemys.countLiving() === 0
       && SpaceGame._allEnemysAdded
       && !SpaceGame._newLevelStarted && !SpaceGame.isTutorial) {
       SpaceGame._newLevelStarted = true;
@@ -811,7 +785,6 @@ SpaceGame.Main.prototype = {
      *  Enemy stealing check
      */
     SpaceGame.enemys.stealing = false;
-    game.physics.arcade.collide(SpaceGame.enemys);
     SpaceGame.enemys.forEachAlive(function (enemy) {
       // Slow down under the rain
       enemy.body.damping = SpaceGame.Main.prototype.checkIntersectsWithRain(enemy)
@@ -822,7 +795,7 @@ SpaceGame.Main.prototype = {
       if (enemy.closestPlant && enemy.closestPlant.alive) {
         if (enemy.closestPlant.stealing) {
           SpaceGame.enemys.stealing = true;
-          enemy.body.velocity.y = -100;
+          enemy.body.velocity.y = -300;
           enemy.closestPlant.x = enemy.x;
           enemy.closestPlant.y = enemy.y;
         }

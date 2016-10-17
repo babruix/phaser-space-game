@@ -18,7 +18,7 @@ SpaceGame.GameOver.prototype = {
     this._fontStyle = { font: "40px eater", fill: "#FFCC00", stroke: "#333", strokeThickness: 5, align: "center" };
 
     SpaceGame._restartText = this.add.text(game.width/2, -100, message, this._fontStyle);
-    SpaceGame._restartText.anchor.setTo(0.5,0.5);
+    SpaceGame._restartText.anchor.setTo(0.5, 0.5);
     this.add.tween(SpaceGame._restartText).to({
       y: game.height/2
     }, 1000, Phaser.Easing.Bounce.Out, true, 0, 0);
@@ -33,6 +33,10 @@ SpaceGame.GameOver.prototype = {
     }, this);
   },
   startNewGame: function () {
+    // After state change sprites have wrong positions,
+    // so just refresh page instead as workaround.
+    window.location.reload();
+
     lives = 3;
     level = 0;
     score = 0;

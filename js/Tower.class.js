@@ -254,7 +254,7 @@ Tower.prototype = {
     }
   },
   addWall: function (tower) {
-    if (!tower.alive || game.time.now <= tower.actionLastTime) {
+    if (!tower.alive || game.time.now <= tower.actionLastTime || tower.y > 500) {
       return;
     }
     if (tower.countBricks <= 0 && score < SpaceGame.priceList.wall) {
