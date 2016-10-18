@@ -33,7 +33,7 @@ var Ammo = function() {
       this.ammo.kill();
       game.audio.reloadSnd.play();
       towers.children[0].bullets += level * 10;
-      updateScoreText();
+      SpaceGame.Main.prototype.changeScoreText();
     }
   }, this);
   this.ammo.events.onKilled.add(function (ammo) {

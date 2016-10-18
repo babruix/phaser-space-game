@@ -38,7 +38,7 @@ var Heart = function() {
       game.audio.kissSnd.play();
       lives++;
       SpaceGame.Main.prototype.drawLivesSprites();
-      updateScoreText();
+      SpaceGame.Main.prototype.changeScoreText();
     }
   }, this);
   this.heart.events.onKilled.add(function (heart) {

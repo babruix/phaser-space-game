@@ -30,7 +30,7 @@ var Missle = function (x, y, fired) {
         // pickup
         game.audio.laughSnd.play();
         body1.sprite.missles++;
-        updateScoreText();
+        SpaceGame.Main.prototype.changeScoreText();
         this.missle.kill();
       }
     }
@@ -72,7 +72,7 @@ Missle.prototype = {
     }
   },
   killWhenClose: function (sprite, missle) {
-    if (!sprite.ufo_exists && caculatetDistance(missle, sprite) < 100) {
+    if (!sprite.ufo_exists && SpaceGame.Main.prototype.caculatetDistance(missle, sprite) < 50) {
       sprite.kill();
     }
   }

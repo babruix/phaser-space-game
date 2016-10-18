@@ -78,7 +78,7 @@ SpaceGame.Main.prototype = {
     this.nextLevel();
 
     score -= 10;
-    updateScore();
+    this.updateScore();
   },
 
   prepareAudio: function () {
@@ -355,14 +355,14 @@ SpaceGame.Main.prototype = {
     if (!SpaceGame.isTutorial) {
       this.generateGrowingPickups();
     }
-    updateScoreText();
+    SpaceGame.Main.prototype.changeScoreText();
     this.animateScore();
     if (SpaceGame.isTutorial) {
       return;
     }
-    showLevelTitle();
+    this.showLevelTitle();
     this.addEnemys();
-    addRndBricks();
+    this.addRndBricks();
 
     Brick.prototype.generateBrick();
     for (var i = 0; i < parseInt(level / 2); i++) {
@@ -609,7 +609,7 @@ SpaceGame.Main.prototype = {
       var price = SpaceGame.priceList[satelite.key];
       if (score >= price) {
         score -= price;
-        updateScoreText();
+        SpaceGame.Main.prototype.changeScoreText();
         var isFreezing = satelite.key == 'satelite_freeze';
         var isRocket = satelite.key == 'tower';
         var isLaser = satelite.key == 'laser_tower';
@@ -631,12 +631,12 @@ SpaceGame.Main.prototype = {
       var price = SpaceGame.priceList.wall;
       if (towers.children[0].countBricks > 0) {
         towers.children[0].countBricks--;
-        updateScoreText();
+        SpaceGame.Main.prototype.changeScoreText();
         new Wall(wall.x, wall.y);
       }
       else if (score >= price) {
         score -= price;
-        updateScoreText();
+        SpaceGame.Main.prototype.changeScoreText();
         new Wall(wall.x, wall.y);
       }
 
@@ -656,7 +656,7 @@ SpaceGame.Main.prototype = {
       var price = SpaceGame.priceList.bomb;
       if (score >= price) {
         score -= price;
-        updateScoreText();
+        SpaceGame.Main.prototype.changeScoreText();
         new Bomb(bomb.x, bomb.y);
       }
 
@@ -676,7 +676,7 @@ SpaceGame.Main.prototype = {
       var price = SpaceGame.priceList.rocket;
       if (score >= price) {
         score -= price;
-        updateScoreText();
+        SpaceGame.Main.prototype.changeScoreText();
         var missle = new Missle(rocket.x, rocket.y, true);
         missle.body.moveUp(800);
       }
@@ -725,6 +725,100 @@ SpaceGame.Main.prototype = {
       }
     });
   },
+
+  addRndBricks: function () {
+    for (var i = 1; i < level * 3; i++) {
+      var x = game.rnd.integerInRange(0, game.width);
+      var y = game.rnd.integerInRange(300, game.height / 1.5);
+      new Wall(x, y);
+    }
+  },
+
+  showLevelTitle: function () {
+    var style = {
+      font: "60px eater",
+      fill: "#F36200",
+      align: "center"
+    };
+    var levelText = game.add.text(0, 0, 'Level ' + level, style);
+    levelText.x = game.width / 2 - levelText.width / 2;
+    levelText.y = game.height / 2 - levelText.height;
+    levelText.alpha = 0;
+    levelText.fixedToCamera = true;
+
+    // Animate
+    game.add.tween(levelText)
+      .to({alpha: 1},
+        1000 /*duration (in ms)*/,
+        Phaser.Easing.Bounce.Out /*easing type*/,
+        true /*autostart?*/)
+      .onComplete.add(function () {
+      game.add.tween(levelText)
+        .to({y: -levelText.height, alpha: 0},
+          1000 /*duration (in ms)*/,
+          Phaser.Easing.Bounce.In /*easing type*/,
+          true /*autostart?*/,
+          2000 /*delay*/)
+        .onComplete.add(function () {
+        levelText.destroy();
+      })
+    }, this);
+  },
+
+
+  caculatetDistance: function (sprite1, sprite2) {
+    var a = sprite1.x - sprite2.x;
+    var b = sprite1.y - sprite2.y;
+    return Math.sqrt(a * a + b * b);
+  },
+
+  updateScore: function (losingLife) {
+    if (losingLife === true) {
+      game.camera.shake();
+      lives--;
+      SpaceGame.Main.prototype.drawLivesSprites();
+      score -= 10;
+    }
+    else {
+      score += 10;
+    }
+    this.changeScoreText();
+    if (lives < 0) {
+      game.camera.shake();
+      // save game screenshot.
+      SpaceGame.canvasDataURI = game.canvas.toDataURL();
+      game.time.events.add(Phaser.Timer.SECOND * 2, SpaceGame.GameOverTransition, this).autoDestroy = true;
+    }
+  },
+
+  changeScoreText: function () {
+    var style = {font: '20px eater', fill: '#E39B00', align: 'left'};
+    var str = ''
+      // "   Lives: " + lives
+      // + " \n  Flowers: " + SpaceGame._flowerPlants.countLiving()
+      + "    Level: " + level
+      + "   $: " + score;
+    if (towers && towers.children && typeof towers.children[0] != "undefined") {
+      str += "   Bricks: " + towers.children[0].countBricks;
+      str += "   Missles: " + towers.children[0].missles + "";
+      str += "   Bullets: " + towers.children[0].bullets + "";
+      str += "   Fuel: " + towers.children[0].fuel + "";
+    }
+    if (!SpaceGame._scoreText) {
+      SpaceGame._scoreText = game.add.text(0, game.height, str, style);
+      SpaceGame._UiGroup.add(SpaceGame._scoreText);
+    }
+    else {
+      SpaceGame._scoreText.setText(str);
+    }
+
+    // Respawn dead player
+    if (towers && towers.children && !towers.children[0].alive) {
+      towers.children[0].destroy();
+      Tower.prototype.addToPoint(400, 400);
+    }
+  },
+
   addEnemys: function () {
     var i = 0;
     SpaceGame._allEnemysAdded = false;
@@ -777,8 +871,8 @@ SpaceGame.Main.prototype = {
       && SpaceGame._allEnemysAdded
       && !SpaceGame._newLevelStarted && !SpaceGame.isTutorial) {
       SpaceGame._newLevelStarted = true;
-      updateScore();
-      levelCompleted();
+      this.updateScore();
+      this.levelCompleted();
     }
 
     /**
@@ -807,14 +901,14 @@ SpaceGame.Main.prototype = {
 
           new Wall(enemy.x, enemy.y - enemy.height);
           enemy.blockedLastTime = game.time.now + 300;
-          updateScoreText();
+          SpaceGame.Main.prototype.changeScoreText();
         }
 
         // use/steal plant
         if (enemy.closestPlant.y < 100 && enemy.closestPlant) {
           game.audio.springSnd.play();
           enemy.closestPlant.destroy();
-          updateScore(true);
+          SpaceGame.Main.prototype.updateScore(true);
         }
       }
 
@@ -902,7 +996,7 @@ SpaceGame.Main.prototype = {
         if (tower.fuel > 0) {
           tower.body.velocity.y = -speed;
           tower.fuel--;
-          updateScoreText();
+          SpaceGame.Main.prototype.changeScoreText();
         }
       }
       else if (SpaceGame._cursors.down.isDown) {
@@ -964,5 +1058,51 @@ SpaceGame.Main.prototype = {
         }
       }
     });
-  }
+  },
+
+  levelCompleted: function () {
+  lives++;
+  game.audio.completedSnd.play();
+
+  var style = {
+    font: "60px eater",
+    fill: "#F36200",
+    stroke: "#CCCCCC",
+    align: "center",
+    strokeThickness: 1
+  };
+  var levelText = game.add.text(0, 0, 'Level Completed!', style);
+  levelText.x = game.width / 2 - levelText.width / 2;
+  levelText.y = game.height / 2 - levelText.height / 2;
+  levelText.alpha = 0;
+  levelText.fixedToCamera = true;
+
+  // Animate
+  game.add.tween(levelText)
+    .to({alpha: 1},
+      1000 /*duration (in ms)*/,
+      Phaser.Easing.Bounce.Out /*easing type*/,
+      true /*autostart?*/)
+    .onComplete.add(function () {
+    SpaceGame.Main.prototype.animateScore(true);
+    game.add.tween(levelText)
+      .to({y: -levelText.height / 2, alpha: 0},
+        1000 /*duration (in ms)*/,
+        Phaser.Easing.Bounce.In /*easing type*/,
+        true /*autostart?*/,
+        1000 /*delay*/)
+      .onComplete.add(function () {
+      levelText.destroy();
+      if (towers && towers.children && typeof towers.children[0] != 'undefined') {
+        SpaceGame._playerShield = towers.children[0].shieldPower;
+        SpaceGame._playerBricks = towers.children[0].countBricks;
+        SpaceGame._playerMissles = towers.children[0].missles;
+      }
+      SpaceGame.transitionPlugin.to('Main');
+      // Init score
+      SpaceGame._scoreText = undefined;
+      SpaceGame._fireGraph = undefined;
+    }, this);
+  }, this);
+}
 };

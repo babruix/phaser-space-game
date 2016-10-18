@@ -33,7 +33,7 @@ var Fuel = function () {
       this.fuel.kill();
       game.audio.reloadSnd.play();
       towers.children[0].fuel += level * 20;
-      updateScoreText();
+      SpaceGame.Main.prototype.changeScoreText();
     }
   }, this);
   this.fuel.events.onKilled.add(function (fuel) {

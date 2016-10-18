@@ -86,8 +86,8 @@ Satelite.prototype = {
     SpaceGame.enemys.forEachAlive(function (enemy) {
       if (enemy.body) {
         // Distance to previous closest enemy
-        var prevClosestDistance = caculatetDistance(satelite, closestEnemy);
-        var newClosestDistance = caculatetDistance(satelite, enemy);
+        var prevClosestDistance = SpaceGame.Main.prototype.caculatetDistance(satelite, closestEnemy);
+        var newClosestDistance = SpaceGame.Main.prototype.caculatetDistance(satelite, enemy);
 
         if (newClosestDistance < prevClosestDistance) {
           closestEnemy = enemy;
@@ -98,7 +98,7 @@ Satelite.prototype = {
     if (!closestEnemy || !closestEnemy.alive || closestEnemy.ufo_exists) {
       return false;
     }
-    var closestDistance = caculatetDistance(satelite, closestEnemy);
+    var closestDistance = SpaceGame.Main.prototype.caculatetDistance(satelite, closestEnemy);
     if (closestDistance > minimalReactDistance) {
       return false;
     }
@@ -184,7 +184,7 @@ Satelite.prototype = {
     if (satelite._dot != undefined) {
       satelite._dot.destroy();
     }
-    if (caculatetDistance(satelite, enemy) > minimalReactDistance) {
+    if (SpaceGame.Main.prototype.caculatetDistance(satelite, enemy) > minimalReactDistance) {
       return;
     }
 

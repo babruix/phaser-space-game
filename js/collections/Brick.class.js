@@ -30,7 +30,7 @@ var Brick = function () {
       // @todo: enemy can pickup?
       this.brick.kill();
       body1.sprite.countBricks += 1;
-      updateScoreText();
+      SpaceGame.Main.prototype.changeScoreText();
     }
   }, this);
   this.brick.events.onKilled.add(function (brick) {

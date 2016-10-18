@@ -49,9 +49,11 @@ var Tower = function (worldX, worldY, tile) {
 
         if (this.tower.health <= 1) {
           this.tower.health = 10;
-          updateScore(true);
+          SpaceGame.Main.prototype.updateScore(true);
         }
-        updateScoreText();
+        else {
+          SpaceGame.Main.prototype.changeScoreText();
+        }
       }
 
     }
@@ -147,8 +149,7 @@ var Tower = function (worldX, worldY, tile) {
     // Take life when health is too small.
     if (_this.tower.health < 3) {
       _this.tower.health = 10;
-      updateScore(true);
-      updateScoreText();
+      SpaceGame.Main.prototype.updateScore(true);
     }
   }
 };
@@ -215,7 +216,7 @@ Tower.prototype = {
     if (tower.alive && game.time.now > tower.fireLastTime) {
       if (tower.bullets > 0) {
         tower.bullets--;
-        updateScoreText();
+        SpaceGame.Main.prototype.changeScoreText();
         game.audio.playerSndFire.play();
         var bullet = new Bullet(tower.x, tower.y - tower.height, false);
         if (bullet != undefined && bullet.body != undefined) {
@@ -245,7 +246,7 @@ Tower.prototype = {
     else {
       score -= SpaceGame.priceList.rocket;
     }
-    updateScoreText();
+    SpaceGame.Main.prototype.changeScoreText();
     
     var missle = new Missle(tower.x + tower.width / 2, tower.y - tower.height * 2, true);
     if (missle != undefined && missle.body != undefined) {
@@ -268,7 +269,7 @@ Tower.prototype = {
     else {
       score -= SpaceGame.priceList.wall;
     }
-    updateScoreText();
+    SpaceGame.Main.prototype.changeScoreText();
     
     new Wall(tower.x, tower.y);
     tower.actionLastTime = game.time.now + tower.actionTime;
@@ -302,7 +303,7 @@ Tower.prototype = {
     var price = SpaceGame.priceList[key];
     if (score >= price && game.time.now > tower.actionLastTime) {
       score -= price;
-      updateScoreText();
+      SpaceGame.Main.prototype.changeScoreText();
       // use last wall time variable
       tower.actionLastTime = game.time.now + tower.actionTime;
       new Satelite(tower.x, tower.y - tower.height, freeze, rocket, laser);

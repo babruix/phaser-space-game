@@ -20,7 +20,7 @@ var Bomb = function(x, y) {
         console.log('bomb!');
         this.bomb.destroy();
         game.audio.explosionSnd.play();
-        updateScore(true);
+        SpaceGame.Main.prototype.updateScore(true);
       }
     }
 

@@ -233,7 +233,7 @@ Enemy.prototype = {
       enemy.enemyHealthBar.barSprite.kill();
       enemy.enemyHealthBar.bgSprite.kill();
       score += level * 3;
-      updateScoreText();
+      SpaceGame.Main.prototype.changeScoreText();
     }, this);
 
     SpaceGame.enemys.add(enemy);

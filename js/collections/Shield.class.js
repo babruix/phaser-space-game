@@ -39,7 +39,7 @@ var Shield = function() {
       // @todo: enemy can pickup?
       this.shield.kill();
       body1.sprite.shieldPower+=10;
-      updateScoreText();
+      SpaceGame.Main.prototype.changeScoreText();
     }
   }, this);
 
