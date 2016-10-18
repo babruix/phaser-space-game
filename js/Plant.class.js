@@ -122,5 +122,24 @@ Plant.prototype = {
         color: '#20E331'
       }
     };
+  },
+
+  updatePlant: function (plant) {
+    var bar = plant.spawnBar;
+    if (bar) {
+      if (!plant.stealing) {
+        bar.barSprite.alpha = 1;
+        bar.bgSprite.alpha = 1;
+      }
+      else {
+        bar.barSprite.alpha = 0;
+        bar.bgSprite.alpha = 0;
+      }
+      if (plant.alive) {
+        var newValue = (plant.randomSpawnTime - game.time.now) * 100 / plant.randomSpawnTime;
+        bar.setPercent(newValue);
+        bar.setPosition(plant.x, plant.y);
+      }
+    }
   }
 };

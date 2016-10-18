@@ -12,8 +12,7 @@ SpaceGame.priceList = {
   'rocket': 10
 };
 
-SpaceGame.Preloader = function (game) {
-};
+SpaceGame.Preloader = function (game) {};
 SpaceGame.Preloader.prototype = {
   preload: function () {
     // show background
@@ -72,6 +71,7 @@ SpaceGame.Preloader.prototype = {
     game.load.image('ammo', 'assets/sprites/ammo.png');
     game.load.image('fuel', 'assets/sprites/fuel.png');
     game.load.image('reload', 'assets/sprites/reload.png');
+    game.load.spritesheet('sound', 'assets/sprites/sound.png', 48, 48, 2);
 
     for (var i = 0; i < 7; i++) {
       game.load.image('cloud' + i, 'assets/sprites/cloud_' + i + '.png');

@@ -1,4 +1,5 @@
 SpaceGame.Tutorial = function (game) {
+  SpaceGame.Tutorial.game = game;
   SpaceGame.Tutorial.tooltipDelay = 5000;
 
   SpaceGame.TutorialTexts = [
@@ -212,7 +213,7 @@ SpaceGame.Tutorial.prototype = {
 
   create: function () {
     level = -1;
-    SpaceGame.Main.prototype.create(true);
+    SpaceGame.Main.prototype.create(true, this.game);
     this.hideGameObjects();
     this.showLevelAnimation();
   },

@@ -317,5 +317,83 @@ Tower.prototype = {
     new Bomb(tower.x, 100);
     score -= SpaceGame.priceList.bomb;
     tower.actionLastTime = game.time.now + tower.actionTime;
+  },
+  updateTower: function (tower) {
+    if (tower.alpha < 1) {
+      return;
+    }
+
+    // Move tower
+    tower.body.setZeroVelocity();
+    var speed = game.height / 1.3 + game.height - tower.body.y / 1.3;
+
+    // Slow down under the rain
+    if (SpaceGame.Main.prototype.checkIntersectsWithRain(tower)) {
+      speed -= tower.body.y;
+    }
+
+    if (SpaceGame._cursors.left.isDown) {
+      tower.angle = -30;
+      if (SpaceGame._cursors.up.isDown) {
+        tower.angle = -60;
+      }
+      tower.body.velocity.x = -speed;
+    }
+    else if (SpaceGame._cursors.right.isDown) {
+      tower.angle = 30;
+      if (SpaceGame._cursors.up.isDown) {
+        tower.angle = 60;
+      }
+      tower.body.velocity.x = speed;
+    }
+    else {
+      tower.rotation = 0;
+    }
+    speed *= 2;
+    if (SpaceGame._cursors.up.isDown) {
+      if (tower.fuel > 0) {
+        tower.body.velocity.y = -speed;
+        tower.fuel--;
+        SpaceGame.Main.prototype.changeScoreText();
+      }
+    }
+    else if (SpaceGame._cursors.down.isDown) {
+      tower.body.velocity.y = speed;
+    }
+    if (game.input.activePointer.isDown) {
+      if (game.input.activePointer.isMouse) {
+        // @todo: In the case of a mouse, check mouse button status?
+        if (game.input.activePointer.button == Phaser.Mouse.RIGHT_BUTTON) {
+
+        }
+      }
+      else {
+//        if (Math.floor(game.input.x/(game.width/2)) === 0) {
+        if (game.input.x < tower.x) {
+          tower.angle = -30;
+          tower.body.velocity.x = -speed;
+        }
+//        if (Math.floor(game.input.x/(game.width/2)) === 1) {
+        if (game.input.x > tower.x) {
+          tower.angle = 30;
+          tower.body.velocity.x = speed;
+        }
+//        if(Math.floor(game.input.y/(game.height/2)) === 0){
+        if (game.input.y < tower.y) {
+          tower.body.velocity.y = -speed;
+        }
+//        if(Math.floor(game.input.y/(game.height/2)) === 1){
+        if (game.input.y > tower.y) {
+          tower.body.velocity.y = speed;
+        }
+        /*          if (game.input.y > 600) {
+         Tower.prototype.fire(tower);
+         }*/
+
+        // Multiple touches/pointers
+        /*if (game.input.pointer1.isDown && game.input.pointer2.isDown)
+         alert(game.input.pointer2.isDown);*/
+      }
+    }
   }
 };

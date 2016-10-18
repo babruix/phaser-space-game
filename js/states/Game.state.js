@@ -42,8 +42,11 @@ SpaceGame.Main.prototype = {
     // this.game.debug.line();
     // this.game.debug.spriteInfo(towers.children[0], 32, 32);
 },
-  create: function (tutorial) {
+  create: function (tutorial, game) {
     SpaceGame.isTutorial = tutorial || false;
+    if (SpaceGame.isTutorial) {
+      this.game = game;
+    }
     // Hide CSS element.
     SpaceGame._anim_elem.style.display = 'none';
     SpaceGame._anim_elem.className += ' gameCreated';
@@ -56,13 +59,13 @@ SpaceGame.Main.prototype = {
     /**
      * Init map.
      */
-    this.physics.startSystem(Phaser.Physics.P2JS);
-    this.physics.p2.setImpactEvents(true);
-    this.physics.p2.restitution = 0.9;
-    this.physics.p2.applyGravity = true;
-    this.physics.p2.gravity.x = 0;
-    this.physics.p2.gravity.y = 300;
-    this.physics.p2.setBoundsToWorld(true, true, true, true, false);
+    this.game.physics.startSystem(Phaser.Physics.P2JS);
+    this.game.physics.p2.setImpactEvents(true);
+    this.game.physics.p2.restitution = 0.9;
+    this.game.physics.p2.applyGravity = true;
+    this.game.physics.p2.gravity.x = 0;
+    this.game.physics.p2.gravity.y = 300;
+    this.game.physics.p2.setBoundsToWorld(true, true, true, true, false);
 
     // Background
     this.createDayTime();
@@ -424,6 +427,7 @@ SpaceGame.Main.prototype = {
   },
   initUI: function () {
     var item_width = 70;
+
     // Create elements.
     function createUiElements() {
       SpaceGame._livesGraph = this.game.add.group();
@@ -440,6 +444,19 @@ SpaceGame.Main.prototype = {
       SpaceGame._reloadBtn.events.onInputDown.add(reloadPickups);
     }
     createUiElements.call(this);
+
+    // Add button to mute/unmute sound.
+    function addSoundControl() {
+      this.game.sound.mute = Boolean(parseInt(localStorage.getItem('soundMute')));
+      this.muteSound = this.game.add.button(this.game.width - 150, 15, 'sound', function () {
+          this.game.sound.mute = !this.game.sound.mute;
+          this.muteSound.frame = this.game.sound.mute ? 1 : 2;
+          localStorage.setItem('soundMute', Number(this.game.sound.mute));
+        }, this);
+      this.muteSound.frame = this.game.sound.mute ? 1 : 2;
+      this.muteSound.fixedToCamera = true;
+    };
+    addSoundControl.call(this);
 
     // Add elements to UIGroup.
     function groupElements() {
@@ -460,10 +477,10 @@ SpaceGame.Main.prototype = {
 
     // Functions to create elements.
     function createUiGraph() {
-      var uiRect = this.game.add.graphics(0, this.game.height-45);
+      var uiRect = this.game.add.graphics(0, this.game.height);
       uiRect.beginFill(0xFFFFFF);
       uiRect.clear();
-      uiRect.drawRect(0, 0, this.game.width * 8, 45);
+      uiRect.drawRect(0, 0, this.game.width * 8, 100);
       uiRect.alpha = .4;
       this.game.physics.p2.enable(uiRect);
       uiRect.body.static = true;
@@ -847,12 +864,14 @@ SpaceGame.Main.prototype = {
   },
   update: function () {
     SpaceGame._background.tilePosition.set(this.game.camera.x * -0.5, this.game.camera.y * -0.5);
+
     SpaceGame.rewpawnPickupsButton.onDown.add(function () {
       if (this.game.time.now > SpaceGame.Main.pickupsLastTime + 1000) {
         SpaceGame.Main.pickupsLastTime = this.game.time.now + 1000;
         SpaceGame.Main.prototype.generateGrowingPickups();
       }
     }, this);
+
     // Game over if no alive flowers.
     if (!SpaceGame.isTutorial && !SpaceGame._flowerPlants.countLiving()) {
       // Save this.game canvas "screenshot".
@@ -863,8 +882,7 @@ SpaceGame.Main.prototype = {
     }
 
     // Level completed.
-    if (SpaceGame.enemys.countLiving() === 0
-      && SpaceGame._allEnemysAdded
+    if (SpaceGame.enemys.countLiving() === 0 && SpaceGame._allEnemysAdded
       && !SpaceGame._newLevelStarted && !SpaceGame.isTutorial) {
       SpaceGame._newLevelStarted = true;
       this.updateScore();
@@ -876,183 +894,16 @@ SpaceGame.Main.prototype = {
      */
     SpaceGame.enemys.stealing = false;
     SpaceGame.enemys.forEachAlive(function (enemy) {
-      // Slow down under the rain
-      enemy.body.damping = SpaceGame.Main.prototype.checkIntersectsWithRain(enemy)
-        ? 1
-        : 0.1;
-
-      // Steal a plant
-      if (enemy.closestPlant && enemy.closestPlant.alive) {
-        if (enemy.closestPlant.stealing) {
-          SpaceGame.enemys.stealing = true;
-          enemy.body.velocity.y = -300;
-          enemy.closestPlant.x = enemy.x;
-          enemy.closestPlant.y = enemy.y;
-        }
-
-        // protect with wall
-        if (enemy.y < 200 && towers.children[0].countBricks > 0
-          && this.game.time.now > enemy.blockedLastTime) {
-          towers.children[0].countBricks--;
-
-          new Wall(enemy.x, enemy.y - enemy.height);
-          enemy.blockedLastTime = this.game.time.now + 300;
-          SpaceGame.Main.prototype.changeScoreText();
-        }
-
-        // use/steal plant
-        if (enemy.closestPlant.y < 100 && enemy.closestPlant) {
-          this.game.audio.springSnd.play();
-          enemy.closestPlant.destroy();
-          SpaceGame.Main.prototype.updateScore(true);
-        }
-      }
-
-      // Plant is too far, forget
-      if (enemy.y < 100 && enemy.closestPlant && !SpaceGame.enemys.stealing) {
-        enemy.closestPlant.stealing = false;
-        enemy.closestPlant = false;
-        enemy.steals = false;
-      }
-
-      if (enemy.y > 600) {
-        // find closest  plant
-        enemy.closestPlant = SpaceGame._flowerPlants.getFirstAlive();
-        SpaceGame._flowerPlants.forEachAlive(function (plant) {
-          if (!plant.stealing && enemy.closestPlant.x - enemy.x < plant.x - enemy.x) {
-            enemy.closestPlant = plant;
-          }
-        });
-
-        if (enemy.closestPlant && enemy.closestPlant.alive) {
-
-          if (Math.abs(enemy.x - enemy.closestPlant.x) > 100) {
-            // come close
-            enemy.body.velocity.x = 700;
-            if (enemy.x > enemy.closestPlant.x) {
-              enemy.body.velocity.x *= -1;
-            }
-          }
-          else {
-            // plant stealing in progress...
-            SpaceGame.enemys.stealing = true;
-            Enemy.prototype.showStealingSign(enemy);
-            enemy.closestPlant.stealing = true;
-            enemy.closestPlant.scale.x = (0.5);
-            enemy.closestPlant.scale.y = (0.5);
-            enemy.body.velocity.y = -100;
-            enemy.closestPlant.x = enemy.x;
-            enemy.closestPlant.y = enemy.y;
-            enemy.steals = true;
-          }
-
-          if (!enemy.steals) {
-            enemy.closestPlant = null;
-          }
-        }
-      }
-      if (!SpaceGame._flowerPlants.countLiving()) {
-        Enemy.prototype.explode(enemy);
-      }
+      Enemy.prototype.updateEnemy(enemy);
     });
     
     towers.forEachAlive(function (tower) {
-      if (tower.alpha < 1) {
-        return;
-      }
-
-      // Move tower
-      tower.body.setZeroVelocity();
-      var speed = this.game.height / 1.3 + this.game.height - tower.body.y / 1.3;
-
-      // Slow down under the rain
-      if (SpaceGame.Main.prototype.checkIntersectsWithRain(tower)) {
-        speed -= tower.body.y;
-      }
-
-      if (SpaceGame._cursors.left.isDown) {
-        tower.angle = -30;
-        if (SpaceGame._cursors.up.isDown) {
-          tower.angle = -60;
-        }
-        tower.body.velocity.x = -speed;
-      }
-      else if (SpaceGame._cursors.right.isDown) {
-        tower.angle = 30;
-        if (SpaceGame._cursors.up.isDown) {
-          tower.angle = 60;
-        }
-        tower.body.velocity.x = speed;
-      }
-      else {
-        tower.rotation = 0;
-      }
-      speed *= 2;
-      if (SpaceGame._cursors.up.isDown) {
-        if (tower.fuel > 0) {
-          tower.body.velocity.y = -speed;
-          tower.fuel--;
-          SpaceGame.Main.prototype.changeScoreText();
-        }
-      }
-      else if (SpaceGame._cursors.down.isDown) {
-        tower.body.velocity.y = speed;
-      }
-      if (this.game.input.activePointer.isDown) {
-        if (this.game.input.activePointer.isMouse) {
-          // @todo: In the case of a mouse, check mouse button status?
-          if (this.this.game.input.activePointer.button == Phaser.Mouse.RIGHT_BUTTON) {
-
-          }
-        }
-        else {
-//        if (Math.floor(this.game.input.x/(this.game.width/2)) === 0) {
-          if (this.game.input.x < tower.x) {
-            tower.angle = -30;
-            tower.body.velocity.x = -speed;
-          }
-//        if (Math.floor(this.game.input.x/(this.game.width/2)) === 1) {
-          if (this.game.input.x > tower.x) {
-            tower.angle = 30;
-            tower.body.velocity.x = speed;
-          }
-//        if(Math.floor(this.game.input.y/(this.game.height/2)) === 0){
-          if (this.game.input.y < tower.y) {
-            tower.body.velocity.y = -speed;
-          }
-//        if(Math.floor(this.game.input.y/(this.game.height/2)) === 1){
-          if (this.game.input.y > tower.y) {
-            tower.body.velocity.y = speed;
-          }
-          /*          if (this.game.input.y > 600) {
-           Tower.prototype.fire(tower);
-           }*/
-
-          // Multiple touches/pointers
-          /*if (this.this.game.input.pointer1.isDown && this.this.game.input.pointer2.isDown)
-           alert(this.this.game.input.pointer2.isDown);*/
-        }
-      }
+      Tower.prototype.updateTower(tower);
     });
 
     // Update spawn bar.
     SpaceGame._flowerPlants.forEachAlive(function (plant) {
-      var bar = plant.spawnBar;
-      if (bar) {
-        if (!plant.stealing) {
-          bar.barSprite.alpha = 1;
-          bar.bgSprite.alpha = 1;
-        }
-        else {
-          bar.barSprite.alpha = 0;
-          bar.bgSprite.alpha = 0;
-        }
-        if (plant.alive) {
-          var newValue = (plant.randomSpawnTime - this.game.time.now) * 100 / plant.randomSpawnTime;
-          bar.setPercent(newValue);
-          bar.setPosition(plant.x, plant.y);
-        }
-      }
+      Plant.prototype.updatePlant(plant);
     });
   },
 
