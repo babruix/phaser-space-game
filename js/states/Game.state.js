@@ -1,4 +1,5 @@
 SpaceGame.Main = function (game) {
+  SpaceGame.Main.game = game;
   SpaceGame.enemySprites = [
     {'name': 'alian', 'length': 9},
     {'name': 'bazyaka', 'length': 80},
@@ -55,13 +56,13 @@ SpaceGame.Main.prototype = {
     /**
      * Init map.
      */
-    game.physics.startSystem(Phaser.Physics.P2JS);
-    game.physics.p2.setImpactEvents(true);
-    game.physics.p2.restitution = 0.9;
-    game.physics.p2.applyGravity = true;
-    game.physics.p2.gravity.x = 0;
-    game.physics.p2.gravity.y = 300;
-    game.physics.p2.setBoundsToWorld(true, true, true, true, false);
+    this.physics.startSystem(Phaser.Physics.P2JS);
+    this.physics.p2.setImpactEvents(true);
+    this.physics.p2.restitution = 0.9;
+    this.physics.p2.applyGravity = true;
+    this.physics.p2.gravity.x = 0;
+    this.physics.p2.gravity.y = 300;
+    this.physics.p2.setBoundsToWorld(true, true, true, true, false);
 
     // Background
     this.createDayTime();
@@ -82,46 +83,46 @@ SpaceGame.Main.prototype = {
   },
 
   prepareAudio: function () {
-    game.audio.enemySndFire = game.add.audio('gulp', 2);
-    game.audio.playerSndFire = game.add.audio('gunshot', 0.01);
-    game.audio.toilSnd = game.add.audio('toil', 0.1);
-    game.audio.smackSnd = game.add.audio('smack', 0.2);
-    game.audio.laughSnd = game.add.audio('laugh', 0.5);
-    game.audio.springSnd = game.add.audio('spring', 0.2);
-    game.audio.kissSnd = game.add.audio('kiss', 0.2);
-    game.audio.explosionSnd = game.add.audio('explosion', 0.05);
-    game.audio.missleSnd = game.add.audio('missle', 0.1);
-    game.audio.laserSnd = game.add.audio('laser', 0.1);
-    game.audio.ufoSnd = [
-      game.add.audio('scifi1', 0.2),
-      game.add.audio('scifi2', 0.2),
-      game.add.audio('scifi3', 0.1),
-      game.add.audio('scifi4', 0.1),
-      game.add.audio('scifi5', 0.1)
+    this.game.audio.enemySndFire = this.game.add.audio('gulp', 2);
+    this.game.audio.playerSndFire = this.game.add.audio('gunshot', 0.01);
+    this.game.audio.toilSnd = this.game.add.audio('toil', 0.1);
+    this.game.audio.smackSnd = this.game.add.audio('smack', 0.2);
+    this.game.audio.laughSnd = this.game.add.audio('laugh', 0.5);
+    this.game.audio.springSnd = this.game.add.audio('spring', 0.2);
+    this.game.audio.kissSnd = this.game.add.audio('kiss', 0.2);
+    this.game.audio.explosionSnd = this.game.add.audio('explosion', 0.05);
+    this.game.audio.missleSnd = this.game.add.audio('missle', 0.1);
+    this.game.audio.laserSnd = this.game.add.audio('laser', 0.1);
+    this.game.audio.ufoSnd = [
+      this.game.add.audio('scifi1', 0.2),
+      this.game.add.audio('scifi2', 0.2),
+      this.game.add.audio('scifi3', 0.1),
+      this.game.add.audio('scifi4', 0.1),
+      this.game.add.audio('scifi5', 0.1)
     ];
-    game.audio.completedSnd = game.add.audio('completed', 1);
-    game.audio.reloadSnd = game.add.audio('reload', 0.6);
+    this.game.audio.completedSnd = this.game.add.audio('completed', 1);
+    this.game.audio.reloadSnd = this.game.add.audio('reload', 0.6);
   },
   setPlayerKeys: function () {
-    SpaceGame._fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-    SpaceGame._sateliteButton = game.input.keyboard.addKey(Phaser.Keyboard.S);
-    SpaceGame.rewpawnPickupsButton = game.input.keyboard.addKey(Phaser.Keyboard.R);
-    SpaceGame._brickButton = game.input.keyboard.addKey(Phaser.Keyboard.B);
-    SpaceGame._missleButton = game.input.keyboard.addKey(Phaser.Keyboard.M);
-    SpaceGame._cursors = game.input.keyboard.createCursorKeys();
+    SpaceGame._fireButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    SpaceGame._sateliteButton = this.game.input.keyboard.addKey(Phaser.Keyboard.S);
+    SpaceGame.rewpawnPickupsButton = this.game.input.keyboard.addKey(Phaser.Keyboard.R);
+    SpaceGame._brickButton = this.game.input.keyboard.addKey(Phaser.Keyboard.B);
+    SpaceGame._missleButton = this.game.input.keyboard.addKey(Phaser.Keyboard.M);
+    SpaceGame._cursors = this.game.input.keyboard.createCursorKeys();
     var keysNumbers = ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN'];
     for (var i = 0; i <= 7; i++) {
-      SpaceGame._numberButtons.push(game.input.keyboard.addKey(Phaser.Keyboard[keysNumbers[i]]));
+      SpaceGame._numberButtons.push(this.game.input.keyboard.addKey(Phaser.Keyboard[keysNumbers[i]]));
     }
   },
 
   createDayTime: function () {
     var createBackground = function () {
-      SpaceGame._background = game.add.tileSprite(0, 0, getWidth() * 4, 800, 'background');
+      SpaceGame._background = this.game.add.tileSprite(0, 0, getWidth() * 4, 800, 'background');
       SpaceGame._background.alpha = 1;
     };
     var createSun = function () {
-      SpaceGame._sun = game.add.sprite(60, 60, 'sun');
+      SpaceGame._sun = this.game.add.sprite(60, 60, 'sun');
     };
 
     SpaceGame.events = {};
@@ -135,12 +136,12 @@ SpaceGame.Main.prototype = {
     SpaceGame.events.onNightOver.add(this.createSunAndBgTweens, this);
 
     // Clouds and rain groups.
-    SpaceGame._cloudsGroup = game.add.group();
-    SpaceGame._rainGroup = game.add.group();
+    SpaceGame._cloudsGroup = this.game.add.group();
+    SpaceGame._rainGroup = this.game.add.group();
   },
   createSunAndBgTweens: function () {
     var createBgTween = function () {
-      SpaceGame._backgroundTw = game.add.tween(SpaceGame._background)
+      SpaceGame._backgroundTw = this.game.add.tween(SpaceGame._background)
         .to({alpha: 0.1}, SpaceGame.dayLength,
           Phaser.Easing.Quintic.InOut,
           true, //autostart?,
@@ -154,8 +155,8 @@ SpaceGame.Main.prototype = {
       SpaceGame._sun.y = 10;
       SpaceGame._sun.width = 10;
       SpaceGame._sun.height = 10;
-      SpaceGame._sunTw = game.add.tween(SpaceGame._sun).to({
-        x: game.width - 180,
+      SpaceGame._sunTw = this.game.add.tween(SpaceGame._sun).to({
+        x: this.game.width - 180,
         width: 60,
         height: 60
       }, SpaceGame.dayLength, Phaser.Easing.Quintic.InOut, true, 0, true, true);
@@ -178,7 +179,7 @@ SpaceGame.Main.prototype = {
     };
     SpaceGame._tweenClouds = [];
     for (var i = 0; i <= 6; i++) {
-      this._cloud = game.add.tileSprite(cloudSises[i].toX, cloudSises[i].toY, cloudSises[i].x, cloudSises[i].y, 'cloud' + i);
+      this._cloud = this.game.add.tileSprite(cloudSises[i].toX, cloudSises[i].toY, cloudSises[i].x, cloudSises[i].y, 'cloud' + i);
       SpaceGame._cloudsGroup.add(this._cloud);
       // Also enable sprite for drag
       this._cloud.inputEnabled = true;
@@ -195,10 +196,10 @@ SpaceGame.Main.prototype = {
         }
       }, this);
     }
-    game.time.events.add(300, SpaceGame.Main.prototype.makeRain, this);
+    this.game.time.events.add(300, SpaceGame.Main.prototype.makeRain, this);
   },
   makeRain: function () {
-    var integerInRange = game.rnd.integerInRange(0,6);
+    var integerInRange = this.game.rnd.integerInRange(0,6);
     var cloud = SpaceGame._cloudsGroup.children[integerInRange];
     cloud.raining = true;
 
@@ -207,7 +208,7 @@ SpaceGame.Main.prototype = {
     // let Phaser add the particle system to world group or choose to add it to a specific group
     SpaceGame._rainGroup.add(particleSystem1);
     SpaceGame._rainGroup.children[0].x = cloud.x + 150;
-    game.time.events.add(5000, this.removeRain, this);
+    this.game.time.events.add(5000, this.removeRain, this);
   },
   removeRain: function () {
     SpaceGame._rainGroup.forEachAlive(function (element) {
@@ -216,7 +217,7 @@ SpaceGame.Main.prototype = {
     SpaceGame._cloudsGroup.forEachAlive(function (cloud) {
       cloud.raining = false;
     }, this);
-    game.time.events.add(3000, this.makeRain, this);
+    this.game.time.events.add(3000, this.makeRain, this);
   },
 
   setupGameGroups: function () {
@@ -224,44 +225,44 @@ SpaceGame.Main.prototype = {
     /**
      * Tower
      */
-    towers = game.add.group();
-    game.physics.enable(towers, Phaser.Physics.P2JS, debug);
-    game.world.setBounds(0, 0, getWidth() * 4, 790);
+    towers = this.game.add.group();
+    this.game.physics.enable(towers, Phaser.Physics.P2JS, debug);
+    this.game.world.setBounds(0, 0, getWidth() * 4, 790);
 
     /**
      * Heart
      */
-    SpaceGame._hearts = game.add.group();
+    SpaceGame._hearts = this.game.add.group();
     SpaceGame._hearts.createMultiple(1, 'heart');
 
     /**
      * Ammo
      */
-    SpaceGame._ammos = game.add.group();
+    SpaceGame._ammos = this.game.add.group();
     SpaceGame._ammos.createMultiple(1, 'ammo');
 
     /**
      * Fuel
      */
-    SpaceGame._fuels = game.add.group();
+    SpaceGame._fuels = this.game.add.group();
     SpaceGame._fuels.createMultiple(1, 'fuel');
 
     /**
      * Shield
      */
-    SpaceGame._shields = game.add.group();
+    SpaceGame._shields = this.game.add.group();
     SpaceGame._shields.createMultiple(1, 'shield');
 
     /**
      * Brick
      */
-    SpaceGame._bricks = game.add.group();
+    SpaceGame._bricks = this.game.add.group();
     SpaceGame._bricks.createMultiple(1, 'brick');
 
     /**
      * Wall
      */
-    SpaceGame._walls = game.add.group();
+    SpaceGame._walls = this.game.add.group();
     SpaceGame._walls.createMultiple(1, 'wall-a');
     SpaceGame._walls.createMultiple(1, 'wall-b');
     SpaceGame._walls.createMultiple(1, 'wall-c');
@@ -269,24 +270,24 @@ SpaceGame.Main.prototype = {
     /**
      * Ufo
      */
-    SpaceGame._ufos = game.add.group();
+    SpaceGame._ufos = this.game.add.group();
     SpaceGame._ufos.createMultiple(4, 'ufo');
 
     /**
      * Bombs
      */
-    SpaceGame._bombs = game.add.group();
+    SpaceGame._bombs = this.game.add.group();
     SpaceGame._bombs.createMultiple(1, 'bomb');
 
     /**
      * Satelites
      */
-    SpaceGame._satelites = game.add.group();
+    SpaceGame._satelites = this.game.add.group();
 
     /**
      * Towers Bullets
      */
-    SpaceGame._bullets = game.add.group();
+    SpaceGame._bullets = this.game.add.group();
     SpaceGame._bullets.enableBody = true;
     SpaceGame._bullets.physicsBodyType = Phaser.Physics.P2JS;
     SpaceGame._bullets.createMultiple(20, 'green_bullet');
@@ -296,7 +297,7 @@ SpaceGame.Main.prototype = {
     SpaceGame._bullets.setAll('anchor.x', 0.5);
     SpaceGame._bullets.setAll('anchor.y', 1);
 
-    SpaceGame._frezzing_bullets = game.add.group();
+    SpaceGame._frezzing_bullets = this.game.add.group();
     SpaceGame._frezzing_bullets.enableBody = true;
     SpaceGame._frezzing_bullets.physicsBodyType = Phaser.Physics.P2JS;
     SpaceGame._frezzing_bullets.createMultiple(20, 'freezing_bullet');
@@ -309,7 +310,7 @@ SpaceGame.Main.prototype = {
     /**
      * Enemy Bullets
      */
-    SpaceGame._enemy_bullets = game.add.group();
+    SpaceGame._enemy_bullets = this.game.add.group();
     SpaceGame._enemy_bullets.enableBody = true;
     SpaceGame._enemy_bullets.physicsBodyType = Phaser.Physics.P2JS;
 
@@ -323,7 +324,7 @@ SpaceGame.Main.prototype = {
     /**
      * Missles
      */
-    SpaceGame._missles = game.add.group();
+    SpaceGame._missles = this.game.add.group();
     SpaceGame._missles.enableBody = true;
     SpaceGame._missles.physicsBodyType = Phaser.Physics.P2JS;
 
@@ -338,15 +339,15 @@ SpaceGame.Main.prototype = {
     /**
      * Enemys
      */
-    SpaceGame.enemys = game.add.group();
+    SpaceGame.enemys = this.game.add.group();
     SpaceGame.enemys.enableBody = true;
     SpaceGame.enemys.physicsBodyType = Phaser.Physics.P2JS;
-    game.physics.p2.enableBody(SpaceGame.enemys, debug);
+    this.game.physics.p2.enableBody(SpaceGame.enemys, debug);
     SpaceGame.enemys.setAll('checkWorldBounds', true);
     SpaceGame.enemys.setAll('outOfBoundsKill', true);
 
     /* Flowers */
-    SpaceGame._flowerPlants = game.add.group();
+    SpaceGame._flowerPlants = this.game.add.group();
   },
   nextLevel: function () {
     level++;
@@ -372,7 +373,7 @@ SpaceGame.Main.prototype = {
 
   generateGrowingPickups : function() {
     if (!SpaceGame.Main.pickupsLastTime ) {
-      SpaceGame.Main.pickupsLastTime = game.time.now;
+      SpaceGame.Main.pickupsLastTime = this.game.time.now;
     }
 
     // Remove old generation events
@@ -389,11 +390,11 @@ SpaceGame.Main.prototype = {
   },
   initStealingSigns: function () {
     function initOneStealSign(direction) {
-      var stealingSignSprite = game.add.sprite(game.width / 2, 130, 'sign_' + direction);
+      var stealingSignSprite = this.game.add.sprite(this.game.width / 2, 130, 'sign_' + direction);
       stealingSignSprite.scale.x = 0.3;
       stealingSignSprite.scale.y = 0.3;
       stealingSignSprite.anchor.setTo(0.5, 0.5);
-      var text_l = game.add.text(0, -170,
+      var text_l = this.game.add.text(0, -170,
         'Stealing!', {
           font: "50px eater",
           fill: "#D81E00",
@@ -425,7 +426,7 @@ SpaceGame.Main.prototype = {
     var item_width = 70;
     // Create elements.
     function createUiElements() {
-      SpaceGame._livesGraph = game.add.group();
+      SpaceGame._livesGraph = this.game.add.group();
       this.drawLivesSprites();
       SpaceGame._UiGraph = createUiGraph();
       SpaceGame._sateliteBtn = createSateliteDraggable.call(this, 'satelite');
@@ -442,7 +443,7 @@ SpaceGame.Main.prototype = {
 
     // Add elements to UIGroup.
     function groupElements() {
-      SpaceGame._UiGroup = game.add.group();
+      SpaceGame._UiGroup = this.game.add.group();
       SpaceGame._UiGroup.fixedToCamera = true;
       SpaceGame._UiGroup.add(SpaceGame._UiGraph);
 
@@ -459,12 +460,12 @@ SpaceGame.Main.prototype = {
 
     // Functions to create elements.
     function createUiGraph() {
-      var uiRect = game.add.graphics(0, game.height-45);
+      var uiRect = this.game.add.graphics(0, this.game.height-45);
       uiRect.beginFill(0xFFFFFF);
       uiRect.clear();
-      uiRect.drawRect(0, 0, game.width * 8, 45);
+      uiRect.drawRect(0, 0, this.game.width * 8, 45);
       uiRect.alpha = .4;
-      game.physics.p2.enable(uiRect);
+      this.game.physics.p2.enable(uiRect);
       uiRect.body.static = true;
       return uiRect;
     }
@@ -483,7 +484,7 @@ SpaceGame.Main.prototype = {
           break;
       }
 
-      var satelite = game.add.sprite(0, 0, key);
+      var satelite = this.game.add.sprite(0, 0, key);
       satelite.xPosition = xPos;
       satelite.anchor.setTo(0, 0);
       satelite.scale.setTo(0.4, 0.4);
@@ -495,7 +496,7 @@ SpaceGame.Main.prototype = {
       satelite.events.onDragStop.add(eventSateliteDragStop);
       satelite.events.onDragUpdate.add(eventSateliteDragUpdate);
 
-      var textObj = game.add.text(0, 100, SpaceGame.priceList[key] + '$', SpaceGame.priceStyle);
+      var textObj = this.game.add.text(0, 100, SpaceGame.priceList[key] + '$', SpaceGame.priceStyle);
       satelite.addChild(textObj);
 
       var text = '1';
@@ -517,7 +518,7 @@ SpaceGame.Main.prototype = {
       return satelite;
     }
     function createWallDraggable() {
-      var wallBtn = game.add.sprite(0, 0, 'wall-a');
+      var wallBtn = this.game.add.sprite(0, 0, 'wall-a');
       wallBtn.xPosition = item_width*4;
       wallBtn.scale.setTo(0.4, 0.4);
       wallBtn.inputEnabled = true;
@@ -526,7 +527,7 @@ SpaceGame.Main.prototype = {
       wallBtn.events.onInputDown.add(eventWallInputDown);
       wallBtn.events.onDragStop.add(eventWallDragStop);
 
-      var textObj = game.add.text(0, 100, SpaceGame.priceList.wall + '$', SpaceGame.priceStyle);
+      var textObj = this.game.add.text(0, 100, SpaceGame.priceList.wall + '$', SpaceGame.priceStyle);
       textObj.scale.setTo(1.3, 1.3);
       wallBtn.addChild(textObj);
       var cRect = drawPriceCircle('5');
@@ -536,7 +537,7 @@ SpaceGame.Main.prototype = {
       return wallBtn;
     }
     function createBombDraggable() {
-      var bombBtn = game.add.sprite(0, 350, 'bomb');
+      var bombBtn = this.game.add.sprite(0, 350, 'bomb');
       bombBtn.xPosition = item_width*5
       bombBtn.scale.setTo(0.7, 0.7);
       bombBtn.inputEnabled = true;
@@ -546,7 +547,7 @@ SpaceGame.Main.prototype = {
       bombBtn.events.onDragStop.add(eventBombDragStop);
       bombBtn.events.onDragUpdate.add(eventBombDragUpdate);
 
-      var textObj = game.add.text(0, 50, SpaceGame.priceList.bomb + '$', SpaceGame.priceStyle);
+      var textObj = this.game.add.text(0, 50, SpaceGame.priceList.bomb + '$', SpaceGame.priceStyle);
       textObj.scale.setTo(0.7, 0.7);
       bombBtn.addChild(textObj);
 
@@ -557,7 +558,7 @@ SpaceGame.Main.prototype = {
       return bombBtn;
     }
     function createRocketDraggable() {
-      var rocketBtn = game.add.sprite(0, 420, 'missle');
+      var rocketBtn = this.game.add.sprite(0, 420, 'missle');
       rocketBtn.xPosition = item_width*6;
       rocketBtn.scale.setTo(0.7, 0.7);
       rocketBtn.inputEnabled = true;
@@ -567,7 +568,7 @@ SpaceGame.Main.prototype = {
       rocketBtn.events.onDragStop.add(eventRocketDragStop);
       rocketBtn.events.onDragUpdate.add(eventRocketDragUpdate);
 
-      var textObj = game.add.text(0, 50, SpaceGame.priceList.rocket + '$', SpaceGame.priceStyle);
+      var textObj = this.game.add.text(0, 50, SpaceGame.priceList.rocket + '$', SpaceGame.priceStyle);
       textObj.scale.setTo(0.7, 0.7);
       rocketBtn.addChild(textObj);
 
@@ -578,7 +579,7 @@ SpaceGame.Main.prototype = {
       return rocketBtn;
     }
     function createReloadBtn() {
-      var reloadBtn = game.add.sprite(0, 480, 'reload');
+      var reloadBtn = this.game.add.sprite(0, 480, 'reload');
       reloadBtn.xPosition = item_width*7;
       reloadBtn.scale.setTo(0.2, 0.2);
       reloadBtn.inputEnabled = true;
@@ -588,8 +589,8 @@ SpaceGame.Main.prototype = {
       return reloadBtn;
     }
     function drawPriceCircle (text) {
-      var cRect = game.add.graphics(0, 50).beginFill(0xff5a00, 1).drawCircle(0, 0, 55);
-      var number = game.add.text(0, 5, text, {
+      var cRect = this.game.add.graphics(0, 50).beginFill(0xff5a00, 1).drawCircle(0, 0, 55);
+      var number = this.game.add.text(0, 5, text, {
         font: '40px Arial',
         fill: '#FFFFFF'
       });
@@ -620,7 +621,7 @@ SpaceGame.Main.prototype = {
       SpaceGame._sateliteInitPos = {};
     }
     function eventSateliteDragUpdate(tower) {
-      tower.y = game.height - 70;
+      tower.y = this.game.height - 70;
     }
     function eventWallInputDown(wall) {
       SpaceGame._wallInitPos = {};
@@ -670,7 +671,7 @@ SpaceGame.Main.prototype = {
       SpaceGame._rocketInitPos.y = rocket.y;
     }
     function eventRocketDragUpdate(rocket) {
-      rocket.y = game.height - 30;
+      rocket.y = this.game.height - 30;
     }
     function eventRocketDragStop(rocket) {
       var price = SpaceGame.priceList.rocket;
@@ -686,8 +687,8 @@ SpaceGame.Main.prototype = {
       SpaceGame._rocketInitPos = {};
     }
     function reloadPickups() {
-      if (game.time.now > SpaceGame.Main.pickupsLastTime + 1000) {
-        SpaceGame.Main.pickupsLastTime = game.time.now + 1000;
+      if (this.game.time.now > SpaceGame.Main.pickupsLastTime + 1000) {
+        SpaceGame.Main.pickupsLastTime = this.game.time.now + 1000;
         SpaceGame.Main.prototype.generateGrowingPickups();
       }
     }
@@ -698,7 +699,7 @@ SpaceGame.Main.prototype = {
 
     // Animate walls
     SpaceGame._walls.forEachAlive(function (brick) {
-      game.add.tween(brick)
+      this.game.add.tween(brick)
         .to({alpha: moveOut ? 0 : 1}, 1000, Phaser.Easing.Linear.None, true, 0);
     });
 
@@ -706,19 +707,19 @@ SpaceGame.Main.prototype = {
 
       // Graphics animation doesn't work here.
       if (item.type == 0) {
-        item.y = moveOut ? item.y : game.height + item.height;
+        item.y = moveOut ? item.y : this.game.height + item.height;
         item.alpha = moveOut ? 1 : 0;
 
-        var toY = moveOut ? game.height + item.height : game.height - 70;
+        var toY = moveOut ? this.game.height + item.height : this.game.height - 70;
         var delay = moveOut ? 700 : 500;
 
         if (SpaceGame._scoreText == item) {
-          toY = moveOut ? game.height - item.height : game.height - 30;
-          game.add.tween(item).to({alpha: moveOut ? 0 : 1, x: 0, y: toY},
+          toY = moveOut ? this.game.height - item.height : this.game.height - 30;
+          this.game.add.tween(item).to({alpha: moveOut ? 0 : 1, x: 0, y: toY},
             700, Phaser.Easing.Linear.None, true, delay);
         }
         else {
-          game.add.tween(item).to({alpha: moveOut ? 0 : 1, x:game.width/2+100+item.xPosition, y: toY},
+          this.game.add.tween(item).to({alpha: moveOut ? 0 : 1, x:this.game.width/2+100+item.xPosition, y: toY},
             700, Phaser.Easing.Linear.None, true, delay);
         }
 
@@ -728,8 +729,8 @@ SpaceGame.Main.prototype = {
 
   addRndBricks: function () {
     for (var i = 1; i < level * 3; i++) {
-      var x = game.rnd.integerInRange(0, game.width);
-      var y = game.rnd.integerInRange(300, game.height / 1.5);
+      var x = this.game.rnd.integerInRange(0, this.game.width);
+      var y = this.game.rnd.integerInRange(300, this.game.height / 1.5);
       new Wall(x, y);
     }
   },
@@ -740,20 +741,20 @@ SpaceGame.Main.prototype = {
       fill: "#F36200",
       align: "center"
     };
-    var levelText = game.add.text(0, 0, 'Level ' + level, style);
-    levelText.x = game.width / 2 - levelText.width / 2;
-    levelText.y = game.height / 2 - levelText.height;
+    var levelText = this.game.add.text(0, 0, 'Level ' + level, style);
+    levelText.x = this.game.width / 2 - levelText.width / 2;
+    levelText.y = this.game.height / 2 - levelText.height;
     levelText.alpha = 0;
     levelText.fixedToCamera = true;
 
     // Animate
-    game.add.tween(levelText)
+    this.game.add.tween(levelText)
       .to({alpha: 1},
         1000 /*duration (in ms)*/,
         Phaser.Easing.Bounce.Out /*easing type*/,
         true /*autostart?*/)
       .onComplete.add(function () {
-      game.add.tween(levelText)
+      this.game.add.tween(levelText)
         .to({y: -levelText.height, alpha: 0},
           1000 /*duration (in ms)*/,
           Phaser.Easing.Bounce.In /*easing type*/,
@@ -764,7 +765,6 @@ SpaceGame.Main.prototype = {
       })
     }, this);
   },
-
 
   caculatetDistance: function (sprite1, sprite2) {
     var a = sprite1.x - sprite2.x;
@@ -784,20 +784,16 @@ SpaceGame.Main.prototype = {
     }
     this.changeScoreText();
     if (lives < 0) {
-      game.camera.shake();
-      // save game screenshot.
-      SpaceGame.canvasDataURI = game.canvas.toDataURL();
-      game.time.events.add(Phaser.Timer.SECOND * 2, SpaceGame.GameOverTransition, this).autoDestroy = true;
+      this.game.camera.shake();
+      // save this.game screenshot.
+      SpaceGame.canvasDataURI = this.game.canvas.toDataURL();
+      this.game.time.events.add(Phaser.Timer.SECOND * 2, SpaceGame.GameOverTransition, this).autoDestroy = true;
     }
   },
 
   changeScoreText: function () {
     var style = {font: '20px eater', fill: '#E39B00', align: 'left'};
-    var str = ''
-      // "   Lives: " + lives
-      // + " \n  Flowers: " + SpaceGame._flowerPlants.countLiving()
-      + "    Level: " + level
-      + "   $: " + score;
+    var str = "    Level: " + level + "   $: " + score;
     if (towers && towers.children && typeof towers.children[0] != "undefined") {
       str += "   Bricks: " + towers.children[0].countBricks;
       str += "   Missles: " + towers.children[0].missles + "";
@@ -822,15 +818,15 @@ SpaceGame.Main.prototype = {
   addEnemys: function () {
     var i = 0;
     SpaceGame._allEnemysAdded = false;
-    var enemysBcl = game.time.events.loop(level / 2 * Phaser.Timer.SECOND, function () {
+    var enemysBcl = this.game.time.events.loop(level / 2 * Phaser.Timer.SECOND, function () {
       // Generate i=3*level number of enemys
       if (i < 2 * level) {
-        var rndKey = game.rnd.integerInRange(0, SpaceGame.enemySprites.length - 1);
+        var rndKey = this.game.rnd.integerInRange(0, SpaceGame.enemySprites.length - 1);
         var animEnemy = SpaceGame.enemySprites[rndKey];
         var enemy = new Enemy(0, 0, animEnemy.name, animEnemy.length);
         var param = {
-          x: parseInt(game.rnd.integerInRange(0, game.width)),
-          y: parseInt(game.rnd.integerInRange(0, game.height))
+          x: parseInt(this.game.rnd.integerInRange(0, this.game.width)),
+          y: parseInt(this.game.rnd.integerInRange(0, this.game.height))
         };
         param.countBricks = 1;
         Tower.prototype.addWall(param);
@@ -850,19 +846,19 @@ SpaceGame.Main.prototype = {
     return intersectsWithRain;
   },
   update: function () {
-    SpaceGame._background.tilePosition.set(game.camera.x * -0.5, game.camera.y * -0.5);
+    SpaceGame._background.tilePosition.set(this.game.camera.x * -0.5, this.game.camera.y * -0.5);
     SpaceGame.rewpawnPickupsButton.onDown.add(function () {
-      if (game.time.now > SpaceGame.Main.pickupsLastTime + 1000) {
-        SpaceGame.Main.pickupsLastTime = game.time.now + 1000;
+      if (this.game.time.now > SpaceGame.Main.pickupsLastTime + 1000) {
+        SpaceGame.Main.pickupsLastTime = this.game.time.now + 1000;
         SpaceGame.Main.prototype.generateGrowingPickups();
       }
     }, this);
     // Game over if no alive flowers.
     if (!SpaceGame.isTutorial && !SpaceGame._flowerPlants.countLiving()) {
-      // Save game canvas "screenshot".
-      SpaceGame.canvasDataURI = game.canvas.toDataURL();
-      game.camera.flash(0xFF0010, 2000, true);
-      game.time.events.add(0, SpaceGame.GameOverTransition, this).autoDestroy = true;
+      // Save this.game canvas "screenshot".
+      SpaceGame.canvasDataURI = this.game.canvas.toDataURL();
+      this.game.camera.flash(0xFF0010, 2000, true);
+      this.game.time.events.add(0, SpaceGame.GameOverTransition, this).autoDestroy = true;
       return;
     }
 
@@ -896,17 +892,17 @@ SpaceGame.Main.prototype = {
 
         // protect with wall
         if (enemy.y < 200 && towers.children[0].countBricks > 0
-          && game.time.now > enemy.blockedLastTime) {
+          && this.game.time.now > enemy.blockedLastTime) {
           towers.children[0].countBricks--;
 
           new Wall(enemy.x, enemy.y - enemy.height);
-          enemy.blockedLastTime = game.time.now + 300;
+          enemy.blockedLastTime = this.game.time.now + 300;
           SpaceGame.Main.prototype.changeScoreText();
         }
 
         // use/steal plant
         if (enemy.closestPlant.y < 100 && enemy.closestPlant) {
-          game.audio.springSnd.play();
+          this.game.audio.springSnd.play();
           enemy.closestPlant.destroy();
           SpaceGame.Main.prototype.updateScore(true);
         }
@@ -967,7 +963,7 @@ SpaceGame.Main.prototype = {
 
       // Move tower
       tower.body.setZeroVelocity();
-      var speed = game.height / 1.3 + game.height - tower.body.y / 1.3;
+      var speed = this.game.height / 1.3 + this.game.height - tower.body.y / 1.3;
 
       // Slow down under the rain
       if (SpaceGame.Main.prototype.checkIntersectsWithRain(tower)) {
@@ -1005,36 +1001,36 @@ SpaceGame.Main.prototype = {
       if (this.game.input.activePointer.isDown) {
         if (this.game.input.activePointer.isMouse) {
           // @todo: In the case of a mouse, check mouse button status?
-          if (this.game.input.activePointer.button == Phaser.Mouse.RIGHT_BUTTON) {
+          if (this.this.game.input.activePointer.button == Phaser.Mouse.RIGHT_BUTTON) {
 
           }
         }
         else {
-//        if (Math.floor(game.input.x/(game.width/2)) === 0) {
-          if (game.input.x < tower.x) {
+//        if (Math.floor(this.game.input.x/(this.game.width/2)) === 0) {
+          if (this.game.input.x < tower.x) {
             tower.angle = -30;
             tower.body.velocity.x = -speed;
           }
-//        if (Math.floor(game.input.x/(game.width/2)) === 1) {
-          if (game.input.x > tower.x) {
+//        if (Math.floor(this.game.input.x/(this.game.width/2)) === 1) {
+          if (this.game.input.x > tower.x) {
             tower.angle = 30;
             tower.body.velocity.x = speed;
           }
-//        if(Math.floor(game.input.y/(game.height/2)) === 0){
-          if (game.input.y < tower.y) {
+//        if(Math.floor(this.game.input.y/(this.game.height/2)) === 0){
+          if (this.game.input.y < tower.y) {
             tower.body.velocity.y = -speed;
           }
-//        if(Math.floor(game.input.y/(game.height/2)) === 1){
-          if (game.input.y > tower.y) {
+//        if(Math.floor(this.game.input.y/(this.game.height/2)) === 1){
+          if (this.game.input.y > tower.y) {
             tower.body.velocity.y = speed;
           }
-          /*          if (game.input.y > 600) {
+          /*          if (this.game.input.y > 600) {
            Tower.prototype.fire(tower);
            }*/
 
           // Multiple touches/pointers
-          /*if (this.game.input.pointer1.isDown && this.game.input.pointer2.isDown)
-           alert(this.game.input.pointer2.isDown);*/
+          /*if (this.this.game.input.pointer1.isDown && this.this.game.input.pointer2.isDown)
+           alert(this.this.game.input.pointer2.isDown);*/
         }
       }
     });
@@ -1052,7 +1048,7 @@ SpaceGame.Main.prototype = {
           bar.bgSprite.alpha = 0;
         }
         if (plant.alive) {
-          var newValue = (plant.randomSpawnTime - game.time.now) * 100 / plant.randomSpawnTime;
+          var newValue = (plant.randomSpawnTime - this.game.time.now) * 100 / plant.randomSpawnTime;
           bar.setPercent(newValue);
           bar.setPosition(plant.x, plant.y);
         }
@@ -1062,7 +1058,7 @@ SpaceGame.Main.prototype = {
 
   levelCompleted: function () {
   lives++;
-  game.audio.completedSnd.play();
+  this.game.audio.completedSnd.play();
 
   var style = {
     font: "60px eater",
@@ -1071,21 +1067,21 @@ SpaceGame.Main.prototype = {
     align: "center",
     strokeThickness: 1
   };
-  var levelText = game.add.text(0, 0, 'Level Completed!', style);
-  levelText.x = game.width / 2 - levelText.width / 2;
-  levelText.y = game.height / 2 - levelText.height / 2;
+  var levelText = this.game.add.text(0, 0, 'Level Completed!', style);
+  levelText.x = this.game.width / 2 - levelText.width / 2;
+  levelText.y = this.game.height / 2 - levelText.height / 2;
   levelText.alpha = 0;
   levelText.fixedToCamera = true;
 
   // Animate
-  game.add.tween(levelText)
+  this.game.add.tween(levelText)
     .to({alpha: 1},
       1000 /*duration (in ms)*/,
       Phaser.Easing.Bounce.Out /*easing type*/,
       true /*autostart?*/)
     .onComplete.add(function () {
     SpaceGame.Main.prototype.animateScore(true);
-    game.add.tween(levelText)
+    this.game.add.tween(levelText)
       .to({y: -levelText.height / 2, alpha: 0},
         1000 /*duration (in ms)*/,
         Phaser.Easing.Bounce.In /*easing type*/,

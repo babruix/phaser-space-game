@@ -1,6 +1,12 @@
 SpaceGame.GameOver = function(game){ };
 SpaceGame.GameOver.prototype = {
-  create : function(){
+  init: function () {
+    this.score = score || 0;
+    this.highestScore = localStorage.getItem('highestScore') || 0;
+    this.highestScore = Math.max(this.score, this.highestScore);
+    localStorage.setItem('highestScore', this.highestScore);
+  },
+  create : function() {
     game.audio.gameOverSnd = game.add.audio('gameOver', 1);
     game.audio.gameOverSnd.play();
 
@@ -10,9 +16,12 @@ SpaceGame.GameOver.prototype = {
     game.cache.addImage('image-data', SpaceGame.canvasDataURI, data);
     var image = game.add.image(0, 0, 'image-data');
 
-    var message  = "GAME OVER! \n press any key to restart";
+    var message  = "GAME OVER! "
+      + "\n Your score is " + this.score
+      + "\n Highest score is " + this.highestScore
+      + "\n press any key to restart";
     if (!SpaceGame._flowerPlants.countLiving() && lives > 0) {
-      message = "all flowers have been stolen \n" + message;
+      message = "\n all flowers have been stolen \n" + message;
     }
     // place the assets and elements in their initial positions, create the state
     this._fontStyle = { font: "40px eater", fill: "#FFCC00", stroke: "#333", strokeThickness: 5, align: "center" };
