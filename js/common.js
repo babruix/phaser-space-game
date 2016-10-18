@@ -4,7 +4,7 @@
  */
 
 var game = new Phaser.Game(getWidth(), 800, Phaser.CANVAS);
-var debug = window.location.hash == "#deb";
+var debug = window.location.hash === '#deb';
 
 game.audio = {};
 game.state.add('Boot', SpaceGame.Boot);
@@ -18,7 +18,6 @@ game.state.start('Boot');
 /**
  * Common functions
  */
-
 function getWidth() {
   if (self.innerHeight) {
     return self.innerWidth;
@@ -32,7 +31,6 @@ function getWidth() {
     return document.body.clientWidth;
   }
 }
-
 function getHeight() {
   if (self.innerHeight) {
     return self.innerHeight;

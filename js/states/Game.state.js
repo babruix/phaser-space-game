@@ -38,10 +38,9 @@ SpaceGame.Main = function (game) {
 };
 SpaceGame.Main.prototype = {
   render: function() {
-    // this.game.debug.start(20, 20, 'yellow');
-    // this.game.debug.line();
-    // this.game.debug.spriteInfo(towers.children[0], 32, 32);
-},
+    this.game.debug.text('Alive enemies: ' + SpaceGame.enemys.countLiving(), 10, 50);
+  },
+
   create: function (tutorial, game) {
     SpaceGame.isTutorial = tutorial || false;
     if (SpaceGame.isTutorial) {
