@@ -63,17 +63,14 @@ Missle.prototype = {
       explode.animations.play('explode', 19, false, true);
 
       // Kill everybody who is close
-      var groupsToCheck = [SpaceGame.enemys, SpaceGame._walls, SpaceGame._bombs, SpaceGame._satelites];
-      for (var i = 0, count = groupsToCheck.length; i < count; i++) {
-        groupsToCheck[i].forEachAlive(function (enemy) {
-          Missle.prototype.killWhenClose(enemy, missle);
-        });
-      }
-    }
-  },
-  killWhenClose: function (sprite, missle) {
-    if (!sprite.ufo_exists && SpaceGame.Main.prototype.caculatetDistance(missle, sprite) < 50) {
-      sprite.kill();
+      [SpaceGame.enemys, SpaceGame._walls, SpaceGame._bombs, SpaceGame._satelites].forEach(function (group) {
+        group.forEachAlive(function (sprite) {
+          if (!sprite.ufo_exists
+            && SpaceGame.Main.prototype.caculatetDistance(missle, sprite) < 50) {
+            sprite.kill();
+          }
+        }, this);
+      });
     }
   }
 };

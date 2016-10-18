@@ -377,18 +377,15 @@ SpaceGame.Main.prototype = {
     if (!SpaceGame.Main.pickupsLastTime ) {
       SpaceGame.Main.pickupsLastTime = this.game.time.now;
     }
-
     // Remove old generation events
-    for (var i = 0; i < SpaceGame._plantsGenerationEvents.length; i++) {
-      game.time.events.remove(SpaceGame._plantsGenerationEvents[i]);
-    }
-
+    SpaceGame._plantsGenerationEvents.forEach(function (event) {
+      game.time.events.remove(event);
+    });
     // Add new events
-    for (var i = 0; i < SpaceGame._flowerPlants.children.length; i++) {
-      var plant = SpaceGame._flowerPlants.children[i];
+    SpaceGame._flowerPlants.children.forEach(function (plant) {
       var __ret = Plant.prototype.generate_pickup(plant);
       SpaceGame._plantsGenerationEvents.push(game.time.events.add(__ret.nextSpawnTime, __ret.spawnFunction, this));
-    }
+    }, this);
   },
   initStealingSigns: function () {
     function initOneStealSign(direction) {
@@ -479,7 +476,7 @@ SpaceGame.Main.prototype = {
       var uiRect = this.game.add.graphics(0, this.game.height);
       uiRect.beginFill(0xFFFFFF);
       uiRect.clear();
-      uiRect.drawRect(0, 0, this.game.width * 8, 100);
+      uiRect.drawRect(0, 100, this.game.width * 8, 120);
       uiRect.alpha = .4;
       this.game.physics.p2.enable(uiRect);
       uiRect.body.static = true;
@@ -800,10 +797,10 @@ SpaceGame.Main.prototype = {
     }
     this.changeScoreText();
     if (lives < 0) {
-      this.game.camera.shake();
+      game.camera.shake();
       // save this.game screenshot.
-      SpaceGame.canvasDataURI = this.game.canvas.toDataURL();
-      this.game.time.events.add(Phaser.Timer.SECOND * 2, SpaceGame.GameOverTransition, this).autoDestroy = true;
+      SpaceGame.canvasDataURI = game.canvas.toDataURL();
+      game.time.events.add(Phaser.Timer.SECOND * 2, SpaceGame.GameOverTransition, this).autoDestroy = true;
     }
   },
 

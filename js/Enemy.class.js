@@ -33,11 +33,6 @@ var Enemy = function (x, y, anim, animLength) {
   this.enemy.update = function () {
     Enemy.prototype.scale(_this.enemy);
     if (_this.enemy.ufo_exists) {
-      var ufoScale = parseInt(_this.enemy.ufo.x / 5) / 100;
-      ufoScale = ufoScale > 1 ? 1 : ufoScale;
-      ufoScale = ufoScale < 0.1 ? 0.1 : ufoScale;
-      _this.enemy.ufo.scale.x = ufoScale;
-      _this.enemy.ufo.scale.y = ufoScale;
       if (_this.enemy.ufo.x > _this.enemy.drop_enemy_at_x) {
         _this.enemy.alpha = 1;
         _this.enemy.x = _this.enemy.drop_enemy_at_x;
@@ -303,7 +298,7 @@ Enemy.prototype = {
     // Slow down under the rain
     enemy.body.damping = SpaceGame.Main.prototype.checkIntersectsWithRain(enemy)
       ? 0.9
-      : 0.3;
+      : 0.4;
 
     // Steal a plant
     if (enemy.closestPlant && enemy.closestPlant.alive) {

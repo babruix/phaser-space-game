@@ -15,23 +15,23 @@ SpaceGame.priceList = {
 SpaceGame.Preloader = function (game) {};
 SpaceGame.Preloader.prototype = {
   preload: function () {
-    // show background
+    // Background
     game.add.tileSprite(0, 0, getWidth(), 800, 'background');
-    var text = game.add.text(getWidth()/2, getHeight()/2, 'Loading...', {font: '57px eater', fill: '#F36200'});
+    var text = game.add.text(getWidth() / 2, getHeight() / 2 - 100, 'Loading...', {
+      font: '57px eater',
+      fill: '#F36200'
+    });
     text.anchor.set(0.5);
 
-    // Nice practicles :)
-    var particleSystem1 = SpaceGame.epsyPlugin.loadSystem(SpaceGame.epsyPluginConfig.galaxy, game.width / 2, 50);
-    // let Phaser add the particle system to world group or choose to add it to a specific group
-    this._circlesGroup = game.add.group();
-    this._circlesGroup.add(particleSystem1);
-
-    /**
-     * Preloader
-     */
+    // Preloader
     game.preloadBar = game.add.sprite(game.world.centerX, game.world.centerY, 'preloaderBar');
     game.preloadBar.anchor.setTo(0.5, 0.5);
     game.load.setPreloadSprite(game.preloadBar);
+
+    // Nice practicles
+    var particleSystem1 = SpaceGame.epsyPlugin.loadSystem(SpaceGame.epsyPluginConfig.galaxy, game.width / 2, 50);
+    this._circlesGroup = game.add.group();
+    this._circlesGroup.add(particleSystem1);
 
     /**
      * Sounds
