@@ -1,5 +1,7 @@
-SpaceGame.epsyPluginConfig = {};
-SpaceGame.epsyPluginConfig.circles = [{
+
+var ParticlesConfigs = {};
+ParticlesConfigs.epsyPluginConfig = {};
+ParticlesConfigs.epsyPluginConfig.circles = [{
   "pos": {"x": 0, "y": 0},
   "posVar": {"x": 0, "y": 40},
   "speed": 0,
@@ -39,7 +41,7 @@ SpaceGame.epsyPluginConfig.circles = [{
   "border": {"top": 200, "left": 200, "bottom": 200, "right": 200},
   "zIndex": 0
 }];
-SpaceGame.epsyPluginConfig.rain = [{
+ParticlesConfigs.epsyPluginConfig.rain = [{
   "pos": {"x": 0, "y": 0},
   "posVar": {"x": 175, "y": 0},
   "speed": 35.57041608494217,
@@ -79,7 +81,7 @@ SpaceGame.epsyPluginConfig.rain = [{
   "border": {"top": 10, "left": 100, "bottom": 700, "right": 200},
   "zIndex": 0
 }];
-SpaceGame.epsyPluginConfig.galaxy = [{
+ParticlesConfigs.epsyPluginConfig.galaxy = [{
   "pos": {"x": 0, "y": 0},
   "posVar": {"x": 10, "y": 0},
   "speed": 60,

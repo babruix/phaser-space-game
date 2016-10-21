@@ -27,7 +27,9 @@
 	Contact: https://github.com/cristianbote, @cristianbote_
 
   */
-
+require ('p2');
+require ('pixi');
+require ('phaser');
 (function(window, Phaser) {
 	/**
 	  * StateTranistion Plugin for Phaser
@@ -44,8 +46,8 @@
 	/**
 	  * Calls the _draw method which handles the state changes and transitions
 	  */
-	Phaser.Plugin.StateTransition.prototype.to = function (state, callback) {
-		_draw.call(this, state);
+	Phaser.Plugin.StateTransition.prototype.to = function (state, parameter) {
+		_draw.call(this, state, parameter);
 	};
 
 	/** 
@@ -85,7 +87,7 @@
 	}
 
 	/* Draw the world state */
-	function _draw(state) {
+	function _draw(state, parameter) {
 
 		/* Pause the game at first */
 		this.game.paused = true;
@@ -133,9 +135,9 @@
 				_this.game.add.existing(_this._cover);
 
 				_animateCover.call(_this);
-			}
+			};
 
-			this.game.state.start(state);
+			this.game.state.start(state, true, false, parameter);
 		}
 
 		/* Resume the game */
