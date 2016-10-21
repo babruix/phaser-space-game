@@ -1,3 +1,6 @@
+require ('p2');
+require ('pixi');
+require ('phaser');
 Phaser.Plugin.EPSY = function (game, parent) {
   Phaser.Plugin.call(this, game, parent);
 
@@ -32,7 +35,7 @@ Phaser.Plugin.EPSY = function (game, parent) {
     }
   }
 
-  game.onResume.add(this._onResume, this);
+  this.game.onResume.add(this._onResume, this);
 
 
   this.game.epsy = this;
@@ -224,7 +227,7 @@ Phaser.Plugin.EPSY.prototype.loadSystem = function (config, x, y) {
   x = x || 0;
   y = y || 0;
 
-  var systemGroup = game.add.group();
+  var systemGroup = this.game.add.group();
   var origin = { x: 0, y: 0 };
 
   var parseddata;
