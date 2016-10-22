@@ -26,14 +26,14 @@ export class ScreenUtils {
                                          aMaxGameWidth?: number, aMaxGameHeight?: number): ScreenMetrics {
 
         // get dimension of window
-        var windowWidth: number = window.innerWidth;
-        var windowHeight: number = window.innerHeight;
+        let windowWidth: number = window.innerWidth;
+        let windowHeight: number = window.innerHeight;
 
 
         // swap if window dimensions do not match orientation
         if ((windowWidth < windowHeight && aOrientation === Orientation.LANDSCAPE) ||
             (windowHeight < windowWidth && aOrientation === Orientation.PORTRAIT)) {
-            var tmp: number = windowWidth;
+            let tmp: number = windowWidth;
             windowWidth = windowHeight;
             windowHeight = tmp;
         }
@@ -52,13 +52,13 @@ export class ScreenUtils {
 
 
         // default aspect and current window aspect
-        var defaultAspect: number = (aOrientation === Orientation.LANDSCAPE) ? 1280 / 800 : 800 / 1280;
-        var windowAspect: number = windowWidth / windowHeight;
+        let defaultAspect: number = (aOrientation === Orientation.LANDSCAPE) ? 1280 / 800 : 800 / 1280;
+        let windowAspect: number = windowWidth / windowHeight;
 
-        var offsetX: number = 0;
-        var offsetY: number = 0;
-        var gameWidth: number = 0;
-        var gameHeight: number = 0;
+        let offsetX: number = 0;
+        let offsetY: number = 0;
+        let gameWidth: number = 0;
+        let gameHeight: number = 0;
 
         // if (aOrientation === Orientation.LANDSCAPE) {
         // "iPhone" landscape ... and "iPad" portrait
@@ -93,8 +93,8 @@ export class ScreenUtils {
 
 
         // calculate scale
-        var scaleX: number = windowWidth / gameWidth;
-        var scaleY: number = windowHeight / gameHeight;
+        let scaleX: number = windowWidth / gameWidth;
+        let scaleY: number = windowHeight / gameHeight;
 
 
         // store values

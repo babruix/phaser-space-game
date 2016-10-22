@@ -1,8 +1,8 @@
 /// <reference path="../../node_modules/phaser/typescript/phaser.d.ts"/>
 /// <reference path="../../typings/phaser/phaser.d.ts" />
 /// <reference path="../../typings/phaser/EPSY.d.ts" />
-import * as Phaser from 'phaser';
-import {ScreenUtils} from '../utils/screenutils';
+import * as Phaser from "phaser";
+import {ScreenUtils} from "../utils/screenutils";
 
 export class Boot extends Phaser.State {
 
@@ -10,7 +10,7 @@ export class Boot extends Phaser.State {
     init() {
         this.input.maxPointers = 1;
         this.stage.disableVisibilityChange = false;
-        var screenDims = ScreenUtils.screenMetrics;
+        let screenDims = ScreenUtils.screenMetrics;
 
         if (this.game.device.desktop) {
             this.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
@@ -29,19 +29,19 @@ export class Boot extends Phaser.State {
 
     preload() {
         // Load preloader image
-        this.game.load.image('preloaderBar', 'assets/sprites/preload-bar.png');
+        this.game.load.image("preloaderBar", "assets/sprites/preload-bar.png");
         // load background
-        this.game.load.image('background', 'assets/sprites/bg0.png');
+        this.game.load.image("background", "assets/sprites/bg0.png");
 
         // transition plugin
         (this.game as any).transitionPlugin = <Phaser.Plugin.StateTransition> this.game.plugins.add(Phaser.Plugin.StateTransition);
-        //define new properties to be tweened, duration, even ease
+        // define new properties to be tweened, duration, even ease
         (this.game as any).transitionPlugin.configure({
-            //how long the animation should take
+            // how long the animation should take
             duration: 1000,
-            //ease property
+            // ease property
             ease: Phaser.Easing.Exponential.InOut, /* default ease */
-            //what property should be tweened
+            // what property should be tweened
             properties: {
                 alpha: 0,
                 scale: {
@@ -56,6 +56,6 @@ export class Boot extends Phaser.State {
     }
 
     create() {
-        this.game.state.start('Preloader');
+        this.game.state.start("Preloader");
     }
 }

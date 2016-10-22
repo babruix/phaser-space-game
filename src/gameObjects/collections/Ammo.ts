@@ -1,9 +1,8 @@
 /// <reference path="../../../node_modules/phaser/typescript/phaser.d.ts"/>
 /// <reference path="../../../typings/phaser/phaser.d.ts" />
 /// <reference path="../../../typings/phaser/EPSY.d.ts" />
-import * as Phaser from 'phaser';
+import * as Phaser from "phaser";
 import {Plant} from "../Plant";
-import {ScreenUtils} from '../../utils/screenutils';
 
 export class Ammo {
   private game;
@@ -12,30 +11,30 @@ export class Ammo {
 
   constructor(game) {
     this.game = game;
-    this.mainState = this.game.state.states['Main'];
+    this.mainState = this.game.state.states["Main"];
 
-    var x2 = game.rnd.integerInRange(0, game.width);
-    this.mainState._flowerPlants.forEachAlive((plant)=> {
-      if (plant.growingItem.key == 'ammo') {
+    let x2 = game.rnd.integerInRange(0, game.width);
+    this.mainState._flowerPlants.forEachAlive((plant) => {
+      if (plant.growingItem.key === "ammo") {
         x2 = plant.x;
         Plant.prototype.removeSpawnBar(plant);
       }
     });
-    var y2 = game.rnd.integerInRange(0, game.height);
-    this.ammo = game.add.sprite(x2, y2, 'ammo');
+    let y2 = game.rnd.integerInRange(0, game.height);
+    this.ammo = game.add.sprite(x2, y2, "ammo");
     this.ammo.anchor.setTo(0.5, 0.5);
     game.physics.p2.enable(this.ammo, this.game.debugOn);
 
     this.mainState._ammos.add(this.ammo);
 
-    this.ammo.body.onBeginContact.add((body1, shapeA, shapeB)=> {
+    this.ammo.body.onBeginContact.add((body1, shapeA, shapeB) => {
       if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {return}
 
-      if (body1.sprite.key=='spaceship') {
+      if (body1.sprite.key === "spaceship") {
 
         if (!this.ammo.hitCooldown) {
           this.ammo.hitCooldown = true;
-          game.time.events.add(1000, ()=>this.ammo.hitCooldown = false);
+          game.time.events.add(1000, () => this.ammo.hitCooldown = false);
         }
         else {
           return;
@@ -49,10 +48,10 @@ export class Ammo {
         this.mainState.changeScoreText();
       }
     });
-    this.ammo.events.onKilled.add((ammo) =>{
-      var nextSpawnTime = Phaser.Timer.SECOND * game.rnd.integerInRange(20, 40);
-      this.mainState._ammoTimer = game.time.events.add(nextSpawnTime, ()=>new Ammo(this.game), this);
-      this.mainState._flowerPlants.forEach(plant => Plant.prototype.updateSpawnBar(nextSpawnTime, 'ammo', plant));
+    this.ammo.events.onKilled.add((ammo) => {
+      let nextSpawnTime = Phaser.Timer.SECOND * game.rnd.integerInRange(20, 40);
+      this.mainState._ammoTimer = game.time.events.add(nextSpawnTime, () => new Ammo(this.game), this);
+      this.mainState._flowerPlants.forEach(plant => Plant.prototype.updateSpawnBar(nextSpawnTime, "ammo", plant));
     });
   }
 }

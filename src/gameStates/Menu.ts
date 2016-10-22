@@ -1,8 +1,7 @@
 /// <reference path="../../node_modules/phaser/typescript/phaser.d.ts"/>
 /// <reference path="../../typings/phaser/phaser.d.ts" />
 /// <reference path="../../typings/phaser/EPSY.d.ts" />
-import * as Phaser from 'phaser';
-import {ScreenUtils} from '../utils/screenutils';
+import * as Phaser from "phaser";
 declare var ParticlesConfigs: any;
 
 export class Menu extends Phaser.State {
@@ -14,9 +13,9 @@ export class Menu extends Phaser.State {
     }
 
     create() {
-        (this.game as any).anim_elem = document.getElementById('anim_elem');
+        (this.game as any).anim_elem = document.getElementById("anim_elem");
 
-        this._background = this.game.add.tileSprite(0, 0, this.game.width * 4, 889, 'background');
+        this._background = this.game.add.tileSprite(0, 0, this.game.width * 4, 889, "background");
         this._background.alpha = 1;
         this._fontStyle = {
             font: "70px eater",
@@ -27,7 +26,7 @@ export class Menu extends Phaser.State {
         };
 
         this.addGameTitleText();
-        this._fontStyle.font = '50px eater';
+        this._fontStyle.font = "50px eater";
         this.addButtonStart();
         this.addButtonTutorial();
 
@@ -68,22 +67,22 @@ export class Menu extends Phaser.State {
         let textStartTutorial = this.add.text(this.game.width / 2, -100, "Tutorial", this._fontStyle);
         textStartTutorial.anchor.set(0.5);
         this.add.tween(textStartTutorial).to({
-            y: ((this.game.height- 250) / 2) + 200
+            y: ((this.game.height - 250) / 2) + 200
         }, 1000, Phaser.Easing.Bounce.Out, true, 1000, 0);
         textStartTutorial.inputEnabled = true;
         textStartTutorial.input.useHandCursor = true;
         textStartTutorial.events.onInputOver.add(item => item.fill = "#ffff44");
-        textStartTutorial.events.onInputOut.add((item)=>item.fill = this._fontStyle.fill);
+        textStartTutorial.events.onInputOut.add((item) => item.fill = this._fontStyle.fill);
         textStartTutorial.events.onInputDown.add(this.StartTutorial, this);
     }
 
     startGame() {
         // Start game
-        (this.game as any).transitionPlugin.to('Main');
+        (this.game as any).transitionPlugin.to("Main");
     }
 
     StartTutorial() {
         // Start Tutorial
-        (this.game as any).transitionPlugin.to('Tutorial');
+        (this.game as any).transitionPlugin.to("Tutorial");
     }
 }

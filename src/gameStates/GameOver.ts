@@ -1,7 +1,7 @@
 /// <reference path="../../node_modules/phaser/typescript/phaser.d.ts"/>
 /// <reference path="../../typings/phaser/phaser.d.ts" />
 /// <reference path="../../typings/phaser/EPSY.d.ts" />
-import * as Phaser from 'phaser';
+import * as Phaser from "phaser";
 
 export class GameOver extends Phaser.State {
     private score;
@@ -13,18 +13,18 @@ export class GameOver extends Phaser.State {
 
     init(game) {
         this.game = game;
-        this.mainState = this.game.state.states['Main'];
+        this.mainState = this.game.state.states["Main"];
         this.score = this.mainState.score;
-        (this.game as any).audio.gameOverSnd = this.game.add.audio('gameOver', 1);
+        (this.game as any).audio.gameOverSnd = this.game.add.audio("gameOver", 1);
 
-        this.highestScore = String(localStorage.getItem('highestScore')) || 0;
+        this.highestScore = String(localStorage.getItem("highestScore")) || 0;
         if (isNaN(this.highestScore)) {
             this.highestScore = this.score;
         }
         else {
             this.highestScore = Math.max(this.score, Number(this.highestScore));
         }
-        localStorage.setItem('highestScore', String(this.highestScore));
+        localStorage.setItem("highestScore", String(this.highestScore));
 
         this._fontStyle = {
             font: "40px eater",
@@ -38,7 +38,7 @@ export class GameOver extends Phaser.State {
             + "\n Your score is " + this.score
             + "\n Highest score is " + this.highestScore
             + "\n press any key to restart";
-        if (this.mainState._flowerPlants.countLiving()<=0) {
+        if (this.mainState._flowerPlants.countLiving() <= 0) {
             this.message = "\n All flowers have been stolen :( \n" + this.message;
         }
     }
@@ -53,7 +53,7 @@ export class GameOver extends Phaser.State {
 
         this.game.add.tween(this._restartText)
             .to({y: this.game.height / 2}, 1000, Phaser.Easing.Bounce.Out, true)
-            .onComplete.add(()=> this.game.paused = true);
+            .onComplete.add(() => this.game.paused = true);
 
         this.removeKeysCapturing();
 
@@ -64,17 +64,17 @@ export class GameOver extends Phaser.State {
             this.mainState.score = 50;
             this.game.paused = false;
 
-            this.game.time.events.add(Phaser.Timer.SECOND/10, ()=>{
+            this.game.time.events.add(Phaser.Timer.SECOND / 10, () => {
                 this.mainState.isTutorial = true;
-                (this.game as any).transitionPlugin.to('Main');
+                (this.game as any).transitionPlugin.to("Main");
             })
         };
     }
 
     private removeKeysCapturing() {
         let keyCodes = [Phaser.Keyboard.SPACEBAR, Phaser.Keyboard.S, Phaser.Keyboard.R, Phaser.Keyboard.M];
-        ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN'].forEach(
-            number => keyCodes.push(Phaser.Keyboard[number])
+        ["ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN"].forEach(
+            keyNumber => keyCodes.push(Phaser.Keyboard[keyNumber])
         );
         keyCodes.forEach(key => this.game.input.keyboard.removeKeyCapture(key));
     }

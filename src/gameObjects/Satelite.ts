@@ -2,11 +2,10 @@
 /// <reference path="../../typings/phaser/phaser.d.ts" />
 /// <reference path="../../typings/phaser/EPSY.d.ts" />
 
-import * as Phaser from 'phaser';
-import {Missle} from '../gameObjects/collections/Missle';
-import {Bullet} from '../gameObjects/Bullet';
-import {Main} from '../gameStates/Main';
-import {ScreenUtils} from '../utils/screenutils';
+import * as Phaser from "phaser";
+import {Missle} from "../gameObjects/collections/Missle";
+import {Bullet} from "../gameObjects/Bullet";
+import {Main} from "../gameStates/Main";
 
 export class Satelite {
     private game;
@@ -17,14 +16,14 @@ export class Satelite {
 
     constructor(game, worldX, worldY, freeze, rocket, laser) {
         this.game = game;
-        this.mainState = this.game.state.states['Main'];
+        this.mainState = this.game.state.states["Main"];
 
-        var texture = freeze ? 'satelite_freeze' : 'satelite';
+        let texture = freeze ? "satelite_freeze" : "satelite";
         if (rocket) {
-            texture = 'tower';
+            texture = "tower";
         }
         if (laser) {
-            texture = 'laser_tower';
+            texture = "laser_tower";
         }
 
         this.satelite = game.add.sprite(worldX, worldY, texture);
@@ -48,27 +47,27 @@ export class Satelite {
         this.mainState._satelites.add(this.satelite);
 
         // Add health bar.
-        var barConfig = {
+        const barConfig = {
             x: this.satelite.health,
             y: -40,
             height: 5,
             width: this.satelite.width,
             bg: {
-                color: this.satelite.freezing ? '#56807D' : '#56807D'
+                color: this.satelite.freezing ? "#56807D" : "#56807D"
             },
             bar: {
-                color: this.satelite.freezing ? '#20E331' : '#56807D'
+                color: this.satelite.freezing ? "#20E331" : "#56807D"
             }
         };
         this.satelite.HealthBar = new HealthBar(game, barConfig);
 
-        this.satelite.body.onBeginContact.add((body1, shapeA, shapeB)=> {
+        this.satelite.body.onBeginContact.add((body1, shapeA, shapeB) => {
             if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {
                 return
             }
 
-            if (body1.sprite.key.indexOf('bullet') >= 0) {
-                if (typeof(body1.sprite.enemyBullet) != "undefined" && body1.sprite.enemyBullet == true) {
+            if (body1.sprite.key.indexOf("bullet") >= 0) {
+                if (typeof(body1.sprite.enemyBullet) !== "undefined" && body1.sprite.enemyBullet === true) {
                     game.audio.smackSnd.play();
                     this.satelite.damage(2);
                     if (this.satelite.health <= 2) {
@@ -78,13 +77,13 @@ export class Satelite {
             }
         }, this);
 
-        this.satelite.update = ()=> {
+        this.satelite.update = () => {
             Satelite.prototype.fire(this.satelite);
 
             // Update health bar.
-            var bar = this.satelite.HealthBar;
+            let bar = this.satelite.HealthBar;
             bar.setPercent(this.satelite.health * 10);
-            var y = this.satelite.y > game.height - this.satelite.height
+            let y = this.satelite.y > game.height - this.satelite.height
                 ? this.satelite.y + 20
                 : this.satelite.y + 30;
             bar.setPosition(this.satelite.x, y);
@@ -103,13 +102,13 @@ export class Satelite {
             minimalReactDistance = 200;
         }
 
-        var closestEnemy = satelite.mainState.enemys.getFirstAlive();
+        let closestEnemy = satelite.mainState.enemys.getFirstAlive();
 
-        satelite.mainState.enemys.forEachAlive((enemy)=> {
+        satelite.mainState.enemys.forEachAlive((enemy) => {
             if (enemy.body) {
                 // Distance to previous closest enemy
-                var prevClosestDistance = Main.caculatetDistance(satelite, closestEnemy);
-                var newClosestDistance = Main.caculatetDistance(satelite, enemy);
+                let prevClosestDistance = Main.caculatetDistance(satelite, closestEnemy);
+                let newClosestDistance = Main.caculatetDistance(satelite, enemy);
 
                 if (newClosestDistance < prevClosestDistance) {
                     closestEnemy = enemy;
@@ -120,7 +119,7 @@ export class Satelite {
         if (!closestEnemy || !closestEnemy.alive || closestEnemy.ufo_exists) {
             return false;
         }
-        var closestDistance = Main.caculatetDistance(satelite, closestEnemy);
+        let closestDistance = Main.caculatetDistance(satelite, closestEnemy);
         if (closestDistance > minimalReactDistance) {
             return false;
         }
@@ -138,20 +137,20 @@ export class Satelite {
         if (satelite.alive && satelite.game.time.now > satelite.fireLastTime) {
 
             // Find closest enemy.
-            var closestEnemy = this.getClosestEnemy(satelite);
+            let closestEnemy = this.getClosestEnemy(satelite);
             if (!closestEnemy) {
                 return;
             }
 
             if (satelite.rocket) {
                 // Missile fire
-                var x = closestEnemy.x > satelite.x
+                let x = closestEnemy.x > satelite.x
                     ? satelite.x + satelite.width * 2
                     : satelite.x - satelite.width * 2;
-                var y = closestEnemy.y > satelite.y
+                let y = closestEnemy.y > satelite.y
                     ? satelite.y + satelite.height * 2
                     : satelite.y - satelite.height * 2;
-                var missle = new Missle(satelite.game, x, y, true);
+                let missle = new Missle(satelite.game, x, y, true);
                 (missle as any).anchor.setTo(0.5, 0.5);
                 satelite.fireLastTime = satelite.game.time.now + satelite.fireTime + 1000;
                 satelite.game.physics.arcade.moveToObject(missle, closestEnemy, 800);
@@ -159,7 +158,7 @@ export class Satelite {
                 return;
             }
 
-            var enemyBullet, bullet, speed;
+            let enemyBullet, bullet, speed;
 
             if (satelite.laser) {
                 satelite.game.audio.laserSnd.play();
@@ -173,7 +172,7 @@ export class Satelite {
                 satelite.laserLine.moveTo(satelite.x, satelite.y);
                 satelite.laserLine.lineTo(closestEnemy.x, closestEnemy.y);
                 satelite.laserLine.endFill();
-                satelite.game.time.events.add(Phaser.Timer.SECOND / 10, ()=> {
+                satelite.game.time.events.add(Phaser.Timer.SECOND / 10, () => {
                     satelite.laserLine.kill();
                     closestEnemy.kill();
                 });
@@ -186,7 +185,7 @@ export class Satelite {
             // Normal or frezing fire
             satelite.game.audio.enemySndFire.play();
             enemyBullet = false;
-            var isFreezing = satelite.freezing;
+            let isFreezing = satelite.freezing;
             bullet = new Bullet(satelite.game, satelite.x, satelite.y, enemyBullet, isFreezing);
             bullet.rotation = parseFloat(satelite.game.physics.arcade.angleToXY(bullet, closestEnemy.x, closestEnemy.y)) * 180 / Math.PI;
             speed = isFreezing ? satelite.mainState.level * 10 : satelite.mainState.level * 30;
@@ -201,17 +200,17 @@ export class Satelite {
     // Satellite aim only when enemy distance less 700.
     drawAimRect(satelite, enemy, minimalReactDistance = 700) {
 
-        if (satelite._aimRect != undefined) {
+        if (satelite._aimRect !== undefined) {
             satelite._aimRect.destroy();
         }
-        if (satelite._dot != undefined) {
+        if (satelite._dot !== undefined) {
             satelite._dot.destroy();
         }
         if (Main.caculatetDistance(satelite, enemy) > minimalReactDistance) {
             return;
         }
 
-        var lineColor = satelite.freezing ? 0x13D7D8 : 0xD81E00;
+        let lineColor = satelite.freezing ? 0x13D7D8 : 0xD81E00;
 
         satelite._aimRect = satelite.game.add.graphics(0, 0);
         satelite._aimRect.lineWidth = 2;
@@ -225,15 +224,15 @@ export class Satelite {
         satelite._dot.alpha = 0.7;
         satelite._dot.drawCircle(enemy.x, enemy.y, 5);
 
-        satelite.game.time.events.add(2000, ()=>this.removeAimRect());
+        satelite.game.time.events.add(2000, () => this.removeAimRect());
     }
 
     removeAimRect() {
         // Hilight remove from enemy.
-        if (this._aimRect != undefined) {
+        if (this._aimRect !== undefined) {
             this._aimRect.destroy();
         }
-        if (this._dot != undefined) {
+        if (this._dot !== undefined) {
             this._dot.destroy();
         }
     }

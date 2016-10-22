@@ -1,13 +1,12 @@
 /// <reference path="../../node_modules/phaser/typescript/phaser.d.ts"/>
 /// <reference path="../../typings/phaser/phaser.d.ts" />
 /// <reference path="../../typings/phaser/EPSY.d.ts" />
-import * as Phaser from 'phaser';
-import {Bullet} from '../gameObjects/Bullet';
-import {Missle} from '../gameObjects/collections/Missle';
-import {Wall} from '../gameObjects/Wall';
-import {Bomb} from '../gameObjects/Bomb';
-import {Satelite} from '../gameObjects/Satelite';
-import {ScreenUtils} from '../utils/screenutils';
+import * as Phaser from "phaser";
+import {Bullet} from "../gameObjects/Bullet";
+import {Missle} from "../gameObjects/collections/Missle";
+import {Wall} from "../gameObjects/Wall";
+import {Bomb} from "../gameObjects/Bomb";
+import {Satelite} from "../gameObjects/Satelite";
 
 declare var ParticlesConfigs: any;
 
@@ -55,11 +54,11 @@ export class Tower {
         return
       }
 
-      if (body1 && body1.sprite.key.indexOf('bullet') >= 0) {
+      if (body1 && body1.sprite.key.indexOf("bullet") >= 0) {
         this.game.audio.smackSnd.play();
-        if (typeof(body1.sprite.enemyBullet) != "undefined"
+        if (typeof(body1.sprite.enemyBullet) !== "undefined"
           && body1.sprite.alive
-          && body1.sprite.enemyBullet == true) {
+          && body1.sprite.enemyBullet === true) {
           if (this.tower.shieldPower > 0) {
             this.tower.shieldPower -= 10;
           }
@@ -67,7 +66,7 @@ export class Tower {
             this.tower.damage(1);
             // flash in red
             this.tower.tint = 0xFF0010;
-            this.game.time.events.add(100, ()=> this.tower.tint = 0xFFFFFF);
+            this.game.time.events.add(100, () => this.tower.tint = 0xFFFFFF);
           }
           body1.sprite.destroy();
 
@@ -83,8 +82,8 @@ export class Tower {
       }
     }, this);
 
-    this.tower.events.onKilled.add(()=> {
-      if (this.mainState._shipTrail != null) {
+    this.tower.events.onKilled.add(() => {
+      if (this.mainState._shipTrail !== null) {
         this.mainState._shipTrail.destroy();
       }
       this.mainState._playerShield = this.tower.shieldPower;
@@ -92,40 +91,40 @@ export class Tower {
       this.mainState._playerMissles = this.tower.missles;
     });
 
-    this.tower.update = ()=> {
+    this.tower.update = () => {
       // Fire
-      //this.fire(_this.tower);
-      this.mainState._fireButton.onDown.add(()=>this.fire(this.tower));
+      // this.fire(_this.tower);
+      this.mainState._fireButton.onDown.add(() => this.fire(this.tower));
       if (this.mainState._fireButton.isDown) {
         this.fire(this.tower);
       }
 
       // Add basic Satelite
-      this.mainState._numberButtons[0].onDown.add(()=>this.addSatelite(this.tower));
+      this.mainState._numberButtons[0].onDown.add(() => this.addSatelite(this.tower));
 
       // Add Freeze Satelite
-      this.mainState._numberButtons[1].onDown.add(()=>this.addSatelite(this.tower, 'freeze'));
+      this.mainState._numberButtons[1].onDown.add(() => this.addSatelite(this.tower, "freeze"));
 
       // Add Rocket Satelite
-      this.mainState._numberButtons[2].onDown.add(()=>this.addSatelite(this.tower, 'rocket'));
+      this.mainState._numberButtons[2].onDown.add(() => this.addSatelite(this.tower, "rocket"));
 
       // Add Laser Satelite
-      this.mainState._numberButtons[3].onDown.add(()=>this.addSatelite(this.tower, 'laser'));
+      this.mainState._numberButtons[3].onDown.add(() => this.addSatelite(this.tower, "laser"));
 
       // Add Wall
-      this.mainState._numberButtons[4].onDown.add(()=>this.addWall(this.tower));
+      this.mainState._numberButtons[4].onDown.add(() => this.addWall(this.tower));
 
       // Add bomb
-      this.mainState._numberButtons[5].onDown.add(()=>this.addBomb(this.tower));
+      this.mainState._numberButtons[5].onDown.add(() => this.addBomb(this.tower));
 
       // Fire missle
-      this.mainState._numberButtons[6].onDown.add(()=>this.fireMissle(this.tower));
+      this.mainState._numberButtons[6].onDown.add(() => this.fireMissle(this.tower));
 
       // Add Wall
-      this.mainState._brickButton.onDown.add(()=>this.addWall(this.tower));
+      this.mainState._brickButton.onDown.add(() => this.addWall(this.tower));
 
       // Add Missle
-      this.mainState._missleButton.onDown.add(()=>this.fireMissle(this.tower));
+      this.mainState._missleButton.onDown.add(() => this.fireMissle(this.tower));
 
       // Shield
       this.tower.redrawProtectRect(this.tower);
@@ -135,15 +134,15 @@ export class Tower {
       this.mainState._shipTrail.y = this.tower.y + 10;
 
       // Update health bar.
-      var bar = this.mainState.towers.children[0].HealthBar;
+      let bar = this.mainState.towers.children[0].HealthBar;
       bar.setPercent(this.tower.health * 10);
-      var y = this.tower.y > this.game.height - this.tower.height
+      let y = this.tower.y > this.game.height - this.tower.height
         ? this.tower.y + 20
         : this.tower.y + 30;
       bar.setPosition(this.tower.x, y);
 
       if (this.mainState._sateliteButton) {
-        this.mainState._sateliteButton.onDown.add(()=>this.addSatelite(this.tower));
+        this.mainState._sateliteButton.onDown.add(() => this.addSatelite(this.tower));
       }
 
       // Take life when health is too small.
@@ -153,9 +152,9 @@ export class Tower {
       }
     };
 
-    this.tower.redrawProtectRect = (tower)=> {
+    this.tower.redrawProtectRect = (tower) => {
       if (tower.shieldPower > 0) {
-        if (tower._protectRect != undefined) {
+        if (tower._protectRect !== undefined) {
           tower._protectRect.destroy();
         }
         tower._protectRect = this.game.add.graphics(0, 0);
@@ -171,16 +170,16 @@ export class Tower {
     // new Tower(this.game, worldX, worldY, 'spaceship');
 
     // Add health bar.
-    var barConfig = {
+    let barConfig = {
       x: this.mainState.towers.children[0].health,
       y: -40,
       height: 5,
       width: this.mainState.towers.children[0].width,
       bg: {
-        color: '#56807D'
+        color: "#56807D"
       },
       bar: {
-        color: '#20E331'
+        color: "#20E331"
       }
     };
 
@@ -188,15 +187,15 @@ export class Tower {
 
     // Add  PhysicsEditor bounding shape
     this.mainState.towers.children[0].body.clearShapes();
-    this.mainState.towers.children[0].body.loadPolygon('spaceship_pshysics', 'spaceship');
+    this.mainState.towers.children[0].body.loadPolygon("spaceship_pshysics", "spaceship");
 
     this.mainState.towers.children[0].alpha = 0;
     this.mainState.towers.children[0].fireTime = 200;
     this.mainState.towers.children[0].anchor.setTo(0.5, 0.5);
 
-    this.game.time.events.add(500, ()=> {
+    this.game.time.events.add(500, () => {
       // let Phaser add the particle system to world group or choose to add it to a specific group
-      var particleSystem1 = (this.game as any).epsyPlugin.loadSystem(ParticlesConfigs.epsyPluginConfig.circles, this.mainState.towers.children[0].x, this.mainState.towers.children[0].y);
+      let particleSystem1 = (this.game as any).epsyPlugin.loadSystem(ParticlesConfigs.epsyPluginConfig.circles, this.mainState.towers.children[0].x, this.mainState.towers.children[0].y);
       this._circlesGroup = this.game.add.group();
       this._circlesGroup.add(particleSystem1);
       this.game.time.events.add(1000, this.destroyCirclesGroup, this).autoDestroy = true;
@@ -204,13 +203,13 @@ export class Tower {
       this.game.add.tween(this.mainState.towers.children[0])
         .to({alpha: 1}, 1000, Phaser.Easing.Linear.None,
           true, 500)
-        .onComplete.add(()=>this.mainState._shipTrail.alpha = 1);
+        .onComplete.add(() => this.mainState._shipTrail.alpha = 1);
     });
 
     // Add an emitter for the ship's trail
     this.mainState._shipTrail = this.game.add.emitter(this.game, this.mainState.towers.children[0].x, this.mainState.towers.children[0].y + 10, 400);
     this.mainState._shipTrail.width = 10;
-    this.mainState._shipTrail.makeParticles('emit');
+    this.mainState._shipTrail.makeParticles("emit");
     this.mainState._shipTrail.setXSpeed(30, -30);
     this.mainState._shipTrail.setYSpeed(200, 180);
     this.mainState._shipTrail.setRotation(50, -50);
@@ -230,8 +229,8 @@ export class Tower {
         tower.bullets--;
         this.mainState.changeScoreText();
         this.game.audio.playerSndFire.play();
-        var bullet = new Bullet(this.game, tower.x, tower.y - tower.height, false);
-        if (bullet != undefined && bullet.body != undefined) {
+        let bullet = new Bullet(this.game, tower.x, tower.y - tower.height, false);
+        if (bullet !== undefined && bullet.body !== undefined) {
           bullet.body.moveUp(1500);
           bullet = null;
         }
@@ -261,8 +260,8 @@ export class Tower {
     }
     this.mainState.changeScoreText();
 
-    var missle = new Missle(this.game, tower.x + tower.width / 2, tower.y - tower.height * 2, true);
-    if (missle != undefined && (missle as any).body != undefined) {
+    let missle = new Missle(this.game, tower.x + tower.width / 2, tower.y - tower.height * 2, true);
+    if (missle !== undefined && (missle as any).body !== undefined) {
       (missle as any).body.moveUp(800);
       tower.fireLastTime = this.game.time.now + tower.fireTime;
     }
@@ -290,20 +289,20 @@ export class Tower {
   }
 
   addSatelite(tower, type?) {
-    var freeze = type == 'freeze';
-    var rocket = type == 'rocket';
-    var laser = type == 'laser';
-    var key = 'satelite';
+    let freeze = type === "freeze";
+    let rocket = type === "rocket";
+    let laser = type === "laser";
+    let key = "satelite";
     if (freeze) {
-      key = 'satelite_freeze';
+      key = "satelite_freeze";
     }
     if (rocket) {
-      key = 'tower';
+      key = "tower";
     }
     if (laser) {
-      key = 'laser_tower';
+      key = "laser_tower";
     }
-    var price = this.mainState.priceList[key];
+    let price = this.mainState.priceList[key];
     if (this.mainState.score >= price && this.game.time.now > tower.actionLastTime) {
       this.mainState.score -= price;
       this.mainState.changeScoreText();
@@ -330,7 +329,7 @@ export class Tower {
 
     // Move tower
     tower.body.setZeroVelocity();
-    var speed = tower.game.height / 1.3 + tower.game.height - tower.body.y / 1.3;
+    let speed = tower.game.height / 1.3 + tower.game.height - tower.body.y / 1.3;
 
     // Slow down under the rain
     if (tower.mainState.checkIntersectsWithRain(tower)) {
@@ -368,7 +367,7 @@ export class Tower {
     if (tower.game.input.activePointer.isDown) {
       if (tower.game.input.activePointer.isMouse) {
         // @todo: In the case of a mouse, check mouse button status?
-        if (tower.game.input.activePointer.button == Phaser.Mouse.RIGHT_BUTTON) {
+        if (tower.game.input.activePointer.button === Phaser.Mouse.RIGHT_BUTTON) {
 
         }
       }
