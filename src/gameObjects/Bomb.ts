@@ -42,7 +42,7 @@ export class Bomb {
 
     var bomb = this.bomb;
     this.bomb.update = ()=> {
-      if (bomb.alive && bomb.y > game.height*ScreenUtils.screenMetrics.scaleY - bomb.height) {
+      if (bomb.alive && bomb.y > game.height - bomb.height) {
         Missle.prototype.explode.call(this, bomb);
       }
     };

@@ -21,7 +21,7 @@ export class Fuel {
         Plant.prototype.removeSpawnBar(plant);
       }
     });
-    var y2 = game.rnd.integerInRange(0, game.height*ScreenUtils.screenMetrics.scaleY);
+    var y2 = game.rnd.integerInRange(0, game.height);
     this.fuel = game.add.sprite(x2, y2, 'fuel');
     this.fuel.anchor.setTo(0.5, 0.5);
     game.physics.p2.enable(this.fuel, this.game.debugOn);

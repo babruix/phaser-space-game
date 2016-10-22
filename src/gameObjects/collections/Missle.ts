@@ -24,7 +24,7 @@ export class Missle {
         }
       });
     }
-    var y2 = y ? y : game.rnd.integerInRange(0, game.height*ScreenUtils.screenMetrics.scaleY);
+    var y2 = y ? y : game.rnd.integerInRange(0, game.height);
     this.mainState._missles.createMultiple(1, 'missle', 0, false);
     this.missle = this.mainState._missles.getFirstExists(false);
     this.missle.body.setCircle(15);

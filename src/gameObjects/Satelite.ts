@@ -84,13 +84,13 @@ export class Satelite {
             // Update health bar.
             var bar = this.satelite.HealthBar;
             bar.setPercent(this.satelite.health * 10);
-            var y = this.satelite.y > game.height*ScreenUtils.screenMetrics.scaleY - this.satelite.height
+            var y = this.satelite.y > game.height - this.satelite.height
                 ? this.satelite.y + 20
                 : this.satelite.y + 30;
             bar.setPosition(this.satelite.x, y);
         };
 
-        this.satelite.events.onKilled.add((satelite)=> {
+        this.satelite.events.onKilled.add(satelite => {
             satelite.HealthBar.barSprite.kill();
             satelite.HealthBar.bgSprite.kill();
         });

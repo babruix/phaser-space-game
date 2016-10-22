@@ -97,7 +97,7 @@ export class Enemy {
         if (enemy.closestPlant && enemy.closestPlant.alive) {
             enemy.closestPlant.stealing = false;
             enemy.steals = false;
-            enemy.closestPlant.y = enemy.game.height*ScreenUtils.screenMetrics.scaleY - 50;
+            enemy.closestPlant.y = enemy.game.height - 50;
             enemy.closestPlant.angle = 0;
             enemy.closestPlant.scale.x = (1);
             enemy.closestPlant.scale.y = (1);

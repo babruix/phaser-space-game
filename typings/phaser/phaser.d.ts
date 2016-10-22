@@ -6,7 +6,7 @@ declare module Phaser {
             // not sure what parent type is
             constructor(game: Phaser.Game, parent: any);
 
-            settings(options: Object): any;
+            configure(options: Object): any;
 
             // to(key, clearWorld, clearCache, parameter)
             to(key: string, clearWorld?: boolean, clearCache?: boolean, parameter?: Object): void;

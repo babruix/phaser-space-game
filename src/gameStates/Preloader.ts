@@ -18,8 +18,8 @@ export class Preloader extends Phaser.State {
     preload() {
 
         // Background
-        this.game.add.tileSprite(0, 0, ScreenUtils.screenMetrics.gameWidth, 889, 'background');
-        var text = this.game.add.text(ScreenUtils.screenMetrics.gameWidth / 2, ScreenUtils.screenMetrics.gameHeight / 2 - 100, 'Loading...', {
+        this.game.add.tileSprite(0, 0, this.game.width, 889, 'background');
+        var text = this.game.add.text(this.game.width / 2, this.game.height / 2 - 100, 'Loading...', {
             font: '57px eater',
             fill: '#F36200'
         });

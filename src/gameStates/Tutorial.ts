@@ -14,7 +14,7 @@ export class Tutorial extends Phaser.State {
     private mainState;
 
     init() {
-        this.tooltipDelay = 5000;
+        this.tooltipDelay = 0;
         this.TutorialTexts = [
             '\nGreeting on the Tutorial level!\n\nHere you will get study about game features.\n ',
             '\nYou have to Save The World!\n\n\nAgain!!!\n\n',
@@ -223,7 +223,7 @@ export class Tutorial extends Phaser.State {
 
     create() {
         Main.prototype.init();
-        Main.prototype.create(true, this.game);
+        Main.prototype.create(this.game, true);
         this.mainState = this.game.state.states['Main'];
         this.mainState.level = -1;
         this.mainState.game = this.game;
@@ -240,8 +240,8 @@ export class Tutorial extends Phaser.State {
             strokeThickness: 1
         };
         var levelText = this.game.add.text(0, 0, 'Tutorial Level', style);
-        levelText.x = this.game.width*ScreenUtils.screenMetrics.scaleX / 2 - levelText.width / 2;
-        levelText.y = this.game.height*ScreenUtils.screenMetrics.scaleY / 2 - levelText.height / 2;
+        levelText.x = this.game.width / 2 - levelText.width / 2;
+        levelText.y = this.game.height / 2 - levelText.height / 2;
         levelText.alpha = 0;
         levelText.fixedToCamera = true;
         this.game.add.tween(levelText)

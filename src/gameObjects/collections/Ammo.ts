@@ -21,7 +21,7 @@ export class Ammo {
         Plant.prototype.removeSpawnBar(plant);
       }
     });
-    var y2 = game.rnd.integerInRange(0, game.height*ScreenUtils.screenMetrics.scaleY);
+    var y2 = game.rnd.integerInRange(0, game.height);
     this.ammo = game.add.sprite(x2, y2, 'ammo');
     this.ammo.anchor.setTo(0.5, 0.5);
     game.physics.p2.enable(this.ammo, this.game.debugOn);

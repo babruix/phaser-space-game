@@ -21,7 +21,7 @@ export class Shield {
         Plant.prototype.removeSpawnBar(plant);
       }
     });
-    var y2 = game.rnd.integerInRange(0, game.height*ScreenUtils.screenMetrics.scaleY);
+    var y2 = game.rnd.integerInRange(0, game.height);
     this.shield = game.add.sprite(x2, y2, 'shield');
     this.shield.animations.add('blim');
     this.shield.animations.play('blim', 2, true);

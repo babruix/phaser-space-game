@@ -36,7 +36,7 @@ export class Boot extends Phaser.State {
         // transition plugin
         (this.game as any).transitionPlugin = <Phaser.Plugin.StateTransition> this.game.plugins.add(Phaser.Plugin.StateTransition);
         //define new properties to be tweened, duration, even ease
-        (this.game as any).transitionPlugin.settings({
+        (this.game as any).transitionPlugin.configure({
             //how long the animation should take
             duration: 1000,
             //ease property
@@ -45,8 +45,8 @@ export class Boot extends Phaser.State {
             properties: {
                 alpha: 0,
                 scale: {
-                    x: 1.5,
-                    y: 1.5
+                    x: 2,
+                    y: 2
                 }
             }
         });

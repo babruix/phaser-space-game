@@ -21,7 +21,7 @@ export class Plant {
         this.game = game;
         this.mainState = this.game.state.states['Main'];
 
-        this.plant = this.game.add.sprite(this.game.width / 2 + 38, this.game.height*ScreenUtils.screenMetrics.scaleY - 50, 'flow');
+        this.plant = this.game.add.sprite(this.game.width / 2 + 38, this.game.height - 50, 'flow');
         this.plant.anchor.setTo(0.5, 1);
         this.plant.angle = -10 * this.game.rnd.integerInRange(0, this.mainState.level);
         this.mainState._flowerPlants.add(this.plant);

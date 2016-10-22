@@ -21,7 +21,7 @@ export class Heart {
         Plant.prototype.removeSpawnBar(plant);
       }
     });
-    var y2 = game.rnd.integerInRange(0, game.height*ScreenUtils.screenMetrics.scaleY);
+    var y2 = game.rnd.integerInRange(0, game.height);
     this.heart = game.add.sprite(x2, y2, 'heart');
     this.heart.anchor.setTo(0.5, 0.5);
 

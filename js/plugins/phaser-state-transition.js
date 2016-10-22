@@ -1,180 +1,154 @@
 /**
-  * Phaser State Transition Plugin
-  * It adds a little more liveliness to your state changes
+ * StateTransition Plugin for Phaser
+ */
+(function (window, Phaser) {
+	'use strict';
 
-	The MIT License (MIT)
-
-	Copyright (c) 2014 Cristian Bote
-
-	Permission is hereby granted, free of charge, to any person obtaining a copy
-	of this software and associated documentation files (the "Software"), to deal
-	in the Software without restriction, including without limitation the rights
-	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-	copies of the Software, and to permit persons to whom the Software is
-	furnished to do so, subject to the following conditions:
-
-	The above copyright notice and this permission notice shall be included in all
-	copies or substantial portions of the Software.
-
-	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-	SOFTWARE.
-
-	Contact: https://github.com/cristianbote, @cristianbote_
-
-  */
-require ('p2');
-require ('pixi');
-require ('phaser');
-(function(window, Phaser) {
-	/**
-	  * StateTranistion Plugin for Phaser
-	  */
 	Phaser.Plugin.StateTransition = function (game, parent) {
-		/* Extend the plugin */
 		Phaser.Plugin.call(this, game, parent);
+
+		// Default transition settings
+		this.settings = {
+			duration: Phaser.Timer.SECOND * 0.3,
+			ease: Phaser.Easing.Exponential.InOut,
+			properties: {
+				alpha: 0
+			}
+		};
+		// Original implementations of state methods
+		this._originalStateMethods = {};
 	};
 
-	//Extends the Phaser.Plugin template, setting up values we need
 	Phaser.Plugin.StateTransition.prototype = Object.create(Phaser.Plugin.prototype);
+
 	Phaser.Plugin.StateTransition.prototype.constructor = Phaser.Plugin.StateTransition;
 
-	/**
-	  * Calls the _draw method which handles the state changes and transitions
-	  */
-	Phaser.Plugin.StateTransition.prototype.to = function (state, parameter) {
-		_draw.call(this, state, parameter);
-	};
+	Phaser.Plugin.StateTransition.prototype.configure = function (options) {
+		var property;
 
-	/** 
-	  * Can be called in the create function of states that you transition to, to ensure
-	  * that the transition-sprite is on top of everything
-	  */
-	Phaser.Plugin.StateTransition.prototype.bringToTop = function () {
-		_bringCoverToTop.call(this);
-	}
-
-	Phaser.Plugin.StateTransition.prototype.settings = function (opt) {
-		if (opt) {
-			for(var p in opt) {
-				if (settings[p]) {
-					settings[p] = opt[p];
+		if (options) {
+			for (property in options) {
+				if (this.settings[property]) {
+					this.settings[property] = options[property];
 				}
 			}
 		} else {
-			return Object.create(settings);
+			return Object.create(this.settings);
 		}
 	};
 
-	/* Settings object */
-	var settings = {
-		duration: 300, /* ms */
-		ease: Phaser.Easing.Exponential.InOut,
-		properties: {
-			alpha: 0
+	/**
+	 * Handles the state changes and transitions
+	 */
+	Phaser.Plugin.StateTransition.prototype.to = function () {
+		var stateName = arguments[0],
+			_this = this,
+			_init,
+			_create;
+
+		if (!stateName) {
+			throw 'No state passed.';
 		}
+
+		// In case last transition went wrong
+		this._destroy();
+
+		// Pause game to take world snapshot
+		this.game.paused = true;
+
+		// Create current state texture
+		this._texture = new Phaser.RenderTexture(this.game, this.game.width, this.game.height, 'cover');
+
+		// Draw the current world to the render
+		this._texture.renderXY(this.game.world, -this.game.camera.x, -this.game.camera.y);
+
+		// Save original implementation of state's init and create methods
+		this._originalStateMethods[stateName] = this._originalStateMethods[stateName] || {
+				init: this.game.state.states[stateName].init,
+				create: this.game.state.states[stateName].create
+			};
+		_init = this._originalStateMethods[stateName].init;
+		_create = this._originalStateMethods[stateName].create;
+
+		// Extend state init method to add cover
+		this.game.state.states[stateName].init = function() {
+			this.game.add.existing(_this._newCover());
+			if (_init) {
+				_init.apply(this, arguments);
+			}
+		};
+
+		// Extend state create method to animate cover
+		this.game.state.states[stateName].create = function() {
+			if (_create) {
+				_create.apply(this, arguments);
+			}
+			_this.bringToTop();
+			_this._animateCover();
+		};
+
+		// Resume the game and start next state
+		this.game.paused = false;
+		this.game.state.start.apply(this.game.state, arguments);
 	};
 
-	/* Move the Texture-Sprite to the top */
-	function _bringCoverToTop() {
+	/**
+	 * Create previous state cover
+	 */
+	Phaser.Plugin.StateTransition.prototype._newCover = function () {
+		// Create current state cover sprite
+		this._cover = new Phaser.Sprite(this.game, 0, 0, this._texture);
+		this._cover.fixedToCamera = true;
+		this._cover.anchor.set(0.5);
+		// Instead of x/y we need to set the cameraOffset point
+		this._cover.cameraOffset.x = this.game.width / 2;
+		this._cover.cameraOffset.y = this.game.height / 2;
+		return this._cover;
+	};
+
+	/**
+	 * Can be called in the create function of states that you transition to,
+	 * to ensure that the transition-sprite is on top of everything
+	 */
+	Phaser.Plugin.StateTransition.prototype.bringToTop = function () {
 		if (this._cover) {
 			this._cover.bringToTop();
 		}
-	}
+	};
 
-	/* Draw the world state */
-	function _draw(state, parameter) {
+	Phaser.Plugin.StateTransition.prototype._animateCover = function () {
+		var propertyValueObject, property, tween;
 
-		/* Pause the game at first */
-		this.game.paused = true;
+		for (property in this.settings.properties) {
+			if (typeof this.settings.properties[property] === 'object') {
+				// Create a tween for specific object property
+				tween = this.game.add
+					.tween(this._cover[property])
+					.to(this.settings.properties[property],
+						this.settings.duration,
+						this.settings.ease, true);
+			} else {
+				// Create properties object for specific property value
+				propertyValueObject = {};
+				propertyValueObject[property] = this.settings.properties[property];
+				tween = this.game.add
+					.tween(this._cover)
+					.to(propertyValueObject,
+						this.settings.duration,
+						this.settings.ease, true);
+			}
+		}
+		// Since all tweens have the same duration we listen to the last one created
+		tween.onComplete.addOnce(this._destroy, this);
+	};
 
-		/* If there's a sprite there, destroy it */
+	Phaser.Plugin.StateTransition.prototype._destroy = function () {
 		if (this._cover) {
 			this._cover.destroy();
 		}
-
-		/* If there's no texture create one */
-		if (!this._texture) {
-			this._texture = new Phaser.RenderTexture(this.game, this.game.width, this.game.height, 'cover');
+		if (this._texture) {
+			this._texture.destroy();
 		}
-
-		/* We want the current background color in the transition, just in case the entire frame isn't covered by sprites. */
-		var tempGraphic = this.game.add.graphics(0, 0);
-		tempGraphic.beginFill(this.game.stage.backgroundColor);
-		tempGraphic.lineStyle(1,this.game.stage.backgroundColor, 1);
-		tempGraphic.drawRect(0, 0, this.game.width, this.game.height);
-		tempGraphic.endFill();
-		/* adding it to the texture before the world render */
-		this._texture.renderXY(tempGraphic, 0, 0);
-		/* cleanup */
-		tempGraphic.clear();
-
-		/* Draw the current world to the render */
-		this._texture.renderXY(this.game.world, -this.game.camera.x, -this.game.camera.y);
-
-		/* If there's a state as a paramterer change the state and do the dew */
-		if (state) {
-
-			var _create = this.game.state.states[state]['create'], _this = this;
-
-			this._cover = new Phaser.Sprite(this.game, 0, 0, this._texture);
-			this._cover.fixedToCamera = true;
-			this._cover.anchor.setTo(0.5,0.5);
-
-			/* Instead of x/y we need to set the cameraOffset point */
-			this._cover.cameraOffset.x = this.game.width / 2;
-			this._cover.cameraOffset.y = this.game.height / 2;
-
-			this.game.state.states[state]['create'] = function() {
-				_create.call(_this.game.state.states[state]);
-
-				_this.game.add.existing(_this._cover);
-
-				_animateCover.call(_this);
-			};
-
-			this.game.state.start(state, true, false, parameter);
-		}
-
-		/* Resume the game */
-		this.game.paused = false;
-	}
-
-	function _animateCover() {
-		/* Animate */
-		if (settings && settings.properties) {
-			for (var p in settings.properties) {
-				if (typeof settings.properties[p] !== "object") {
-					var _dummy = {};
-					_dummy[p] = settings.properties[p];
-					this._tween = this.game.add
-						.tween(this._cover)
-						.to(_dummy,
-							settings.duration,
-							settings.ease, true);
-				} else {
-					this._tween = this.game.add
-						.tween(this._cover[p])
-						.to(settings.properties[p],
-							settings.duration,
-							settings.ease, true);
-				}
-			}
-
-			this._tween.onComplete.addOnce(_destroy, this);
-		}
-	}
-
-	/* Destroy all the data */
-	function _destroy() {
-		this._cover&&this._cover.destroy();
-		this._cover = null;
-		this._texture&&this._texture.destroy();
-		this._texture = null;
-	}
+	};
 
 }(window, Phaser));

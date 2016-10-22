@@ -14,8 +14,8 @@ export class Brick {
     this.mainState = this.game.state.states['Main'];
 
 
-    var x2 = this.game.rnd.integerInRange(0, this.game.width*ScreenUtils.screenMetrics.scaleX);
-    var y2 = this.game.rnd.integerInRange(0, this.game.height*ScreenUtils.screenMetrics.scaleY);
+    var x2 = this.game.rnd.integerInRange(0, this.game.width);
+    var y2 = this.game.rnd.integerInRange(0, this.game.height);
     this.brick = this.game.add.sprite(x2, y2, 'brick');
     this.brick.anchor.setTo(0.5, 0.5);
 

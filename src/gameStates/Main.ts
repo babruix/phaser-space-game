@@ -9,7 +9,7 @@ import {Enemy} from '../gameObjects/Enemy';
 import {Brick} from '../gameObjects/collections/Brick';
 import {Wall} from '../gameObjects/Wall';
 import {Bomb} from '../gameObjects/Bomb';
-import {ScreenUtils} from '../utils/screenutils';
+import {GameOver} from '../gameStates/GameOver';
 import {UI} from '../utils/ui';
 
 declare var ParticlesConfigs: any;
@@ -60,14 +60,14 @@ export class Main extends Phaser.State {
     private _fuels;
     private _satelites;
     private _flowerPlants;
-    private _UiGroup;
+    private _UI;
     private pickupsLastTime;
     private _livesGraph;
-    private canvasDataURI;
     private _fireGraph;
     private _sun;
     private _sunTw;
     private lives;
+    private _UiGroup;
 
     init() {
         this.level = this.level || 0;
@@ -89,6 +89,7 @@ export class Main extends Phaser.State {
             'rocket': 10
         };
         this.priceStyle = {font: '50px eater', fill: '#E39B00'};
+        (this.game as any).gameover = false;
 
         this._background = null;
 
@@ -124,11 +125,12 @@ export class Main extends Phaser.State {
         this.game.debug.text('Alive enemies: ' + this.enemys.countLiving(), 10, 50);
     }
 
-    create(tutorial?, game?) {
+    create(game?, tutorial?) {
         this.isTutorial = tutorial || false;
-        if (this.isTutorial) {
+        if (game) {
             this.game = game;
         }
+
         // Hide CSS element.
         (this.game as any).anim_elem.style.display = 'none';
         (this.game as any).anim_elem.className += ' gameCreated';
@@ -160,7 +162,7 @@ export class Main extends Phaser.State {
 
         this.initStealingSigns();
 
-        new UI(this);
+        this._UI = new UI(this);
 
         this.nextLevel.call(this);
 
@@ -205,7 +207,7 @@ export class Main extends Phaser.State {
 
     createDayTime() {
         var createBackground = ()=> {
-            this._background = this.game.add.tileSprite(0, 0, ScreenUtils.screenMetrics.gameWidth * 4, 889, 'background');
+            this._background = this.game.add.tileSprite(0, 0, this.game.width * 4, 889, 'background');
             this._background.alpha = 1;
         };
         var createSun = ()=> {
@@ -227,33 +229,33 @@ export class Main extends Phaser.State {
         this._rainGroup = this.game.add.group();
     }
 
-    createSunAndBgTweens () {
-    var createBgTween = function () {
-        this._backgroundTw = this.game.add.tween(this._background)
-            .to({alpha: 0.1}, this.dayLength,
-                Phaser.Easing.Quintic.InOut,
-                true, //autostart?,
-                0, //delay,
-                1, //repeat?
-                true //yoyo?
-            );
-    };
-    var createSunTween = function () {
-        this._sun.x = 10;
-        this._sun.y = 10;
-        this._sun.width = 10;
-        this._sun.height = 10;
-        this._sunTw = this.game.add.tween(this._sun).to({
-            x: this.game.width - 180,
-            width: 60,
-            height: 60
-        }, this.dayLength, Phaser.Easing.Quintic.InOut, true, 0, true, true);
-        this._sunTw.onComplete.add(()=> {
-            this.events.onNightOver.dispatch(this);
-        });
-    };
-    createBgTween.call(this);
-    createSunTween.call(this);
+    createSunAndBgTweens() {
+        var createBgTween = function () {
+            this._backgroundTw = this.game.add.tween(this._background)
+                .to({alpha: 0.1}, this.dayLength,
+                    Phaser.Easing.Quintic.InOut,
+                    true, //autostart?,
+                    0, //delay,
+                    1, //repeat?
+                    true //yoyo?
+                );
+        };
+        var createSunTween = function () {
+            this._sun.x = 10;
+            this._sun.y = 10;
+            this._sun.width = 10;
+            this._sun.height = 10;
+            this._sunTw = this.game.add.tween(this._sun).to({
+                x: this.game.width - 180,
+                width: 60,
+                height: 60
+            }, this.dayLength, Phaser.Easing.Quintic.InOut, true, 0, true, true);
+            this._sunTw.onComplete.add(()=> {
+                this.events.onNightOver.dispatch(this);
+            });
+        };
+        createBgTween.call(this);
+        createSunTween.call(this);
     }
 
     generateClouds() {
@@ -311,7 +313,7 @@ export class Main extends Phaser.State {
          */
         this.towers = this.game.add.group();
         this.game.physics.enable(this.towers, Phaser.Physics.P2JS, (this.game as any).debugOn);
-        this.game.world.setBounds(0, 0, ScreenUtils.screenMetrics.gameWidth * 4, 790);
+        this.game.world.setBounds(0, 0, this.game.width * 4, 790);
 
         /**
          * Heart
@@ -505,45 +507,13 @@ export class Main extends Phaser.State {
         }
     }
 
-    animateScore(moveOut?) {
-        moveOut = moveOut || false;
-
+    animateScore(moveOut = false) {
         // Animate walls
-        this._walls.forEachAlive(brick => this.game.add.tween(brick).to({alpha: moveOut ? 0 : 1}, 1000, Phaser.Easing.Linear.None, true, 0), this);
+        this._walls.forEach(brick =>
+            this.game.add.tween(brick)
+            .to({alpha: moveOut ? 0 : 1}, 1000, Phaser.Easing.Linear.None, true, 0));
 
-        this._UiGroup.forEach(item => {
-            // Graphics animation doesn't work here.
-            if (item.type == 0) {
-                item.y = moveOut ? item.y : this.game.height*ScreenUtils.screenMetrics.scaleY + item.height;
-                item.alpha = moveOut ? 1 : 0;
-
-                var toY = moveOut
-                    ? this.game.height*ScreenUtils.screenMetrics.scaleY + item.height
-                    : this.game.height*ScreenUtils.screenMetrics.scaleY - 70;
-                var delay = moveOut ? 700 : 500;
-
-                if (this._scoreText == item) {
-                    toY = moveOut
-                        ? this.game.height*ScreenUtils.screenMetrics.scaleY - item.height
-                        : this.game.height*ScreenUtils.screenMetrics.scaleY - 30;
-                    this.game.add.tween(item).to({
-                            alpha: moveOut ? 0 : 1,
-                            x: 0,
-                            y: toY
-                        },
-                        700, Phaser.Easing.Linear.None, true, delay);
-                }
-                else {
-                    this.game.add.tween(item).to({
-                            alpha: moveOut ? 0 : 1,
-                            x: this.game.width / 2 + 100 + item.xPosition,
-                            y: toY
-                        },
-                        700, Phaser.Easing.Linear.None, true, delay);
-                }
-
-            }
-        });
+        this._UI.toggleUI(moveOut);
     }
 
     addRndBricks() {
@@ -562,7 +532,7 @@ export class Main extends Phaser.State {
         };
         var levelText = this.game.add.text(0, 0, 'Level ' + this.level, style);
         levelText.x = this.game.width / 2 - levelText.width / 2;
-        levelText.y = this.game.height*ScreenUtils.screenMetrics.scaleY / 2 - levelText.height;
+        levelText.y = this.game.height / 2 - levelText.height;
         levelText.alpha = 0;
         levelText.fixedToCamera = true;
 
@@ -602,9 +572,8 @@ export class Main extends Phaser.State {
         this.changeScoreText();
         if (this.lives < 0) {
             this.game.camera.shake();
-            // save this.game screenshot.
-            this.canvasDataURI = this.game.canvas.toDataURL();
-            (this.game.time.events.add(Phaser.Timer.SECOND, this.GameOverTransition, this) as any)
+
+            (this.game.time.events.add(Phaser.Timer.SECOND, ()=>this.GameOverTransition(), this) as any)
                 .autoDestroy = true;
         }
     }
@@ -619,7 +588,7 @@ export class Main extends Phaser.State {
             str += "   Fuel: " + this.towers.children[0].fuel + "";
         }
         if (!this._scoreText) {
-            this._scoreText = this.game.add.text(0, this.game.height*ScreenUtils.screenMetrics.scaleY, str, style);
+            this._scoreText = this.game.add.text(0, this.game.height, str, style);
             this._UiGroup.add(this._scoreText);
         }
         else {
@@ -627,7 +596,7 @@ export class Main extends Phaser.State {
         }
 
         // Respawn dead player
-        if (this.towers && this.towers.children && !this.towers.children[0].alive) {
+        if (this.towers && this.towers.children.length && !this.towers.children[0].alive) {
             this.towers.children[0].destroy();
             Tower.prototype.addToPoint(400, 400);
         }
@@ -643,8 +612,8 @@ export class Main extends Phaser.State {
                 var animEnemy = this.enemySprites[rndKey];
                 var enemy = new Enemy(this.game, 0, 0, animEnemy.name, animEnemy.length);
                 var param = {
-                    x: this.game.rnd.integerInRange(0, this.game.width*ScreenUtils.screenMetrics.scaleX),
-                    y: this.game.rnd.integerInRange(0, this.game.height*ScreenUtils.screenMetrics.scaleY),
+                    x: this.game.rnd.integerInRange(0, this.game.width),
+                    y: this.game.rnd.integerInRange(0, this.game.height),
                     countBricks: 1
                 };
                 Tower.prototype.addWall(param);
@@ -668,7 +637,7 @@ export class Main extends Phaser.State {
     update() {
         this._background.tilePosition.set(this.game.camera.x * -0.5, this.game.camera.y * -0.5);
 
-        this.rewpawnPickupsButton.onDown.add( ()=> {
+        this.rewpawnPickupsButton.onDown.add(()=> {
             if (this.game.time.now > this.pickupsLastTime + 1000) {
                 this.pickupsLastTime = this.game.time.now + 1000;
                 this.generateGrowingPickups();
@@ -677,10 +646,8 @@ export class Main extends Phaser.State {
 
         // Game over if no alive flowers.
         if (!this.isTutorial && !this._flowerPlants.countLiving()) {
-            // Save this.game canvas "screenshot".
-            this.canvasDataURI = this.game.canvas.toDataURL();
-            // this.game.camera.flash(0xFF0010, 2000, true);
-            this.game.time.events.add(0, this.GameOverTransition, this);
+
+            this.game.time.events.add(0, ()=>this.GameOverTransition(), this);
             return;
         }
 
@@ -698,7 +665,7 @@ export class Main extends Phaser.State {
         this.enemys.stealing = false;
         this.enemys.forEachAlive(enemy => Enemy.prototype.updateEnemy(enemy), this);
 
-        this.towers.forEachAlive(tower => Tower.prototype.updateTower(tower), this);
+        this.towers.forEachAlive(tower => Tower.updateTower(tower), this);
 
         // Update spawn bar.
         this._flowerPlants.forEachAlive(plant => plant.updatePlant(plant), this);
@@ -717,8 +684,8 @@ export class Main extends Phaser.State {
             strokeThickness: 1
         };
         var levelText = this.game.add.text(0, 0, 'Level Completed!', style);
-        levelText.x = this.game.width*ScreenUtils.screenMetrics.scaleX / 2 - levelText.width / 2;
-        levelText.y = this.game.height*ScreenUtils.screenMetrics.scaleY / 2 - levelText.height / 2;
+        levelText.x = this.game.width / 2 - levelText.width / 2;
+        levelText.y = this.game.height / 2 - levelText.height / 2;
         levelText.alpha = 0;
         levelText.fixedToCamera = true;
 
@@ -752,6 +719,15 @@ export class Main extends Phaser.State {
     }
 
     GameOverTransition() {
-        this.game.state.start('GameOver', false, false);
+        if (!(this.game as any).gameover) {
+            (this.game as any).gameover = true;
+
+            // remove all event handlers
+            this.game.input.onDown.removeAll();
+
+            GameOver.prototype.init(this.game);
+            GameOver.prototype.create();
+        }
     }
+
 }
