@@ -17,7 +17,7 @@ export class Heart {
     this.mainState._flowerPlants.forEachAlive((plant) => {
       if (plant.growingItem.key === "heart") {
         x2 = plant.x;
-        Plant.prototype.removeSpawnBar(plant);
+        Plant.removeSpawnBar(plant);
       }
     });
     let y2 = game.rnd.integerInRange(0, game.height);
@@ -30,7 +30,9 @@ export class Heart {
     this.mainState._hearts.add(this.heart);
 
     this.heart.body.onBeginContact.add((body1, shapeA, shapeB) => {
-      if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {return}
+      if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {
+        return
+      }
 
       if (body1.sprite.key === "spaceship") {
 
@@ -54,7 +56,7 @@ export class Heart {
     this.heart.events.onKilled.add((heart) => {
       let nextSpawnTime = Phaser.Timer.SECOND * game.rnd.integerInRange(70, 100);
       this.mainState._heartTimer = game.time.events.add(nextSpawnTime, () => new Heart(this.game), this);
-      this.mainState._flowerPlants.forEach(plant => Plant.prototype.updateSpawnBar(nextSpawnTime, "heart", plant));
+      this.mainState._flowerPlants.forEach(plant => Plant.updateSpawnBar(nextSpawnTime, "heart", plant));
     });
   }
 }

@@ -17,7 +17,7 @@ export class Fuel {
     this.mainState._flowerPlants.forEachAlive((plant) => {
       if (plant.growingItem.key === "fuel") {
         x2 = plant.x;
-        Plant.prototype.removeSpawnBar(plant);
+        Plant.removeSpawnBar(plant);
       }
     });
     let y2 = game.rnd.integerInRange(0, game.height);
@@ -28,7 +28,9 @@ export class Fuel {
     this.mainState._fuels.add(this.fuel);
 
     this.fuel.body.onBeginContact.add((body1, shapeA, shapeB) => {
-      if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {return}
+      if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {
+        return
+      }
 
       if (body1.sprite.key === "spaceship") {
 
@@ -51,7 +53,7 @@ export class Fuel {
     this.fuel.events.onKilled.add((fuel) => {
       let nextSpawnTime = Phaser.Timer.SECOND * game.rnd.integerInRange(20, 40);
       this.mainState._fuelTimer = game.time.events.add(nextSpawnTime, () => new Fuel(this.game), this);
-      this.mainState._flowerPlants.forEach(plant => Plant.prototype.updateSpawnBar(nextSpawnTime, "fuel", plant));
+      this.mainState._flowerPlants.forEach(plant => Plant.updateSpawnBar(nextSpawnTime, "fuel", plant));
     });
   }
 }

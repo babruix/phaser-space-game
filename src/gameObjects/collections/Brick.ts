@@ -12,7 +12,6 @@ export class Brick {
     this.game = game;
     this.mainState = this.game.state.states["Main"];
 
-
     let x2 = this.game.rnd.integerInRange(0, this.game.width);
     let y2 = this.game.rnd.integerInRange(0, this.game.height);
     this.brick = this.game.add.sprite(x2, y2, "brick");
@@ -24,7 +23,9 @@ export class Brick {
     this.mainState._bricks.add(this.brick);
 
     this.brick.body.onBeginContact.add((body1, shapeA, shapeB) => {
-      if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {return}
+      if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {
+        return
+      }
 
       if (body1.sprite.key === "spaceship") {
 

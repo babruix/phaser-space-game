@@ -1,6 +1,10 @@
 {
   "rules": {
     "class-name": true,
+    "max-line-length": [
+      true,
+      140
+    ],
     "comment-format": [true, "check-space"],
     "indent": [true, "spaces"],
     "no-duplicate-variable": true,
@@ -26,6 +30,7 @@
       "check-operator",
       "check-separator",
       "check-type"
-    ]
+    ],
+    "eofline": true
   }
 }

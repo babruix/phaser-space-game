@@ -19,7 +19,7 @@ export class Missle {
       this.mainState._flowerPlants.forEachAlive((plant) => {
         if (plant.growingItem.key === "missle") {
           x2 = plant.x;
-          Plant.prototype.removeSpawnBar(plant);
+          Plant.removeSpawnBar(plant);
         }
       });
     }
@@ -35,7 +35,9 @@ export class Missle {
     this.missle.reset(x2, y2);
 
     this.missle.body.onBeginContact.add((body1, shapeA, shapeB) => {
-      if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {return}
+      if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {
+        return
+      }
 
       if (body1.sprite.key !== "spaceship") {
         Missle.prototype.explode.call(this, this.missle);
@@ -54,7 +56,7 @@ export class Missle {
     this.missle.events.onKilled.add((missle) => {
       let nextSpawnTime = Phaser.Timer.SECOND * game.rnd.integerInRange(10, 30);
       this.mainState._missleTimer = game.time.events.add(nextSpawnTime, () => new Missle(game));
-      this.mainState._flowerPlants.forEach(plant => Plant.prototype.updateSpawnBar(nextSpawnTime, "missle", plant));
+      this.mainState._flowerPlants.forEach(plant => Plant.updateSpawnBar(nextSpawnTime, "missle", plant));
     });
     let missle = this.missle;
     this.missle.update = () => {
@@ -62,29 +64,29 @@ export class Missle {
         Missle.prototype.explode.call(this, missle);
       }
     };
-    return this. missle;
+    return this.missle;
   }
 
-    explode (missle) {
-      if (missle.alive) {
-        missle.destroy();
-        this.game.audio.explosionSnd.play();
-        let explode = this.game.add.sprite(missle.x - 100, missle.y - 150, "explode", 19);
-        explode.animations.add("explode");
-        explode.animations.play("explode", 19, false, true);
+  explode(missle) {
+    if (missle.alive) {
+      missle.destroy();
+      this.game.audio.explosionSnd.play();
+      let explode = this.game.add.sprite(missle.x - 100, missle.y - 150, "explode", 19);
+      explode.animations.add("explode");
+      explode.animations.play("explode", 19, false, true);
 
-        // Kill everybody who is close
-        [this.mainState.enemys,
-          this.mainState._walls,
-          this.mainState._bombs,
-          this.mainState._satelites
-        ].forEach((group) => {
-          group.forEachAlive((sprite) => {
-            if (!sprite.ufo_exists && Main.caculatetDistance(missle, sprite) < 50) {
-              sprite.kill();
-            }
-          });
+      // Kill everybody who is close
+      [this.mainState.enemys,
+        this.mainState._walls,
+        this.mainState._bombs,
+        this.mainState._satelites
+      ].forEach((group) => {
+        group.forEachAlive((sprite) => {
+          if (!sprite.ufo_exists && Main.caculatetDistance(missle, sprite) < 50) {
+            sprite.kill();
+          }
         });
-      }
+      });
     }
+  }
 }

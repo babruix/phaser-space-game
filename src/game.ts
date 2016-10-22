@@ -27,7 +27,9 @@ import {Orientation} from "./utils/screenutils";
 
   export class Game extends Phaser.Game {
     public audio;
+    public gameover;
     public debugOn;
+
     public epsyPlugin;
     public transitionPlugin;
 
@@ -38,6 +40,7 @@ import {Orientation} from "./utils/screenutils";
           null /* , transparent, antialias, physicsConfig */);
 
       this.audio = {};
+      this.gameover = false;
       this.debugOn = window.location.hash === "#deb";
       this.state.add("Boot", Boot, true);
       this.state.add("Preloader", Preloader);

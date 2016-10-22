@@ -10,7 +10,6 @@ import {Shield} from "../gameObjects/collections/Shield";
 
 declare var HealthBar: any;
 
-
 export class Plant {
   public plant;
   private game;
@@ -28,7 +27,7 @@ export class Plant {
     this.plant.update = () => {
       this.game.state.states["Main"]._flowerPlants.forEachAlive((plant) => {
         if (plant.stealing) {
-          Plant.prototype.removeSpawnBar(plant);
+          Plant.removeSpawnBar(plant);
           plant.tween = null;
         }
 
@@ -47,11 +46,11 @@ export class Plant {
 
     this.plant.generate_pickup = (plant) => {
       let spawnFunction;
-      let nextSpawnTime ;
+      let nextSpawnTime;
       let maxTimeToSpawn = 30; // Default time to spawn.
 
       // Remove old bar
-      this.removeSpawnBar(plant);
+      Plant.removeSpawnBar(plant);
 
       if (plant.alive) {
         if (plant.growingItem) {
@@ -95,7 +94,7 @@ export class Plant {
         plant.growingItem.blendMode = 4;
 
         // Add spawn bar.
-        let barConfig = Plant.prototype.getBarConfig();
+        let barConfig = Plant.getBarConfig();
         plant.spawnBar = new HealthBar(this.game, barConfig);
         plant.randomSpawnTime = this.game.time.now + nextSpawnTime;
       }
@@ -105,7 +104,7 @@ export class Plant {
       };
     };
 
-    this.plant.removeSpawnBar = (plant) => {
+    Plant.removeSpawnBar = (plant) => {
       if (plant.spawnBar) {
         if (plant.spawnBar.barSprite) {
           plant.spawnBar.barSprite.kill();
@@ -136,25 +135,24 @@ export class Plant {
     return this.plant;
   }
 
-  removeSpawnBar(plant) {
-    plant.removeSpawnBar(plant);
+  static removeSpawnBar(plant) {
+    Plant.removeSpawnBar(plant);
   }
 
-
-  updateSpawnBar(nextSpawnTime, sprite, plant) {
+  static updateSpawnBar(nextSpawnTime, sprite, plant) {
     if (plant.growingItem && plant.growingItem.key === sprite) {
       // Remove old bar
-      Plant.prototype.removeSpawnBar(plant);
+      Plant.removeSpawnBar(plant);
       if (plant.alive) {
         // Add spawn bar.
-        let barConfig = Plant.prototype.getBarConfig();
+        let barConfig = Plant.getBarConfig();
         plant.spawnBar = new HealthBar(plant.game, barConfig);
         plant.randomSpawnTime = plant.game.time.now + nextSpawnTime;
       }
     }
   }
 
-  getBarConfig() {
+  static getBarConfig() {
     return {
       x: 100,
       y: -40,

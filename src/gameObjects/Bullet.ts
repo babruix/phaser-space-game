@@ -3,12 +3,12 @@
 /// <reference path="../../typings/phaser/EPSY.d.ts" />
 
 export class Bullet {
-    public body;
-    public rotation;
+  public body;
+  public rotation;
 
-    private game;
-    private mainState;
-    private bullet;
+  private game;
+  private mainState;
+  private bullet;
 
   constructor(game, worldX, worldY, enemyBullet, freezingBullet?) {
     this.game = game;
@@ -42,7 +42,9 @@ export class Bullet {
       this.bullet.reset(worldX, worldY);
       this.bullet.body.damping = 0.1;
       this.bullet.body.onBeginContact.add(function (body1, shapeA, shapeB) {
-        if (!body1 || !body1.sprite || !body1.sprite.key) {return}
+        if (!body1 || !body1.sprite || !body1.sprite.key) {
+          return
+        }
 
         if (body1.sprite.key.ctx) {
           this.bullet.kill();

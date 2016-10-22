@@ -17,7 +17,7 @@ export class Shield {
     this.mainState._flowerPlants.forEachAlive((plant) => {
       if (plant.growingItem.key === "shield") {
         x2 = plant.x;
-        Plant.prototype.removeSpawnBar(plant);
+        Plant.removeSpawnBar(plant);
       }
     });
     let y2 = game.rnd.integerInRange(0, game.height);
@@ -29,11 +29,12 @@ export class Shield {
     game.physics.p2.enable(this.shield, this.game.debugOn);
     this.shield.scale.setTo(.5, .5);
 
-
     this.mainState._shields.add(this.shield);
 
     this.shield.body.onBeginContact.add((body1, shapeA, shapeB) => {
-      if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {return}
+      if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {
+        return
+      }
 
       if (body1.sprite.key === "spaceship") {
 
@@ -53,11 +54,10 @@ export class Shield {
       }
     });
 
-
     this.shield.events.onKilled.add((shield) => {
       let nextSpawnTime = Phaser.Timer.SECOND * 4;
       this.mainState._shieldTimer = game.time.events.add(nextSpawnTime, () => new Shield(this.game), this);
-      this.mainState._flowerPlants.forEach(plant => Plant.prototype.updateSpawnBar(nextSpawnTime, "shield", plant));
+      this.mainState._flowerPlants.forEach(plant => Plant.updateSpawnBar(nextSpawnTime, "shield", plant));
     });
   }
 }

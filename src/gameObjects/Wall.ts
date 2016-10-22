@@ -22,7 +22,9 @@ export class Wall {
     this.mainState._walls.add(this.wall);
 
     this.wall.body.onBeginContact.add((body1, shapeA, shapeB) => {
-      if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {return}
+      if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {
+        return
+      }
 
       if (this.mainState.towers.children[0].actionLastTime + 1000 > game.time.now) {
         return;

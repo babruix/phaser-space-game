@@ -158,23 +158,25 @@ export class Tower {
           tower._protectRect.destroy();
         }
         tower._protectRect = this.game.add.graphics(0, 0);
-        tower._protectRect.lineWidth = this.mainState.towers.children[0].shieldPower / 10;
+        const player = this.mainState.towers.children[0];
+        tower._protectRect.lineWidth = player.shieldPower / 10;
         tower._protectRect.lineColor = 0xFFFFFF;
         tower._protectRect.alpha = 0.7;
-        tower._protectRect.drawCircle(this.mainState.towers.children[0].x, this.mainState.towers.children[0].y, this.mainState.towers.children[0].width + this.mainState.towers.children[0].shieldPower / 10);
+        tower._protectRect.drawCircle(player.x, player.y, player.width + player.shieldPower / 10);
       }
     }
   }
 
   addToPoint(worldX, worldY) {
     // new Tower(this.game, worldX, worldY, 'spaceship');
+    const player = this.mainState.towers.children[0];
 
     // Add health bar.
     let barConfig = {
-      x: this.mainState.towers.children[0].health,
+      x: player.health,
       y: -40,
       height: 5,
-      width: this.mainState.towers.children[0].width,
+      width: player.width,
       bg: {
         color: "#56807D"
       },
@@ -183,31 +185,32 @@ export class Tower {
       }
     };
 
-    this.mainState.towers.children[0].HealthBar = new HealthBar(this.game, barConfig);
+    player.HealthBar = new HealthBar(this.game, barConfig);
 
     // Add  PhysicsEditor bounding shape
-    this.mainState.towers.children[0].body.clearShapes();
-    this.mainState.towers.children[0].body.loadPolygon("spaceship_pshysics", "spaceship");
+    player.body.clearShapes();
+    player.body.loadPolygon("spaceship_pshysics", "spaceship");
 
-    this.mainState.towers.children[0].alpha = 0;
-    this.mainState.towers.children[0].fireTime = 200;
-    this.mainState.towers.children[0].anchor.setTo(0.5, 0.5);
+    player.alpha = 0;
+    player.fireTime = 200;
+    player.anchor.setTo(0.5, 0.5);
 
     this.game.time.events.add(500, () => {
       // let Phaser add the particle system to world group or choose to add it to a specific group
-      let particleSystem1 = (this.game as any).epsyPlugin.loadSystem(ParticlesConfigs.epsyPluginConfig.circles, this.mainState.towers.children[0].x, this.mainState.towers.children[0].y);
+      const player = this.mainState.towers.children[0];
+      let particleSystem1 = (this.game as any).epsyPlugin.loadSystem(ParticlesConfigs.epsyPluginConfig.circles, player.x, player.y);
       this._circlesGroup = this.game.add.group();
       this._circlesGroup.add(particleSystem1);
       this.game.time.events.add(1000, this.destroyCirclesGroup, this).autoDestroy = true;
 
-      this.game.add.tween(this.mainState.towers.children[0])
-        .to({alpha: 1}, 1000, Phaser.Easing.Linear.None,
-          true, 500)
-        .onComplete.add(() => this.mainState._shipTrail.alpha = 1);
+      this.game.add.tween(player)
+      .to({alpha: 1}, 1000, Phaser.Easing.Linear.None,
+        true, 500)
+      .onComplete.add(() => this.mainState._shipTrail.alpha = 1);
     });
 
     // Add an emitter for the ship's trail
-    this.mainState._shipTrail = this.game.add.emitter(this.game, this.mainState.towers.children[0].x, this.mainState.towers.children[0].y + 10, 400);
+    this.mainState._shipTrail = this.game.add.emitter(this.game, player.x, player.y + 10, 400);
     this.mainState._shipTrail.width = 10;
     this.mainState._shipTrail.makeParticles("emit");
     this.mainState._shipTrail.setXSpeed(30, -30);
@@ -372,21 +375,21 @@ export class Tower {
         }
       }
       else {
-//        if (Math.floor(this.game.input.x/(this.game.width/2)) === 0) {
+        //        if (Math.floor(this.game.input.x/(this.game.width/2)) === 0) {
         if (tower.game.input.x < tower.x) {
           tower.angle = -30;
           tower.body.velocity.x = -speed;
         }
-//        if (Math.floor(this.game.input.x/(this.game.width/2)) === 1) {
+        //        if (Math.floor(this.game.input.x/(this.game.width/2)) === 1) {
         if (tower.game.input.x > tower.x) {
           tower.angle = 30;
           tower.body.velocity.x = speed;
         }
-//        if(Math.floor(this.game.input.y/(this.game.height/2)) === 0){
+        //        if(Math.floor(this.game.input.y/(this.game.height/2)) === 0){
         if (tower.game.input.y < tower.y) {
           tower.body.velocity.y = -speed;
         }
-//        if(Math.floor(this.game.input.y/(this.game.height/2)) === 1){
+        //        if(Math.floor(this.game.input.y/(this.game.height/2)) === 1){
         if (tower.game.input.y > tower.y) {
           tower.body.velocity.y = speed;
         }
