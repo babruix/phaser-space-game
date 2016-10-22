@@ -1,8 +1,7 @@
 /// <reference path="../../../node_modules/phaser/typescript/phaser.d.ts"/>
 /// <reference path="../../../typings/phaser/phaser.d.ts" />
 /// <reference path="../../../typings/phaser/EPSY.d.ts" />
-import * as Phaser from 'phaser';
-import {ScreenUtils} from '../../utils/screenutils';
+import * as Phaser from "phaser";
 
 export class Brick {
   private brick;
@@ -11,12 +10,11 @@ export class Brick {
 
   constructor(game) {
     this.game = game;
-    this.mainState = this.game.state.states['Main'];
+    this.mainState = this.game.state.states["Main"];
 
-
-    var x2 = this.game.rnd.integerInRange(0, this.game.width*ScreenUtils.screenMetrics.scaleX);
-    var y2 = this.game.rnd.integerInRange(0, this.game.height*ScreenUtils.screenMetrics.scaleY);
-    this.brick = this.game.add.sprite(x2, y2, 'brick');
+    let x2 = this.game.rnd.integerInRange(0, this.game.width);
+    let y2 = this.game.rnd.integerInRange(0, this.game.height);
+    this.brick = this.game.add.sprite(x2, y2, "brick");
     this.brick.anchor.setTo(0.5, 0.5);
 
     this.game.physics.p2.enable(this.brick, this.game.debugOn);
@@ -24,14 +22,16 @@ export class Brick {
 
     this.mainState._bricks.add(this.brick);
 
-    this.brick.body.onBeginContact.add((body1, shapeA, shapeB)=> {
-      if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {return}
+    this.brick.body.onBeginContact.add((body1, shapeA, shapeB) => {
+      if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {
+        return
+      }
 
-      if (body1.sprite.key == 'spaceship') {
+      if (body1.sprite.key === "spaceship") {
 
         if (!this.brick.hitCooldown) {
           this.brick.hitCooldown = true;
-          this.game.time.events.add(1000, ()=> this.brick.hitCooldown = false);
+          this.game.time.events.add(1000, () => this.brick.hitCooldown = false);
         }
         else {
           return;
@@ -44,8 +44,8 @@ export class Brick {
         this.mainState.changeScoreText();
       }
     }, this);
-    this.brick.events.onKilled.add(()=> {
-      this.game.time.events.add(Phaser.Timer.SECOND * this.game.rnd.integerInRange(6, 20), ()=>new Brick(this.game), this);
+    this.brick.events.onKilled.add(() => {
+      this.game.time.events.add(Phaser.Timer.SECOND * this.game.rnd.integerInRange(6, 20), () => new Brick(this.game), this);
     });
   }
 }
