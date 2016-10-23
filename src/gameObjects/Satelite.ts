@@ -125,7 +125,7 @@ export class Satelite {
     }
 
     // Highlight closest enemy.
-    this.drawAimRect(satelite, closestEnemy);
+    Satelite.drawAimRect(satelite, closestEnemy);
     satelite.mainState._aimRect = satelite._aimRect;
     satelite.mainState._dot = satelite._dot;
     satelite.game.time.events.add(Phaser.Timer.SECOND, this.removeAimRect, this);
@@ -198,7 +198,7 @@ export class Satelite {
   }
 
   // Satellite aim only when enemy distance less 700.
-  drawAimRect(satelite, enemy, minimalReactDistance = 700) {
+  static drawAimRect(satelite, enemy, minimalReactDistance = 700) {
 
     if (satelite._aimRect !== undefined) {
       satelite._aimRect.destroy();
@@ -213,13 +213,13 @@ export class Satelite {
     let lineColor = satelite.freezing ? 0x13D7D8 : 0xD81E00;
 
     satelite._aimRect = satelite.game.add.graphics(0, 0);
-    satelite._aimRect.lineWidth = 2;
+    satelite._aimRect.lineStyle(2, 0xffd900, 1);
     satelite._aimRect.lineColor = lineColor;
     satelite._aimRect.alpha = 0.7;
     satelite._aimRect.drawCircle(enemy.x, enemy.y, enemy.width + 10);
 
     satelite._dot = satelite.game.add.graphics(0, 0);
-    satelite._dot.lineWidth = 2;
+    satelite._dot.lineStyle(2, 0xffd900, 1);
     satelite._dot.lineColor = lineColor;
     satelite._dot.alpha = 0.7;
     satelite._dot.drawCircle(enemy.x, enemy.y, 5);
