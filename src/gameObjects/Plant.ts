@@ -104,15 +104,6 @@ export class Plant {
       };
     };
 
-    Plant.removeSpawnBar = (plant) => {
-      if (plant.spawnBar) {
-        if (plant.spawnBar.barSprite) {
-          plant.spawnBar.barSprite.kill();
-        }
-        plant.spawnBar.bgSprite.kill();
-      }
-    };
-
     this.plant.updatePlant = (plant) => {
       let bar = plant.spawnBar;
       if (bar) {
@@ -135,10 +126,6 @@ export class Plant {
     return this.plant;
   }
 
-  static removeSpawnBar(plant) {
-    Plant.removeSpawnBar(plant);
-  }
-
   static updateSpawnBar(nextSpawnTime, sprite, plant) {
     if (plant.growingItem && plant.growingItem.key === sprite) {
       // Remove old bar
@@ -149,6 +136,15 @@ export class Plant {
         plant.spawnBar = new HealthBar(plant.game, barConfig);
         plant.randomSpawnTime = plant.game.time.now + nextSpawnTime;
       }
+    }
+  }
+
+  static removeSpawnBar(plant) {
+    if (plant.spawnBar) {
+      if (plant.spawnBar.barSprite) {
+        plant.spawnBar.barSprite.kill();
+      }
+      plant.spawnBar.bgSprite.kill();
     }
   }
 

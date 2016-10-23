@@ -122,6 +122,7 @@ export class Main extends Phaser.State {
 
   render() {
     this.game.debug.text("Alive enemies: " + this.enemys.countLiving(), 10, 50);
+    this._satelites.forEach(satelite =>this.game.debug.sprite(satelite._aimRect, 10, 100));
   }
 
   create(game?, tutorial?) {

@@ -128,7 +128,7 @@ export class Satelite {
     this.drawAimRect(satelite, closestEnemy);
     satelite.mainState._aimRect = satelite._aimRect;
     satelite.mainState._dot = satelite._dot;
-    satelite.game.time.events.add(Phaser.Timer.SECOND * 1, Satelite.prototype.removeAimRect, this);
+    satelite.game.time.events.add(Phaser.Timer.SECOND, this.removeAimRect, this);
 
     return closestDistance < minimalReactDistance ? closestEnemy : false;
   }
@@ -224,7 +224,7 @@ export class Satelite {
     satelite._dot.alpha = 0.7;
     satelite._dot.drawCircle(enemy.x, enemy.y, 5);
 
-    satelite.game.time.events.add(2000, () => this.removeAimRect());
+    // satelite.game.time.events.add(2000, () => this.removeAimRect());
   }
 
   removeAimRect() {
