@@ -310,10 +310,10 @@ export class Enemy {
     }
 
     enemy.mainState.enemys.stealSignLeft.x = enemy.mainState.towers.children[0].x;
-    enemy.mainState.enemys.stealSignLeft.y = 0;
+    enemy.mainState.enemys.stealSignLeft.y = 30;
 
     enemy.mainState.enemys.stealSignRight.x = enemy.mainState.towers.children[0].x;
-    enemy.mainState.enemys.stealSignRight.y = 0;
+    enemy.mainState.enemys.stealSignRight.y = 30;
   }
 
   hideStealingSign() {

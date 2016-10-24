@@ -475,20 +475,18 @@ export class Main extends Phaser.State {
 
   initStealingSigns() {
     let initOneStealSign = (direction) => {
-      let stealingSignSprite = this.game.add.sprite(this.game.width / 2, 130, "sign_" + direction);
-      stealingSignSprite.scale.x = 0.3;
-      stealingSignSprite.scale.y = 0.3;
-      stealingSignSprite.anchor.setTo(0.5, 0.5);
-      let text_l = this.game.add.text(0, -170,
-        "Stealing!", {
-          font: "50px eater",
+      let stealingSignSprite = this.game.add.sprite(this.game.width / 2, this.game.height, "sign_" + direction);
+      stealingSignSprite.scale.setTo(0.3);
+      stealingSignSprite.anchor.setTo(0.3);
+      let text_l = this.game.add.text(0, 70,
+        "STEALING!", {
+          font: "60px eater",
           fill: "#D81E00",
           align: "center"
         });
-      text_l.anchor.setTo(0.5, 0.5);
+      text_l.anchor.setTo(0.5, -1);
       stealingSignSprite.addChild(text_l);
       stealingSignSprite.alpha = 0;
-      // stealingSignSprite.fixedToCamera = true;
 
       return stealingSignSprite;
     };

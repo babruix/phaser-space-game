@@ -126,9 +126,10 @@ export class Satelite {
 
     // Highlight closest enemy.
     Satelite.drawAimRect(satelite, closestEnemy);
-    satelite.mainState._aimRect = satelite._aimRect;
-    satelite.mainState._dot = satelite._dot;
-    satelite.game.time.events.add(Phaser.Timer.SECOND, this.removeAimRect, this);
+    [satelite._aimRect, satelite._dot].map(object => satelite.game.add.tween(object)
+    .to({alpha: 0}, Phaser.Timer.SECOND / 2, Phaser.Easing.Linear.None, true)
+    .onComplete.add(() => this.removeAimRect));
+
 
     return closestDistance < minimalReactDistance ? closestEnemy : false;
   }
