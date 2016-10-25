@@ -45,7 +45,7 @@ export class Plant {
     this.plant.generate_pickup = (plant) => {
       let spawnFunction;
       let nextSpawnTime;
-      let maxTimeToSpawn = 30; // Default time to spawn.
+      let maxTimeToSpawn = 10; // Default time to spawn.
 
       // Remove old bar
       Plant.removeSpawnBar(plant);
@@ -58,7 +58,7 @@ export class Plant {
 
         switch (defaultItemToGrow) {
           case 0:
-            maxTimeToSpawn = 40;
+            maxTimeToSpawn = 10;
             plant.growingItem = this.game.add.sprite(plant.x, plant.y + 10, "ammo");
             spawnFunction = () => new Ammo(this.game);
             break;
@@ -69,7 +69,7 @@ export class Plant {
             spawnFunction = () => new Shield(this.game);
             break;
           case 2:
-            maxTimeToSpawn = 100;
+            maxTimeToSpawn = 30;
             plant.growingItem = this.game.add.sprite(plant.x, plant.y + 10, "heart");
             spawnFunction = () => new Heart(this.game);
             break;
@@ -82,7 +82,7 @@ export class Plant {
             spawnFunction = () => new Missle(this.game);
             break;
           case 5:
-            maxTimeToSpawn = 40;
+            maxTimeToSpawn = 20;
             plant.growingItem = this.game.add.sprite(plant.x, plant.y + 10, "ammo");
             spawnFunction = () => new Ammo(this.game);
             break;

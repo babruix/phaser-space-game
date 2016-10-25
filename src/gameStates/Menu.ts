@@ -13,7 +13,7 @@ export class Menu extends Phaser.State {
   create() {
     (this.game as any).anim_elem = document.getElementById("anim_elem");
 
-    this._background = this.game.add.tileSprite(0, 0, this.game.width * 4, 889, "background");
+    this._background = this.game.add.tileSprite(0, 0, this.game.width, 889, "background");
     this._background.alpha = 1;
     this._fontStyle = {
       font: "70px eater",
@@ -31,7 +31,7 @@ export class Menu extends Phaser.State {
     // uncomment to start immediately...
     // level=15;
     // (this.game as any).transitionPlugin.to("Main");
-    // this.transitionPlugin.to('Tutorial');
+    // (this.game as any).transitionPlugin.to("Tutorial");
 
     // Nice practicles
     let particleSystem1 = (this.game as any).epsyPlugin.loadSystem(ParticlesConfigs.epsyPluginConfig.circles, this.game.width / 2, 50);

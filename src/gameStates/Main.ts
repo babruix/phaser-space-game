@@ -205,7 +205,7 @@ export class Main extends Phaser.State {
 
   createDayTime() {
     let createBackground = () => {
-      this._background = this.game.add.tileSprite(0, 0, this.game.width * 4, 889, "background");
+      this._background = this.game.add.tileSprite(0, 0, this.game.width, 889, "background");
       this._background.alpha = 1;
     };
     let createSun = () => {
@@ -312,7 +312,7 @@ export class Main extends Phaser.State {
      */
     this.towers = this.game.add.group();
     this.game.physics.enable(this.towers, Phaser.Physics.P2JS, (this.game as any).debugOn);
-    this.game.world.setBounds(0, 0, this.game.width * 4, 790);
+    this.game.world.setBounds(0, 0, this.game.width, 790);
 
     /**
      * Heart

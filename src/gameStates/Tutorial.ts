@@ -1,7 +1,6 @@
-
 import * as Phaser from "phaser";
-declare var Phasetips: any;
 import {Main} from "../gameStates/Main";
+declare var Phasetips: any;
 
 export class Tutorial extends Phaser.State {
   private tooltipDelay;
@@ -128,8 +127,10 @@ export class Tutorial extends Phaser.State {
 
   hideGameObjects() {
     this.mainState.towers.setAll("visible", false);
-    this.mainState.towers.children[0].HealthBar.bgSprite.alpha = 0;
-    this.mainState.towers.children[0].HealthBar.barSprite.alpha = 0;
+    const tower = this.mainState.towers.children[0];
+    tower.HealthBar.bgSprite.alpha = 0;
+    tower.HealthBar.barSprite.alpha = 0;
+    tower.shieldPower = 0;
 
     this.mainState._shipTrail.visible = false;
 
@@ -162,7 +163,6 @@ export class Tutorial extends Phaser.State {
   }
 
   showGameObjects(i) {
-
     switch (i) {
       case 2:
         this.mainState._livesGraph.setAll("visible", true);
