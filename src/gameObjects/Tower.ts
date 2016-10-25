@@ -1,6 +1,4 @@
-/// <reference path="../../node_modules/phaser/typescript/phaser.d.ts"/>
-/// <reference path="../../typings/phaser/phaser.d.ts" />
-/// <reference path="../../typings/phaser/EPSY.d.ts" />
+
 import * as Phaser from "phaser";
 import {Bullet} from "../gameObjects/Bullet";
 import {Missle} from "../gameObjects/collections/Missle";
@@ -30,7 +28,7 @@ export class Tower {
     this.tower.fireTime = 200;
     this.tower.missles = (this.game as any)._playerMissles || 10;
     this.tower.countBricks = (this.game as any)._playerBricks || 0;
-    this.tower.shieldPower = (this.game as any)._playerShield || 0;
+    this.tower.shieldPower =  20;
     this.tower.fireLastTime = this.game.time.now + this.tower.fireTime;
     this.tower.actionLastTime = this.game.time.now + this.tower.actionTime;
     this.game.physics.p2.enable(this.tower, this.game.debugOn);
@@ -159,10 +157,9 @@ export class Tower {
         }
         tower._protectRect = this.game.add.graphics(0, 0);
         const player = this.mainState.towers.children[0];
-        tower._protectRect.lineWidth = player.shieldPower / 10;
-        tower._protectRect.lineColor = 0xFFFFFF;
+        tower._protectRect.lineStyle(player.shieldPower / 10, 0xFFFFFF, 1);
         tower._protectRect.alpha = 0.7;
-        tower._protectRect.drawCircle(player.x, player.y, player.width + player.shieldPower / 10);
+        tower._protectRect.drawCircle(player.world.x, player.world.y, player.width + player.shieldPower / 10);
       }
     }
   }

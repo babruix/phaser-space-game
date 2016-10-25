@@ -1,6 +1,4 @@
-/// <reference path="../../node_modules/phaser/typescript/phaser.d.ts"/>
-/// <reference path="../../typings/phaser/phaser.d.ts" />
-/// <reference path="../../typings/phaser/EPSY.d.ts" />
+
 import * as Phaser from "phaser";
 import {Ammo} from "../gameObjects/collections/Ammo";
 import {Heart} from "../gameObjects/collections/Heart";
@@ -57,7 +55,7 @@ export class Plant {
           plant.growingItem.kill();
         }
         let defaultItemToGrow = this.game.rnd.integerInRange(0, 5);
-
+        defaultItemToGrow=1;
         switch (defaultItemToGrow) {
           case 0:
             maxTimeToSpawn = 40;

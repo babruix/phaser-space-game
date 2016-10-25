@@ -1,6 +1,4 @@
-/// <reference path="../../node_modules/phaser/typescript/phaser.d.ts"/>
-/// <reference path="../../typings/phaser/phaser.d.ts" />
-/// <reference path="../../typings/phaser/EPSY.d.ts" />
+
 import * as Phaser from "phaser";
 declare var ParticlesConfigs: any;
 
@@ -32,7 +30,7 @@ export class Menu extends Phaser.State {
 
     // uncomment to start immediately...
     // level=15;
-    // this.transitionPlugin.to('Main');
+    (this.game as any).transitionPlugin.to("Main");
     // this.transitionPlugin.to('Tutorial');
 
     // Nice practicles
