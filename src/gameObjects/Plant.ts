@@ -55,7 +55,7 @@ export class Plant {
           plant.growingItem.kill();
         }
         let defaultItemToGrow = this.game.rnd.integerInRange(0, 5);
-        defaultItemToGrow=1;
+
         switch (defaultItemToGrow) {
           case 0:
             maxTimeToSpawn = 40;
