@@ -85,12 +85,6 @@ export class Preloader extends Phaser.State {
     this.game.load.image("ufo_beam", "assets/sprites/ufo-beam.png");
 
     /**
-     * Physics
-     */
-    this.game.load.physics("enemy_physics", "assets/sprites/aliens_pshysics.json");
-    this.game.load.physics("spaceship_pshysics", "assets/sprites/spaceship_pshysics.json");
-
-    /**
      * Effects
      */
     this.game.load.image("sun", "assets/sprites/sun.png");

@@ -80,7 +80,7 @@ export class Missle {
         this.mainState._satelites
       ].forEach((group) => {
         group.forEachAlive((sprite) => {
-          if (!sprite.ufo_exists && Main.caculatetDistance(missle, sprite) < 50) {
+          if (!sprite.ufo_exists && Main.caculatetDistance(missle, sprite) < 70) {
             sprite.kill();
           }
         });

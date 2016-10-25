@@ -184,10 +184,6 @@ export class Tower {
 
     player.HealthBar = new HealthBar(this.game, barConfig);
 
-    // Add  PhysicsEditor bounding shape
-    player.body.clearShapes();
-    player.body.loadPolygon("spaceship_pshysics", "spaceship");
-
     player.alpha = 0;
     player.fireTime = 200;
     player.anchor.setTo(0.5, 0.5);

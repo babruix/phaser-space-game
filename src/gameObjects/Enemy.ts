@@ -135,10 +135,6 @@ export class Enemy {
     enemy.body.fixedRotation = true;
     enemy.body.velocity.x = 150;
 
-    // Add  PhysicsEditor bounding shape.
-    enemy.body.clearShapes();
-    enemy.body.loadPolygon("enemy_physics", anim);
-
     // Add health bar.
     let barConfig = {
       x: enemy.health,
