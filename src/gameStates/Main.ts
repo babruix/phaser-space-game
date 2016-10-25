@@ -414,12 +414,6 @@ export class Main extends Phaser.State {
     this._missles.physicsBodyType = Phaser.Physics.P2JS;
 
     this._missles.createMultiple(10, "missle");
-    this._missles.setAll("checkWorldBounds", true);
-    this._missles.setAll("outOfBoundsKill", true);
-    this._missles.setAll("collideWorldBounds", false);
-    this._missles.setAll("anchor.x", 0.5);
-    this._missles.setAll("anchor.y", 1);
-    this._missles.setAll("tracking", true);
 
     /**
      * Enemys

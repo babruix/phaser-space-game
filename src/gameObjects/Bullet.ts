@@ -17,6 +17,7 @@ export class Bullet {
       this.bullet = this.mainState._enemy_bullets.getFirstExists(false);
       this.bullet.enemyBullet = true;
       this.bullet.towerBullet = false;
+      this.bullet.scale.y = -1;
       worldY += 10;
     }
     else {
@@ -32,6 +33,8 @@ export class Bullet {
     }
     this.bullet.freezingBullet = freezingBullet || false;
 
+    // this.bullet.outOfBoundsKill = true;
+
     if (this.bullet.body) {
       this.bullet.body.setCircle(15);
       this.bullet.body.mass = 100;
@@ -41,7 +44,8 @@ export class Bullet {
       this.bullet.body.damping = 0.1;
       this.bullet.body.onBeginContact.add(function (body1, shapeA, shapeB) {
         if (!body1 || !body1.sprite || !body1.sprite.key) {
-          return
+          this.bullet.kill();
+          return;
         }
 
         if (body1.sprite.key.ctx) {

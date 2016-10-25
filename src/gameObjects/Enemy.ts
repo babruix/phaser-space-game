@@ -158,7 +158,8 @@ export class Enemy {
         return
       }
 
-      if (body1.sprite.key.indexOf("bullet") >= 0 && !body1.sprite.enemyBullet) {
+      if (body1.sprite.key.indexOf("spaceship") >= 0 ||
+        (body1.sprite.key.indexOf("bullet") >= 0 && !body1.sprite.enemyBullet)) {
         if (!enemy.lastDamage) {
           enemy.lastDamage = game.time.now;
         }
@@ -168,12 +169,42 @@ export class Enemy {
           enemy.alpha = 0.2;
         }
         else {
-          this.damageEnemy(enemy, game);
-        }
-      }
+          if (enemy.lastDamage + 500 < game.time.now) {
+            enemy.lastDamage = game.time.now;
+            game.audio.smackSnd.play();
+            enemy.damage(1);
+            let style = {
+              font: "20px eater",
+              fontWeight: 500,
+              fill: "#FFF",
+              align: "center"
+            };
+            let shift = enemy.health > 9 ? 11 : 6;
+            let cRect = game.add.graphics(0, 0).beginFill(0xff5a00).drawCircle(enemy.x + shift, enemy.y + 13, 30);
+            let health = game.add.text(enemy.x, enemy.y, enemy.health, style);
+            let health_tween = game.add.tween(cRect).to({alpha: 0.3}, 100,
+              Phaser.Easing.Linear.None,
+              true /*autostart?*/,
+              500 /*delay*/);
+            //
+            health_tween.onComplete.add(function () {
+              health.destroy();
+              cRect.destroy();
+            }, this);
 
-      if (body1.sprite.key.indexOf("spaceship") >= 0) {
-        this.damageEnemy(enemy, game);
+            mainState.score += enemy.health % 3;
+          }
+        }
+
+        // flash in red
+        enemy.tint = 0xFF0010;
+        game.time.events.add(300, () => enemy.tint = 0xFFFFFF);
+
+        if (enemy.health === 1) {
+          this.explode(enemy);
+          this.hideStealingSign();
+        }
+        this.putPlantBack(enemy);
       }
     }, this);
 
@@ -217,46 +248,6 @@ export class Enemy {
     }, this);
 
     mainState.enemys.add(enemy);
-  }
-
-  private damageEnemy(enemy, game: any) {
-    if (enemy.lastDamage + 700 <= game.time.now) {
-      return;
-    }
-    enemy.lastDamage = game.time.now;
-    game.audio.smackSnd.play();
-
-    enemy.damage(1);
-    let style = {
-      font: "20px eater",
-      fontWeight: 500,
-      fill: "#FFF",
-      align: "center"
-    };
-    let shift = enemy.health > 9 ? 11 : 6;
-    let cRect = game.add.graphics(0, 0).beginFill(0xff5a00).drawCircle(enemy.x + shift, enemy.y + 13, 30);
-    let health = game.add.text(enemy.x, enemy.y, enemy.health, style);
-    let health_tween = game.add.tween(cRect).to({alpha: 0.3}, 100,
-      Phaser.Easing.Linear.None,
-      true /*autostart?*/,
-      500 /*delay*/);
-    //
-    health_tween.onComplete.add(function () {
-      health.destroy();
-      cRect.destroy();
-    }, this);
-
-    enemy.mainState.score += enemy.health % 3;
-
-    // flash in red
-    enemy.tint = 0xFF0010;
-    game.time.events.add(300, () => enemy.tint = 0xFFFFFF);
-
-    if (enemy.health === 1) {
-      this.explode(enemy);
-      this.hideStealingSign();
-    }
-    this.putPlantBack(enemy);
   }
 
   fire(enemy) {

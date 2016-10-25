@@ -24,6 +24,13 @@ export class Missle {
     let y2 = y ? y : game.rnd.integerInRange(0, game.height);
     this.mainState._missles.createMultiple(1, "missle", 0, false);
     this.missle = this.mainState._missles.getFirstExists(false);
+    this.missle.checkWorldBounds = true;
+    this.missle.outOfBoundsKill = true;
+    this.missle.collideWorldBounds = false;
+    this.missle.anchor.x = 0.5;
+    this.missle.anchor.y = 1;
+    this.missle.tracking = true;
+
     this.missle.body.setCircle(15);
     this.missle.body.mass = 10;
     this.missle.body.damping = 0.01;

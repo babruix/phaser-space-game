@@ -30,7 +30,9 @@ export class Menu extends Phaser.State {
 
     // uncomment to start immediately...
     // level=15;
-    // (this.game as any).transitionPlugin.to("Main");
+    if (window.location.hash === "#play") {
+      (this.game as any).transitionPlugin.to("Main");
+    }
     // (this.game as any).transitionPlugin.to("Tutorial");
 
     // Nice practicles
