@@ -37,11 +37,11 @@ export class Bullet {
 
     if (this.bullet.body) {
       this.bullet.body.setCircle(15);
-      this.bullet.body.mass = 100;
-      this.bullet.lifespan = 1000;
+      this.bullet.body.mass = 0.1;
+      this.bullet.lifespan = 500;
 
       this.bullet.reset(worldX, worldY);
-      this.bullet.body.damping = 0.1;
+      this.bullet.body.damping = 0;
       this.bullet.body.onBeginContact.add(function (body1, shapeA, shapeB) {
         if (!body1 || !body1.sprite || !body1.sprite.key) {
           this.bullet.kill();

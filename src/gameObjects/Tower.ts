@@ -41,7 +41,7 @@ export class Tower {
 
     this.tower.body.data.gravityScale = 70;
     this.tower.body.mass = 50;
-    this.tower.body.damping = 0.9;
+    this.tower.body.damping = 0;
     this.tower.body.fixedRotation = true;
     this.tower.body.collideWorldBounds = true;
     this.mainState.towers.add(this.tower);
@@ -327,10 +327,6 @@ export class Tower {
     tower.body.setZeroVelocity();
     let speed = tower.game.height / 1.3 + tower.game.height - tower.body.y / 1.3;
 
-    // Slow down under the rain
-    if (tower.mainState.checkIntersectsWithRain(tower)) {
-      speed -= tower.body.y;
-    }
 
     if (tower.mainState._cursors.left.isDown) {
       tower.angle = -30;

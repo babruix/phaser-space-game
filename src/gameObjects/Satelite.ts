@@ -37,7 +37,7 @@ export class Satelite {
     this.satelite.laser = laser || false;
 
     this.satelite.body.mass = 50;
-    this.satelite.body.damping = 1;
+    this.satelite.body.damping = 0;
 
     this.satelite.scale.setTo(0.5, 0.5);
 

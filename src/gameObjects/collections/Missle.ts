@@ -8,20 +8,22 @@ export class Missle {
   private mainState;
   private missle;
 
-  constructor(game, x?, y?, fired?) {
+  constructor(game, x?, y?, fired = false) {
     this.game = game;
     this.mainState = this.game.state.states["Main"];
+    const flowerPlant = this.mainState._flowerPlants.children[0];
+    let x2, y2;
 
-    let x2 = x ? x : game.rnd.integerInRange(0, game.width);
     if (!fired) {
-      this.mainState._flowerPlants.forEachAlive((plant) => {
-        if (plant.growingItem.key === "missle") {
-          x2 = plant.x;
-          Plant.removeSpawnBar(plant);
-        }
-      });
+      x2 = flowerPlant.growingItem.x;
+      y2 = flowerPlant.growingItem.y;
+      flowerPlant.growingItem.kill();
     }
-    let y2 = y ? y : game.rnd.integerInRange(0, game.height);
+    else {
+      x2 = x;
+      y2 = y;
+    }
+
     this.mainState._missles.createMultiple(1, "missle", 0, false);
     this.missle = this.mainState._missles.getFirstExists(false);
     this.missle.checkWorldBounds = true;
@@ -32,8 +34,8 @@ export class Missle {
     this.missle.tracking = true;
 
     this.missle.body.setCircle(15);
-    this.missle.body.mass = 10;
-    this.missle.body.damping = 0.01;
+    this.missle.body.mass = 0.1;
+    this.missle.body.damping = 0;
     this.missle.towerBullet = true;
     this.missle.enemyBullet = false;
     this.missle.activated = fired || false;
@@ -58,11 +60,7 @@ export class Missle {
       }
 
     }, this);
-    this.missle.events.onKilled.add((missle) => {
-      let nextSpawnTime = Phaser.Timer.SECOND * game.rnd.integerInRange(10, 30);
-      this.mainState._missleTimer = game.time.events.add(nextSpawnTime, () => new Missle(game));
-      this.mainState._flowerPlants.forEach(plant => Plant.updateSpawnBar(nextSpawnTime, "missle", plant));
-    });
+
     let missle = this.missle;
     this.missle.update = () => {
       if (missle.y < 100) {

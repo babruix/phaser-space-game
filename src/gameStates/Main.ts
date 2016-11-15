@@ -28,6 +28,7 @@ export class Main extends Phaser.State {
   public towers;
   public level;
   public score;
+  public enemysBcl;
 
   private enemySprites;
   private _background;
@@ -50,7 +51,6 @@ export class Main extends Phaser.State {
   private events;
   private dayLength;
   private _cloudsGroup;
-  private _rainGroup;
   private _tweenClouds;
   private _cloud;
   private enemys;
@@ -119,11 +119,20 @@ export class Main extends Phaser.State {
   }
 
   render() {
-    this.game.debug.text("Alive enemies: " + this.enemys.countLiving(), 10, 50);
+    this.game.debug.text("alive enemies: " + this.enemys.countLiving(), 10, 50);
+
+    this.game.debug.text("render FPS: " + (this.game.time.fps || "--") , 2, 70, "#00ff00");
+    if (this.game.time.suggestedFps !== null) {
+      this.game.debug.text("suggested FPS: " + this.game.time.suggestedFps, 2, 80, "#00ff00");
+      this.game.debug.text("desired FPS: " + this.game.time.desiredFps, 2, 90, "#00ff00");
+    }
   }
 
   create(game?, tutorial?) {
     this.isTutorial = tutorial || false;
+    if (!this.isTutorial) {
+      this.game.time.advancedTiming = true;
+    }
     if (game) {
       this.game = game;
     }
@@ -222,9 +231,7 @@ export class Main extends Phaser.State {
     this.createSunAndBgTweens();
     this.events.onNightOver.add(this.createSunAndBgTweens, this);
 
-    // Clouds and rain groups.
     this._cloudsGroup = this.game.add.group();
-    this._rainGroup = this.game.add.group();
   }
 
   createSunAndBgTweens() {
@@ -270,39 +277,7 @@ export class Main extends Phaser.State {
     for (let i = 0; i <= 6; i++) {
       this._cloud = this.game.add.tileSprite(cloudSises[i].toX, cloudSises[i].toY, cloudSises[i].x, cloudSises[i].y, "cloud" + i);
       this._cloudsGroup.add(this._cloud);
-      // Also enable sprite for drag
-      this._cloud.inputEnabled = true;
-      this._cloud.input.enableDrag();
-
-      this._cloud.events.onDragStop.add(() => {
-        if (this._rainGroup.children[0]) {
-          this._rainGroup.children[0].y = this._cloud.y + this._cloud.height;
-          this._rainGroup.children[0].x = this._cloud.x + 150;
-        }
-      });
     }
-    this.game.time.events.add(300, this.makeRain, this);
-  }
-
-  makeRain() {
-    let integerInRange = this.game.rnd.integerInRange(0, 6);
-    let cloud = this._cloudsGroup.children[integerInRange];
-    cloud.raining = true;
-
-    let particleSystem1 = (this.game as any).epsyPlugin
-    .loadSystem(ParticlesConfigs.epsyPluginConfig.rain, cloud.x, cloud.y + cloud.height);
-    // let Phaser add the particle system to world group or choose to add it to a specific group
-    this._rainGroup.add(particleSystem1);
-    this._rainGroup.children[0].x = cloud.x + 150;
-    this.game.time.events.add(5000, this.removeRain, this);
-  }
-
-  removeRain() {
-    this._rainGroup.forEachAlive(element => element.destroy(), this);
-    this._cloudsGroup.forEachAlive(function (cloud) {
-      cloud.raining = false;
-    }, this);
-    this.game.time.events.add(3000, this.makeRain, this);
   }
 
   setupGameGroups() {
@@ -453,15 +428,17 @@ export class Main extends Phaser.State {
   }
 
   generateGrowingPickups() {
+    if (this.enemys.stealing) {
+      return;
+    }
+
     if (!this.pickupsLastTime) {
       this.pickupsLastTime = this.game.time.now;
     }
-    // Remove old generation events
-    this._plantsGenerationEvents.forEach(event => this.game.time.events.remove(event));
+
     // Add new events
     this._flowerPlants.children.forEach(plant => {
-      let __ret = plant.generate_pickup(plant);
-      this._plantsGenerationEvents.push(this.game.time.events.add(__ret.nextSpawnTime, __ret.spawnFunction, this));
+      Plant.generatePickupItem(plant);
     });
   }
 
@@ -596,7 +573,7 @@ export class Main extends Phaser.State {
   addEnemys() {
     let i = 0;
     this._allEnemysAdded = false;
-    let enemysBcl = this.game.time.events.loop(this.level / 2 * Phaser.Timer.SECOND, () => {
+    this.enemysBcl = this.game.time.events.loop(this.level / 3 * Phaser.Timer.SECOND, () => {
       // Generate i=3*this.level number of enemys
       if (i < 2 * this.level) {
         let rndKey = this.game.rnd.integerInRange(0, this.enemySprites.length - 1);
@@ -609,20 +586,11 @@ export class Main extends Phaser.State {
         };
         Tower.prototype.addWall(param);
       } else {
-        enemysBcl = null;
+        this.enemysBcl = null;
         this._allEnemysAdded = true;
       }
       i++;
     });
-  }
-
-  checkIntersectsWithRain(tower) {
-    let intersectsWithRain = false;
-    this._rainGroup.forEachAlive(
-      element => intersectsWithRain = Phaser.Rectangle.intersects(element.getBounds(), tower.getBounds()),
-      this
-    );
-    return intersectsWithRain;
   }
 
   update() {
@@ -637,7 +605,6 @@ export class Main extends Phaser.State {
 
     // Game over if no alive flowers.
     if (!this.isTutorial && !this._flowerPlants.countLiving()) {
-
       this.game.time.events.add(0, () => this.GameOverTransition(), this);
       return;
     }
@@ -657,6 +624,8 @@ export class Main extends Phaser.State {
     this.enemys.forEachAlive(enemy => Enemy.prototype.updateEnemy(enemy), this);
 
     this.towers.forEachAlive(tower => Tower.updateTower(tower), this);
+
+    this._walls.forEachAlive(wall => wall.update(wall));
 
     // Update spawn bar.
     this._flowerPlants.forEachAlive(plant => plant.updatePlant(plant), this);

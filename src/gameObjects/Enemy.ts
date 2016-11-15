@@ -3,6 +3,7 @@
 import * as Phaser from "phaser";
 import {Wall} from "../gameObjects/Wall";
 import {Bullet} from "../gameObjects/Bullet";
+import {Plant} from "../gameObjects/Plant";
 
 export class Enemy {
   private game;
@@ -11,7 +12,7 @@ export class Enemy {
 
   constructor(game, x, y, anim, animLength) {
     this.game = game;
-    this.mainState = this.game.state.states["Main"];
+    this.mainState = this.game. state.states["Main"];
 
     let xDestination = this.game.rnd.integerInRange(100, this.game.world.width / 2);
     let rndInt = this.game.rnd.integerInRange(0, this.game.audio.ufoSnd.length - 1);
@@ -90,17 +91,27 @@ export class Enemy {
   }
 
   putPlantBack(enemy) {
+    if (!enemy.steals) {
+      return;
+    }
+
+    enemy.game.state.states["Main"].enemys.forEachAlive(enemyObject => {
+      if (enemyObject.closestPlant) {
+        enemyObject.closestPlant.stealing = false;
+      }
+      enemyObject.steals = false;
+    });
+
     if (enemy.closestPlant && enemy.closestPlant.alive) {
-      enemy.closestPlant.stealing = false;
-      enemy.steals = false;
       enemy.closestPlant.y = enemy.game.height - 50;
+      Plant.generatePickupItem(enemy.closestPlant);
       enemy.closestPlant.angle = 0;
-      enemy.closestPlant.scale.x = (1);
-      enemy.closestPlant.scale.y = (1);
+      enemy.closestPlant.scale.setTo(1);
+
       enemy.closestPlant = null;
       this.hideStealingSign.call(enemy);
-      enemy.mainState.generateGrowingPickups();
-    }
+      enemy.game.time.events.add(300, () => enemy.tint = 0xFFFFFF);
+     }
   }
 
   initEnemy(enemy) {
@@ -228,6 +239,7 @@ export class Enemy {
         }
 
         Enemy.prototype.scale(enemy);
+
         // Update health bar.
         let bar = enemy.enemyHealthBar;
         if (bar.barSprite) {
@@ -321,10 +333,6 @@ export class Enemy {
   }
 
   updateEnemy(enemy) {
-    // Slow down under the rain
-    enemy.body.damping = enemy.game.state.states["Main"].checkIntersectsWithRain(enemy)
-      ? 0.9
-      : 0.4;
 
     // Steal a plant
     if (enemy.closestPlant && enemy.closestPlant.alive) {
@@ -333,6 +341,8 @@ export class Enemy {
         enemy.body.velocity.y = -300;
         enemy.closestPlant.x = enemy.x;
         enemy.closestPlant.y = enemy.y;
+        enemy.closestPlant.growTween = null;
+        enemy.closestPlant.growingItem.alpha = 0;
       }
 
       // protect with wall
@@ -346,22 +356,22 @@ export class Enemy {
       }
 
       // use/steal plant
-      if (enemy.closestPlant.y < 100 && enemy.closestPlant) {
+      if (enemy.closestPlant.y < 70 && enemy.closestPlant && enemy.steals === true) {
         enemy.game.audio.springSnd.play();
         enemy.closestPlant.destroy();
-        enemy.game.state.states["Main"].updateScore(true);
       }
     }
 
     // Plant is too far, forget
-    if (enemy.y < 100 && enemy.closestPlant
-      && !enemy.game.state.states["Main"].enemys.stealing) {
-      enemy.closestPlant.stealing = false;
+    if (enemy.y < 70 && enemy.closestPlant
+      && (!enemy.steals || !enemy.game.state.states["Main"].enemys.stealing)) {
+      // enemy.game.state.states["Main"].enemys.stealing = false;
+      // enemy.steals = false;
+      // enemy.closestPlant.stealing = false;
       enemy.closestPlant = false;
-      enemy.steals = false;
     }
 
-    if (enemy.y > 600) {
+    if (enemy.y > 700) {
       // find closest  plant
       enemy.closestPlant = enemy.game.state.states["Main"]._flowerPlants.getFirstAlive();
       enemy.game.state.states["Main"]._flowerPlants.forEachAlive(function (plant) {
@@ -374,7 +384,7 @@ export class Enemy {
 
         if (Math.abs(enemy.x - enemy.closestPlant.x) > 100) {
           // come close
-          enemy.body.velocity.x = 700;
+          enemy.body.velocity.x = 500;
           if (enemy.x > enemy.closestPlant.x) {
             enemy.body.velocity.x *= -1;
           }
@@ -396,9 +406,6 @@ export class Enemy {
           enemy.closestPlant = null;
         }
       }
-    }
-    if (!enemy.game.state.states["Main"]._flowerPlants.countLiving()) {
-      Enemy.prototype.explode(enemy);
     }
   }
 }

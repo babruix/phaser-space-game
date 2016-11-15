@@ -19,6 +19,15 @@ export class Wall {
     this.wall.health = 50;
     this.mainState._walls.add(this.wall);
 
+    this.wall.update = (wall) => {
+      if (!wall) {
+        return;
+      }
+      // debugger;
+      if (wall.alpha < 0.4) {
+        wall.kill();
+      }
+    }
     this.wall.body.onBeginContact.add((body1, shapeA, shapeB) => {
       if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {
         return

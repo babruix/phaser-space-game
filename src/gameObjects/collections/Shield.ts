@@ -10,15 +10,12 @@ export class Shield {
   constructor(game) {
     this.game = game;
     this.mainState = this.game.state.states["Main"];
+    const flowerPlant = this.mainState._flowerPlants.children[0];
 
-    let x2 = game.rnd.integerInRange(0, game.width);
-    this.mainState._flowerPlants.forEachAlive((plant) => {
-      if (plant.growingItem.key === "shield") {
-        x2 = plant.x;
-        Plant.removeSpawnBar(plant);
-      }
-    });
-    let y2 = game.rnd.integerInRange(0, game.height);
+    let x2 = flowerPlant.growingItem.x;
+    let y2 = flowerPlant.growingItem.y;
+    flowerPlant.growingItem.kill();
+
     this.shield = game.add.sprite(x2, y2, "shield");
     this.shield.animations.add("blim");
     this.shield.animations.play("blim", 2, true);
@@ -50,12 +47,6 @@ export class Shield {
         body1.sprite.shieldPower += 10;
         this.mainState.changeScoreText();
       }
-    });
-
-    this.shield.events.onKilled.add((shield) => {
-      let nextSpawnTime = Phaser.Timer.SECOND * 4;
-      this.mainState._shieldTimer = game.time.events.add(nextSpawnTime, () => new Shield(this.game), this);
-      this.mainState._flowerPlants.forEach(plant => Plant.updateSpawnBar(nextSpawnTime, "shield", plant));
     });
   }
 }

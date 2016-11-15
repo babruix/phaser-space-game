@@ -22,7 +22,7 @@ If you are out of bullets, main weapon will be switched to missiles.
 Your additional weapon is missiles. You can shoot using key `[M]` or `[7]`
 Note: if you are out of missiles, they will be purchased.
 
-Flower can generate useful pick-ups:armor, fuel, bullets, missiles... 
+Flower can generate useful pick-ups:armor, fuel, bullets, missiles...
 Currently generating item showed at the bottom of the Flower.
 You can change generating item by pressing `[R]`.
 
@@ -35,6 +35,3 @@ Normal Tower `[1]`, Freezing Tower `[2]`, Rocket Launcher `[3]` Laser `[4]`
 
 You can build asteroids `[5]`, they are cheep and can be destroyed.
 You can request orbital mine `[6]`, be careful, it also can explode near you!
-
-It rains quite often here, and in the rain nobody can fly really fast.
-You can move rain by dragging cloud and dropping it to the new place.

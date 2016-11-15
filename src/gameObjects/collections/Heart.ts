@@ -10,15 +10,12 @@ export class Heart {
   constructor(game) {
     this.game = game;
     this.mainState = this.game.state.states["Main"];
+    const flowerPlant = this.mainState._flowerPlants.children[0];
 
-    let x2 = game.rnd.integerInRange(0, game.width);
-    this.mainState._flowerPlants.forEachAlive((plant) => {
-      if (plant.growingItem.key === "heart") {
-        x2 = plant.x;
-        Plant.removeSpawnBar(plant);
-      }
-    });
-    let y2 = game.rnd.integerInRange(0, game.height);
+    let x2 = flowerPlant.growingItem.x;
+    let y2 = flowerPlant.growingItem.y;
+    flowerPlant.growingItem.kill();
+
     this.heart = game.add.sprite(x2, y2, "heart");
     this.heart.anchor.setTo(0.5, 0.5);
 
@@ -50,11 +47,6 @@ export class Heart {
         this.mainState.drawLivesSprites();
         this.mainState.changeScoreText();
       }
-    });
-    this.heart.events.onKilled.add((heart) => {
-      let nextSpawnTime = Phaser.Timer.SECOND * game.rnd.integerInRange(70, 100);
-      this.mainState._heartTimer = game.time.events.add(nextSpawnTime, () => new Heart(this.game), this);
-      this.mainState._flowerPlants.forEach(plant => Plant.updateSpawnBar(nextSpawnTime, "heart", plant));
     });
   }
 }

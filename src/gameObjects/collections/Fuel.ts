@@ -10,15 +10,13 @@ export class Fuel {
   constructor(game) {
     this.game = game;
     this.mainState = this.game.state.states["Main"];
+    const flowerPlant = this.mainState._flowerPlants.children[0];
 
-    let x2 = game.rnd.integerInRange(0, game.width);
-    this.mainState._flowerPlants.forEachAlive((plant) => {
-      if (plant.growingItem.key === "fuel") {
-        x2 = plant.x;
-        Plant.removeSpawnBar(plant);
-      }
-    });
-    let y2 = game.rnd.integerInRange(0, game.height);
+
+    let x2 = flowerPlant.growingItem.x;
+    let y2 = flowerPlant.growingItem.y;
+    flowerPlant.growingItem.kill();
+
     this.fuel = game.add.sprite(x2, y2, "fuel");
     this.fuel.anchor.setTo(0.5, 0.5);
     game.physics.p2.enable(this.fuel, this.game.debugOn);
@@ -47,11 +45,6 @@ export class Fuel {
         this.mainState.towers.children[0].fuel += this.mainState.level * 20;
         this.mainState.changeScoreText();
       }
-    });
-    this.fuel.events.onKilled.add((fuel) => {
-      let nextSpawnTime = Phaser.Timer.SECOND * game.rnd.integerInRange(20, 40);
-      this.mainState._fuelTimer = game.time.events.add(nextSpawnTime, () => new Fuel(this.game), this);
-      this.mainState._flowerPlants.forEach(plant => Plant.updateSpawnBar(nextSpawnTime, "fuel", plant));
     });
   }
 }

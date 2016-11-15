@@ -19,7 +19,7 @@ export class Bomb {
     game.physics.p2.enable(this.bomb, this.game.debugOn);
     this.bomb.body.data.mass = 7;
     this.bomb.scale.setTo(.8, .8);
-    this.bomb.body.damping = 1;
+    this.bomb.body.damping = 0;
 
     this.bomb.body.onBeginContact.add((body1, shapeA, shapeB) => {
       if (!body1 || !body1.sprite || !body1.sprite.key || body1.sprite.key.ctx) {

@@ -34,8 +34,6 @@ export class Tutorial extends Phaser.State {
       "\nNormal Tower [1], \nFreezing Tower [2], \nRocket Launcher [3] \nLaser [4]\n",
       "\nYou can build asteroids [5], \nthey are cheep and can be destroyed\n",
       "\nYou can request orbital mine [6], \nbe careful, it also can explode near you!\n",
-      "\nIt rains quite often here, and in the rain nobody can fly really fast.\n",
-      "\nYou can move rain by dragging cloud and dropping it to the new place. \n"
     ];
     this._TipOptions = {
       strokeColor: 0x82C1C4,
@@ -246,10 +244,6 @@ export class Tutorial extends Phaser.State {
 
       case 19:
         this.blinkSprite(this.mainState._bombBtn);
-        break;
-
-      case 21:
-        this.blinkSprite(this.mainState._cloudsGroup);
         break;
     }
   }

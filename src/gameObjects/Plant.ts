@@ -42,66 +42,6 @@ export class Plant {
       });
     };
 
-    this.plant.generate_pickup = (plant) => {
-      let spawnFunction;
-      let nextSpawnTime;
-      let maxTimeToSpawn = 10; // Default time to spawn.
-
-      // Remove old bar
-      Plant.removeSpawnBar(plant);
-
-      if (plant.alive) {
-        if (plant.growingItem) {
-          plant.growingItem.kill();
-        }
-        let defaultItemToGrow = this.game.rnd.integerInRange(0, 5);
-
-        switch (defaultItemToGrow) {
-          case 0:
-            maxTimeToSpawn = 10;
-            plant.growingItem = this.game.add.sprite(plant.x, plant.y + 10, "ammo");
-            spawnFunction = () => new Ammo(this.game);
-            break;
-          case 1:
-            plant.growingItem = this.game.add.sprite(plant.x, plant.y + 10, "shield");
-            plant.growingItem.animations.add("blim");
-            plant.growingItem.animations.play("blim", 2, true);
-            spawnFunction = () => new Shield(this.game);
-            break;
-          case 2:
-            maxTimeToSpawn = 30;
-            plant.growingItem = this.game.add.sprite(plant.x, plant.y + 10, "heart");
-            spawnFunction = () => new Heart(this.game);
-            break;
-          case 3:
-            plant.growingItem = this.game.add.sprite(plant.x, plant.y + 10, "fuel");
-            spawnFunction = () => new Fuel(this.game);
-            break;
-          case 4:
-            plant.growingItem = this.game.add.sprite(plant.x, plant.y + 10, "missle");
-            spawnFunction = () => new Missle(this.game);
-            break;
-          case 5:
-            maxTimeToSpawn = 20;
-            plant.growingItem = this.game.add.sprite(plant.x, plant.y + 10, "ammo");
-            spawnFunction = () => new Ammo(this.game);
-            break;
-        }
-        nextSpawnTime = Phaser.Timer.SECOND * this.game.rnd.integerInRange(0, maxTimeToSpawn);
-        plant.growingItem.scale.setTo(.4, .4);
-        plant.growingItem.blendMode = 4;
-
-        // Add spawn bar.
-        let barConfig = Plant.getBarConfig();
-        plant.spawnBar = new HealthBar(this.game, barConfig);
-        plant.randomSpawnTime = this.game.time.now + nextSpawnTime;
-      }
-      return {
-        spawnFunction: spawnFunction,
-        nextSpawnTime: nextSpawnTime
-      };
-    };
-
     this.plant.updatePlant = (plant) => {
       let bar = plant.spawnBar;
       if (bar) {
@@ -122,6 +62,74 @@ export class Plant {
     };
 
     return this.plant;
+  }
+
+  static generatePickupItem(plant) {
+    let spawnFunction;
+    let nextSpawnTime;
+    let maxTimeToSpawn = 10; // Default time to spawn.
+
+    // Remove old bar
+    Plant.removeSpawnBar(plant);
+
+    if (plant.alive) {
+      if (plant.growingItem) {
+        plant.growingItem.kill();
+      }
+      let defaultItemToGrow = plant.game.rnd.integerInRange(0, 5);
+
+      switch (defaultItemToGrow) {
+        case 0:
+          maxTimeToSpawn = 10;
+          plant.growingItem = plant.game.add.sprite(plant.x, plant.y + 10, "ammo");
+          spawnFunction = () => new Ammo(plant.game);
+          break;
+        case 1:
+          plant.growingItem = plant.game.add.sprite(plant.x, plant.y + 10, "shield");
+          plant.growingItem.animations.add("blim");
+          plant.growingItem.animations.play("blim", 2, true);
+          spawnFunction = () => new Shield(plant.game);
+          break;
+        case 2:
+          maxTimeToSpawn = 30;
+          plant.growingItem = plant.game.add.sprite(plant.x, plant.y + 10, "heart");
+          spawnFunction = () => new Heart(plant.game);
+          break;
+        case 3:
+          plant.growingItem = plant.game.add.sprite(plant.x, plant.y + 10, "fuel");
+          spawnFunction = () => new Fuel(plant.game);
+          break;
+        case 4:
+          plant.growingItem = plant.game.add.sprite(plant.x, plant.y + 10, "missle");
+          spawnFunction = () => new Missle(plant.game);
+          break;
+        case 5:
+          maxTimeToSpawn = 20;
+          plant.growingItem = plant.game.add.sprite(plant.x, plant.y + 10, "ammo");
+          spawnFunction = () => new Ammo(plant.game);
+          break;
+      }
+      nextSpawnTime = Phaser.Timer.SECOND * plant.game.rnd.integerInRange(0, maxTimeToSpawn);
+      plant.growingItem.scale.setTo(.4, .4);
+      plant.growingItem.blendMode = 4;
+
+      // Add spawn bar.
+      let barConfig = Plant.getBarConfig();
+      plant.spawnBar = new HealthBar(plant.game, barConfig);
+      plant.randomSpawnTime = plant.game.time.now + nextSpawnTime;
+
+      plant.growTween = plant.game.add.tween(plant.growingItem)
+          .to({y: plant.growingItem.y - plant.height}, plant.randomSpawnTime - plant.game.time.now, Phaser.Easing.Exponential.In, true)
+          .onComplete.add(() => {
+            if (!plant.game.state.states["Main"].enemys.stealing) {
+              spawnFunction();
+            }
+            else {
+              plant.growTween = null;
+            }
+            // plant.generateGrowingPickups();
+          });
+    }
   }
 
   static updateSpawnBar(nextSpawnTime, sprite, plant) {

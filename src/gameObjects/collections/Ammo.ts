@@ -10,15 +10,13 @@ export class Ammo {
   constructor(game) {
     this.game = game;
     this.mainState = this.game.state.states["Main"];
+    const flowerPlant = this.mainState._flowerPlants.children[0];
 
-    let x2 = game.rnd.integerInRange(0, game.width);
-    this.mainState._flowerPlants.forEachAlive((plant) => {
-      if (plant.growingItem.key === "ammo") {
-        x2 = plant.x;
-        Plant.removeSpawnBar(plant);
-      }
-    });
-    let y2 = game.rnd.integerInRange(0, game.height);
+
+    let x2 = flowerPlant.growingItem.x;
+    let y2 = flowerPlant.growingItem.y;
+    flowerPlant.growingItem.kill();
+
     this.ammo = game.add.sprite(x2, y2, "ammo");
     this.ammo.anchor.setTo(0.5, 0.5);
     game.physics.p2.enable(this.ammo, this.game.debugOn);
@@ -47,11 +45,6 @@ export class Ammo {
         this.mainState.towers.children[0].bullets += this.mainState.level * 10;
         this.mainState.changeScoreText();
       }
-    });
-    this.ammo.events.onKilled.add((ammo) => {
-      let nextSpawnTime = Phaser.Timer.SECOND * game.rnd.integerInRange(20, 40);
-      this.mainState._ammoTimer = game.time.events.add(nextSpawnTime, () => new Ammo(this.game), this);
-      this.mainState._flowerPlants.forEach(plant => Plant.updateSpawnBar(nextSpawnTime, "ammo", plant));
     });
   }
 }

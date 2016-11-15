@@ -43,7 +43,7 @@ export class Brick {
       }
     }, this);
     this.brick.events.onKilled.add(() => {
-      this.game.time.events.add(Phaser.Timer.SECOND * this.game.rnd.integerInRange(6, 20), () => new Brick(this.game), this);
+      // this.game.time.events.add(Phaser.Timer.SECOND * this.game.rnd.integerInRange(6, 20), () => new Brick(this.game), this);
     });
   }
 }

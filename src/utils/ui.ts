@@ -29,7 +29,7 @@ export class UI {
     mainState._bombBtn = this.createBomb();
     mainState._rocketBtn = this.createRocket();
     mainState._reloadBtn = this.createReloadBtn();
-    mainState._reloadBtn.events.onInputDown.add(this.reloadPickups);
+    // mainState._reloadBtn.events.onInputDown.add(this.reloadPickups);
   }
 
   // Add elements to UIGroup.
