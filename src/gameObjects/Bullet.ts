@@ -13,27 +13,20 @@ export class Bullet {
     this.mainState = this.game.state.states["Main"];
 
     if (enemyBullet) {
-      this.mainState._enemy_bullets.createMultiple(1, "bullet", 0, false);
-      this.bullet = this.mainState._enemy_bullets.getFirstExists(false);
+      this.bullet = this.mainState._enemy_bullets.getFirstDead(true);
       this.bullet.enemyBullet = true;
       this.bullet.towerBullet = false;
       this.bullet.scale.y = -1;
       worldY += 10;
     }
     else {
-      if (freezingBullet) {
-        this.mainState._frezzing_bullets.createMultiple(1, "freezing_bullet", 0, false);
-      }
-      else {
-        this.mainState._bullets.createMultiple(1, "green_bullet", 0, false);
-      }
-      this.bullet = this.mainState._bullets.getFirstExists(false);
+      this.bullet = this.mainState._bullets.getFirstDead(true);
       this.bullet.enemyBullet = false;
       this.bullet.towerBullet = true;
     }
+    this.bullet.reset();
     this.bullet.freezingBullet = freezingBullet || false;
-
-    // this.bullet.outOfBoundsKill = true;
+    this.bullet.outOfBoundsKill = true;
 
     if (this.bullet.body) {
       this.bullet.body.setCircle(15);

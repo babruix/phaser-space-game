@@ -121,7 +121,7 @@ export class Plant {
       plant.growTween = plant.game.add.tween(plant.growingItem)
           .to({y: plant.growingItem.y - plant.height}, plant.randomSpawnTime - plant.game.time.now, Phaser.Easing.Exponential.In, true)
           .onComplete.add(() => {
-            if (!plant.game.state.states["Main"].enemys.stealing) {
+            if (plant && plant.game && !plant.game.state.states["Main"].enemys.stealing) {
               spawnFunction();
             }
             else {
